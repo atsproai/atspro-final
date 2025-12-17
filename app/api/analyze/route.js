@@ -63,7 +63,7 @@ export async function POST(req) {
 
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 4000,
+      max_tokens: 4500,
       messages: [{
         role: 'user',
         content: [
@@ -85,8 +85,10 @@ ${jobDescription}
 Your task:
 1. Calculate an ATS compatibility score (0-100) based on keyword matching
 2. Identify missing keywords from the job description
-3. Create an optimized resume using the ACTUAL person's information from their resume (same name, contact info, experience, etc.) - just improve it by naturally incorporating missing keywords
-4. Write a professional cover letter tailored to this job
+3. Analyze compatibility with major ATS systems (Workday, Greenhouse, Lever, Taleo)
+4. Identify any formatting issues that could break ATS parsing
+5. Create an optimized resume using the ACTUAL person's information
+6. Write a professional cover letter tailored to this job
 
 CRITICAL FORMATTING RULES:
 - Use the person's REAL name, contact info, and experience from their resume
@@ -98,6 +100,16 @@ Format your response EXACTLY like this:
 
 SCORE: [number only, e.g., 75]
 MISSING: [comma-separated keywords, e.g., Docker, Kubernetes, GraphQL]
+
+ATS_COMPATIBILITY:
+WORKDAY: [PASS/WARNING/FAIL] - [brief explanation]
+GREENHOUSE: [PASS/WARNING/FAIL] - [brief explanation]
+LEVER: [PASS/WARNING/FAIL] - [brief explanation]
+TALEO: [PASS/WARNING/FAIL] - [brief explanation]
+
+FORMATTING_ISSUES:
+[List any formatting problems like: tables, columns, headers/footers, special characters, images, or write "None detected" if clean]
+
 OPTIMIZED_RESUME:
 [Full optimized resume in plain text format. Use the actual person's name and info. Include sections like CONTACT, SUMMARY, EXPERIENCE, SKILLS, EDUCATION. No special characters or formatting symbols.]
 
@@ -109,8 +121,31 @@ COVER_LETTER:
     });
 
     const responseText = message.content[0].text;
+    
+    // Parse the response
     const scoreMatch = responseText.match(/SCORE:\s*(\d+)/);
-    const missingMatch = responseText.match(/MISSING:\s*(.+?)(?=OPTIMIZED_RESUME:|$)/s);
+    const missingMatch = responseText.match(/MISSING:\s*(.+?)(?=ATS_COMPATIBILITY:|$)/s);
+    
+    // Parse ATS compatibility
+    const atsSection = responseText.match(/ATS_COMPATIBILITY:\s*(.+?)(?=FORMATTING_ISSUES:|$)/s);
+    const atsCompatibility = {};
+    if (atsSection) {
+      const atsText = atsSection[1];
+      const workdayMatch = atsText.match(/WORKDAY:\s*(.+)/);
+      const greenhouseMatch = atsText.match(/GREENHOUSE:\s*(.+)/);
+      const leverMatch = atsText.match(/LEVER:\s*(.+)/);
+      const taleoMatch = atsText.match(/TALEO:\s*(.+)/);
+      
+      if (workdayMatch) atsCompatibility.workday = workdayMatch[1].trim();
+      if (greenhouseMatch) atsCompatibility.greenhouse = greenhouseMatch[1].trim();
+      if (leverMatch) atsCompatibility.lever = leverMatch[1].trim();
+      if (taleoMatch) atsCompatibility.taleo = taleoMatch[1].trim();
+    }
+    
+    // Parse formatting issues
+    const formattingMatch = responseText.match(/FORMATTING_ISSUES:\s*(.+?)(?=OPTIMIZED_RESUME:|$)/s);
+    const formattingIssues = formattingMatch ? formattingMatch[1].trim() : 'None detected';
+    
     const optimizedMatch = responseText.match(/OPTIMIZED_RESUME:\s*(.+?)(?=COVER_LETTER:|$)/s);
     const coverLetterMatch = responseText.match(/COVER_LETTER:\s*(.+)/s);
 
@@ -149,6 +184,8 @@ COVER_LETTER:
     return NextResponse.json({
       score,
       missing,
+      atsCompatibility,
+      formattingIssues,
       optimizedResume,
       coverLetter,
       scansRemaining: userData.subscription_status === 'free' ? 0 : 'unlimited'
