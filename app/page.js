@@ -94,8 +94,17 @@ export default function App() {
     a.click();
   };
 
-  const copyText = () => {
-    navigator.clipboard.writeText(result.optimizedResume);
+  const downloadCoverLetter = () => {
+    const blob = new Blob([result.coverLetter], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'cover-letter.txt';
+    a.click();
+  };
+
+  const copyText = (text) => {
+    navigator.clipboard.writeText(text);
     alert('Copied!');
   };
 
@@ -256,11 +265,11 @@ export default function App() {
               </div>
             </div>
 
-            <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 border border-white/20">
+            <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 border border-white/20 mb-6">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-2xl font-bold text-white">AI-Optimized Resume</h3>
                 <div className="flex gap-2">
-                  <button onClick={copyText} className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
+                  <button onClick={() => copyText(result.optimizedResume)} className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
                     <Copy size={18} /> Copy
                   </button>
                   <button onClick={downloadResume} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
@@ -270,6 +279,23 @@ export default function App() {
               </div>
               <pre className="bg-black/30 p-6 rounded-lg text-white whitespace-pre-wrap font-mono text-sm">{result.optimizedResume}</pre>
             </div>
+
+            {result.coverLetter && (
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 border border-white/20">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-2xl font-bold text-white">Cover Letter</h3>
+                  <div className="flex gap-2">
+                    <button onClick={() => copyText(result.coverLetter)} className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
+                      <Copy size={18} /> Copy
+                    </button>
+                    <button onClick={downloadCoverLetter} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                      <Download size={18} /> Download
+                    </button>
+                  </div>
+                </div>
+                <pre className="bg-black/30 p-6 rounded-lg text-white whitespace-pre-wrap font-mono text-sm">{result.coverLetter}</pre>
+              </div>
+            )}
           </>
         )}
       </div>
