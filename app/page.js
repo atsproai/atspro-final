@@ -1,8 +1,10 @@
 'use client';
 import React, { useState } from 'react';
 import { Upload, CheckCircle, Users, ArrowRight, Copy, Download } from 'lucide-react';
+import { SignInButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs';
 
 export default function App() {
+  const { isSignedIn, user } = useUser();
   const [page, setPage] = useState('home');
   const [file, setFile] = useState(null);
   const [job, setJob] = useState('');
@@ -19,6 +21,11 @@ export default function App() {
   };
 
   const analyze = async () => {
+    if (!isSignedIn) {
+      alert('Please sign in to analyze resumes!');
+      return;
+    }
+    
     if (!file || !job) {
       alert('Need resume AND job description!');
       return;
@@ -39,6 +46,11 @@ export default function App() {
   };
 
   const handleCheckout = async (priceId) => {
+    if (!isSignedIn) {
+      alert('Please sign in first!');
+      return;
+    }
+    
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST',
@@ -73,9 +85,18 @@ export default function App() {
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900">
         <nav className="flex justify-between items-center p-6 max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold text-white">ATSpro.ai</h1>
-          <div className="space-x-6">
+          <div className="flex items-center space-x-6">
             <button onClick={() => setPage('home')} className="text-white hover:text-purple-200">Home</button>
             <button onClick={() => setPage('analyzer')} className="text-white hover:text-purple-200">Analyzer</button>
+            {isSignedIn ? (
+              <UserButton afterSignOutUrl="/" />
+            ) : (
+              <SignInButton mode="modal">
+                <button className="bg-white text-purple-900 px-6 py-2 rounded-lg font-semibold hover:bg-purple-100">
+                  Sign In
+                </button>
+              </SignInButton>
+            )}
           </div>
         </nav>
 
@@ -139,9 +160,18 @@ export default function App() {
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900">
       <nav className="flex justify-between items-center p-6 max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-white">ATSpro.ai</h1>
-        <div className="space-x-6">
+        <div className="flex items-center space-x-6">
           <button onClick={() => setPage('home')} className="text-white hover:text-purple-200">Home</button>
           <button onClick={() => setPage('analyzer')} className="text-white hover:text-purple-200">Analyzer</button>
+          {isSignedIn ? (
+            <UserButton afterSignOutUrl="/" />
+          ) : (
+            <SignInButton mode="modal">
+              <button className="bg-white text-purple-900 px-6 py-2 rounded-lg font-semibold hover:bg-purple-100">
+                Sign In
+              </button>
+            </SignInButton>
+          )}
         </div>
       </nav>
 
@@ -149,17 +179,25 @@ export default function App() {
         <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 border border-white/20 mb-6">
           <h2 className="text-3xl font-bold text-white mb-6">Resume Analyzer</h2>
           
+          {!isSignedIn && (
+            <div className="bg-yellow-500/20 border border-yellow-500 rounded-lg p-4 mb-6">
+              <p className="text-yellow-100 text-center">
+                Please <SignInButton mode="modal"><button className="underline font-semibold">sign in</button></SignInButton> to analyze resumes
+              </p>
+            </div>
+          )}
+          
           <div className="mb-6">
             <label className="block text-white mb-2 font-semibold">Upload Resume (PDF)</label>
-            <input type="file" accept=".pdf" onChange={handleFile} className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30" />
+            <input type="file" accept=".pdf" onChange={handleFile} className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30" disabled={!isSignedIn} />
           </div>
 
           <div className="mb-6">
             <label className="block text-white mb-2 font-semibold">Job Description</label>
-            <textarea value={job} onChange={(e) => setJob(e.target.value)} rows={6} placeholder="Paste the job description here..." className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 placeholder-purple-200" />
+            <textarea value={job} onChange={(e) => setJob(e.target.value)} rows={6} placeholder="Paste the job description here..." className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 placeholder-purple-200" disabled={!isSignedIn} />
           </div>
 
-          <button onClick={analyze} disabled={loading} className="w-full bg-white text-purple-900 py-3 rounded-lg font-semibold hover:bg-purple-100 transition disabled:opacity-50">
+          <button onClick={analyze} disabled={loading || !isSignedIn} className="w-full bg-white text-purple-900 py-3 rounded-lg font-semibold hover:bg-purple-100 transition disabled:opacity-50">
             {loading ? 'Analyzing...' : 'Analyze Resume'}
           </button>
         </div>
