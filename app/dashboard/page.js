@@ -35,16 +35,14 @@ import {
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { isSignedIn, user } = useUser();
+  const { isSignedIn, user, isLoaded } = useUser();
   const [activeSection, setActiveSection] = useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Resume History State
   const [history, setHistory] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [selectedHistoryScan, setSelectedHistoryScan] = useState(null);
 
-  // Email Templates State
   const [emailType, setEmailType] = useState('follow-up');
   const [emailJobTitle, setEmailJobTitle] = useState('');
   const [emailCompany, setEmailCompany] = useState('');
@@ -52,18 +50,24 @@ export default function DashboardPage() {
   const [generatedEmail, setGeneratedEmail] = useState('');
   const [emailLoading, setEmailLoading] = useState(false);
 
-  // LinkedIn Optimizer State
   const [linkedinFile, setLinkedinFile] = useState(null);
   const [linkedinTargetRole, setLinkedinTargetRole] = useState('');
   const [linkedinResult, setLinkedinResult] = useState(null);
   const [linkedinLoading, setLinkedinLoading] = useState(false);
 
-  // Interview Prep State
   const [interviewFile, setInterviewFile] = useState(null);
   const [interviewJob, setInterviewJob] = useState('');
   const [interviewQuestions, setInterviewQuestions] = useState([]);
   const [expandedQuestion, setExpandedQuestion] = useState(null);
   const [interviewLoading, setInterviewLoading] = useState(false);
+
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 flex items-center justify-center">
+        <div className="text-white text-2xl">Loading Dashboard...</div>
+      </div>
+    );
+  }
 
   if (!isSignedIn) {
     return (
@@ -125,7 +129,6 @@ export default function DashboardPage() {
     }
   ];
 
-  // RESUME HISTORY FUNCTIONS
   const fetchHistory = async () => {
     setHistoryLoading(true);
     try {
@@ -181,7 +184,6 @@ export default function DashboardPage() {
     });
   };
 
-  // EMAIL TEMPLATES FUNCTIONS
   const generateEmail = async () => {
     if (!emailJobTitle || !emailCompany || !emailContext) {
       alert('Please fill in all fields!');
@@ -220,7 +222,6 @@ export default function DashboardPage() {
     doc.save(`${emailType}-email-${emailCompany.replace(/[^a-z0-9]/gi, '-')}.pdf`);
   };
 
-  // LINKEDIN OPTIMIZER FUNCTIONS
   const handleLinkedinFile = (e) => {
     const f = e.target.files[0];
     if (f && f.type === 'application/pdf') {
@@ -254,7 +255,6 @@ export default function DashboardPage() {
     setLinkedinLoading(false);
   };
 
-  // INTERVIEW PREP FUNCTIONS
   const handleInterviewFile = (e) => {
     const f = e.target.files[0];
     if (f && f.type === 'application/pdf') {
@@ -295,35 +295,36 @@ export default function DashboardPage() {
   }, [activeSection]);
 
   const renderContent = () => {
-    // HOME/DASHBOARD VIEW
     if (activeSection === 'home') {
       return (
         <div className="text-center py-12 px-4">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Welcome to Your Career Dashboard!</h2>
           <p className="text-purple-200 mb-8 text-lg">Select a tool from the menu to get started</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-4xl mx-auto">
-            {sections.map(section => (
-              <button
-                key={section.id}
-                onClick={() => {
-                  if (section.items.length === 1) {
-                    setActiveSection(section.items[0].id);
-                  } else {
-                    setActiveSection(section.items[0].id);
-                  }
-                }}
-                className="bg-white/10 backdrop-blur-lg p-6 rounded-xl border border-white/20 hover:bg-white/20 transition"
-              >
-                <section.icon className="w-12 h-12 text-purple-300 mx-auto mb-3" />
-                <h3 className="text-white font-semibold">{section.name}</h3>
-              </button>
-            ))}
+            {sections.map(section => {
+              const SectionIcon = section.icon;
+              return (
+                <button
+                  key={section.id}
+                  onClick={() => {
+                    if (section.items.length === 1) {
+                      setActiveSection(section.items[0].id);
+                    } else {
+                      setActiveSection(section.items[0].id);
+                    }
+                  }}
+                  className="bg-white/10 backdrop-blur-lg p-6 rounded-xl border border-white/20 hover:bg-white/20 transition"
+                >
+                  <SectionIcon className="w-12 h-12 text-purple-300 mx-auto mb-3" />
+                  <h3 className="text-white font-semibold">{section.name}</h3>
+                </button>
+              );
+            })}
           </div>
         </div>
       );
     }
 
-    // RESUME HISTORY
     if (activeSection === 'history') {
       return (
         <div>
@@ -441,7 +442,6 @@ export default function DashboardPage() {
       );
     }
 
-    // EMAIL TEMPLATES
     if (activeSection === 'emails') {
       return (
         <div>
@@ -568,7 +568,6 @@ export default function DashboardPage() {
       );
     }
 
-    // LINKEDIN OPTIMIZER
     if (activeSection === 'linkedin') {
       return (
         <div>
@@ -609,7 +608,7 @@ export default function DashboardPage() {
           </button>
 
           {linkedinResult && (
-            <>
+            <div>
               <div className="mt-8 bg-white/10 backdrop-blur-lg rounded-xl p-4 md:p-8 border border-white/20 mb-6">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
                   <div className="flex items-center gap-2">
@@ -675,13 +674,12 @@ export default function DashboardPage() {
                   🎉 Your LinkedIn profile is ready! Copy each section and paste directly into LinkedIn.
                 </p>
               </div>
-            </>
+            </div>
           )}
         </div>
       );
     }
 
-    // INTERVIEW PREP
     if (activeSection === 'questions') {
       return (
         <div>
@@ -721,7 +719,7 @@ export default function DashboardPage() {
           </button>
 
           {interviewQuestions.length > 0 && (
-            <>
+            <div>
               <div className="bg-green-500/20 border border-green-500 rounded-xl p-6 my-6 text-center">
                 <h3 className="text-2xl font-bold text-white mb-2">
                   ✅ {interviewQuestions.length} Questions Ready!
@@ -797,13 +795,12 @@ export default function DashboardPage() {
                   💡 Practice these answers out loud! Record yourself or practice with a friend for best results.
                 </p>
               </div>
-            </>
+            </div>
           )}
         </div>
       );
     }
 
-    // COMING SOON PLACEHOLDER
     return (
       <div className="text-center py-20">
         <div className="text-6xl mb-6">🚀</div>
@@ -849,37 +846,43 @@ export default function DashboardPage() {
           </button>
 
           <nav className="space-y-6">
-            {sections.map(section => (
-              <div key={section.id}>
-                <div className="flex items-center gap-2 text-purple-300 font-semibold mb-2">
-                  <section.icon size={18} />
-                  <span>{section.name}</span>
+            {sections.map(section => {
+              const SectionIcon = section.icon;
+              return (
+                <div key={section.id}>
+                  <div className="flex items-center gap-2 text-purple-300 font-semibold mb-2">
+                    <SectionIcon size={18} />
+                    <span>{section.name}</span>
+                  </div>
+                  <div className="ml-6 space-y-1">
+                    {section.items.map(item => {
+                      const ItemIcon = item.icon;
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => setActiveSection(item.id)}
+                          className={`flex items-center justify-between w-full p-2 rounded text-sm transition ${
+                            activeSection === item.id
+                              ? 'bg-purple-600 text-white'
+                              : 'text-purple-200 hover:bg-white/5'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2">
+                            <ItemIcon size={16} />
+                            <span>{item.name}</span>
+                          </div>
+                          {item.badge && (
+                            <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-0.5 rounded-full">
+                              {item.badge}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-                <div className="ml-6 space-y-1">
-                  {section.items.map(item => (
-                    <button
-                      key={item.id}
-                      onClick={() => setActiveSection(item.id)}
-                      className={`flex items-center justify-between w-full p-2 rounded text-sm transition ${
-                        activeSection === item.id
-                          ? 'bg-purple-600 text-white'
-                          : 'text-purple-200 hover:bg-white/5'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2">
-                        <item.icon size={16} />
-                        <span>{item.name}</span>
-                      </div>
-                      {item.badge && (
-                        <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-0.5 rounded-full">
-                          {item.badge}
-                        </span>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </nav>
         </div>
 
@@ -908,40 +911,46 @@ export default function DashboardPage() {
               </button>
 
               <nav className="space-y-6">
-                {sections.map(section => (
-                  <div key={section.id}>
-                    <div className="flex items-center gap-2 text-purple-300 font-semibold mb-2">
-                      <section.icon size={18} />
-                      <span>{section.name}</span>
+                {sections.map(section => {
+                  const SectionIcon = section.icon;
+                  return (
+                    <div key={section.id}>
+                      <div className="flex items-center gap-2 text-purple-300 font-semibold mb-2">
+                        <SectionIcon size={18} />
+                        <span>{section.name}</span>
+                      </div>
+                      <div className="ml-6 space-y-1">
+                        {section.items.map(item => {
+                          const ItemIcon = item.icon;
+                          return (
+                            <button
+                              key={item.id}
+                              onClick={() => {
+                                setActiveSection(item.id);
+                                setMobileMenuOpen(false);
+                              }}
+                              className={`flex items-center justify-between w-full p-2 rounded text-sm transition ${
+                                activeSection === item.id
+                                  ? 'bg-purple-600 text-white'
+                                  : 'text-purple-200 hover:bg-white/5'
+                              }`}
+                            >
+                              <div className="flex items-center gap-2">
+                                <ItemIcon size={16} />
+                                <span>{item.name}</span>
+                              </div>
+                              {item.badge && (
+                                <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-0.5 rounded-full">
+                                  {item.badge}
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
-                    <div className="ml-6 space-y-1">
-                      {section.items.map(item => (
-                        <button
-                          key={item.id}
-                          onClick={() => {
-                            setActiveSection(item.id);
-                            setMobileMenuOpen(false);
-                          }}
-                          className={`flex items-center justify-between w-full p-2 rounded text-sm transition ${
-                            activeSection === item.id
-                              ? 'bg-purple-600 text-white'
-                              : 'text-purple-200 hover:bg-white/5'
-                          }`}
-                        >
-                          <div className="flex items-center gap-2">
-                            <item.icon size={16} />
-                            <span>{item.name}</span>
-                          </div>
-                          {item.badge && (
-                            <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-0.5 rounded-full">
-                              {item.badge}
-                            </span>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </nav>
             </div>
           </div>
