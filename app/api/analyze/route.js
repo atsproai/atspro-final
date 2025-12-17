@@ -2,11 +2,27 @@ import Anthropic from '@anthropic-ai/sdk';
 import { NextResponse } from 'next/server';
 import { getAuth } from '@clerk/nextjs/server';
 import { supabaseAdmin } from '../../../lib/supabase';
-import pdf from 'pdf-parse';
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
+
+// Helper function to extract text from PDF
+async function extractTextFromPDF(buffer) {
+  const data = new Uint8Array(buffer);
+  const pdf = await pdfjsLib.getDocument({ data }).promise;
+  let fullText = '';
+
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const textContent = await page.getTextContent();
+    const pageText = textContent.items.map(item => item.str).join(' ');
+    fullText += pageText + '\n';
+  }
+
+  return fullText;
+}
 
 export async function POST(req) {
   try {
@@ -56,9 +72,8 @@ export async function POST(req) {
     }
 
     // Parse PDF to extract text
-    const resumeBuffer = Buffer.from(await resume.arrayBuffer());
-    const pdfData = await pdf(resumeBuffer);
-    const resumeText = pdfData.text;
+    const resumeBuffer = await resume.arrayBuffer();
+    const resumeText = await extractTextFromPDF(resumeBuffer);
 
     const prompt = `You are an ATS (Applicant Tracking System) expert. Analyze this resume against the job description and create an optimized version plus a cover letter.
 
