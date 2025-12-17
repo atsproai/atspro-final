@@ -1,10 +1,3 @@
-Good call! Let's revert back to the working version.
-
-**Go to GitHub → `app` folder → `page.js` → Edit**
-
-Replace with this (the working .txt download version):
-
-```javascript
 'use client';
 import React, { useState } from 'react';
 import { Upload, CheckCircle, Users, ArrowRight, Copy, Download } from 'lucide-react';
@@ -157,6 +150,3 @@ export default function App() {
     </div>
   );
 }
-```
-
-This removes the jsPDF code and goes back to the simple .txt download that was working! Commit it.
