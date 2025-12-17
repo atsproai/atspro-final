@@ -160,6 +160,7 @@ export default function App() {
             <button onClick={() => setPage('home')} className="text-white hover:text-purple-200">Home</button>
             <button onClick={() => setPage('analyzer')} className="text-white hover:text-purple-200">Analyzer</button>
             <button onClick={() => window.location.href = '/history'} className="text-white hover:text-purple-200">History</button>
+            <button onClick={() => window.location.href = '/email-templates'} className="text-white hover:text-purple-200">Email Templates</button>
             {isSignedIn ? (
               <UserButton afterSignOutUrl="/" />
             ) : (
@@ -222,8 +223,8 @@ export default function App() {
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={24} />
                 <div>
-                  <h4 className="text-white font-semibold text-lg mb-1">Instant Results</h4>
-                  <p className="text-purple-200">Get your optimized resume and cover letter in under 30 seconds</p>
+                  <h4 className="text-white font-semibold text-lg mb-1">Professional Email Templates</h4>
+                  <p className="text-purple-200">Generate follow-up, thank you, and networking emails instantly</p>
                 </div>
               </div>
             </div>
@@ -239,6 +240,7 @@ export default function App() {
                 <li>✓ ATS-optimized resume</li>
                 <li>✓ Custom cover letter</li>
                 <li>✓ PDF & text downloads</li>
+                <li>✓ Email templates</li>
               </ul>
               <button onClick={() => setPage('analyzer')} className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
                 Try Free
@@ -252,6 +254,7 @@ export default function App() {
                 <li>✓ Everything in Free</li>
                 <li>✓ Unlimited resumes</li>
                 <li>✓ Unlimited cover letters</li>
+                <li>✓ Unlimited emails</li>
                 <li>✓ Priority support</li>
               </ul>
               <button onClick={() => handleCheckout('price_1SfCtLAwfYeu0c4ApXwqfyUR')} className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
@@ -288,6 +291,7 @@ export default function App() {
           <button onClick={() => setPage('home')} className="text-white hover:text-purple-200">Home</button>
           <button onClick={() => setPage('analyzer')} className="text-white hover:text-purple-200">Analyzer</button>
           <button onClick={() => window.location.href = '/history'} className="text-white hover:text-purple-200">History</button>
+          <button onClick={() => window.location.href = '/email-templates'} className="text-white hover:text-purple-200">Email Templates</button>
           {isSignedIn ? (
             <UserButton afterSignOutUrl="/" />
           ) : (
