@@ -16,7 +16,8 @@
     "stripe": "14.0.0",
     "@clerk/nextjs": "4.29.0",
     "@supabase/supabase-js": "2.39.0",
-    "pdfjs-dist": "3.11.174"
+    "pdfjs-dist": "3.11.174",
+    "canvas": "2.11.2"
   },
   "devDependencies": {
     "tailwindcss": "3.4.1",
