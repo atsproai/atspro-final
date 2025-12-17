@@ -54,6 +54,9 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Missing resume or job description' }, { status: 400 });
     }
 
+    // Extract job title from description (first line or first 50 chars)
+    const jobTitle = jobDescription.split('\n')[0].substring(0, 100) || 'Untitled Job';
+
     // Convert PDF to base64 for Claude
     const resumeBuffer = await resume.arrayBuffer();
     const resumeBase64 = Buffer.from(resumeBuffer).toString('base64');
@@ -115,6 +118,23 @@ COVER_LETTER:
     const missing = missingMatch ? missingMatch[1].trim().split(',').map(k => k.trim()) : [];
     const optimizedResume = optimizedMatch ? optimizedMatch[1].trim() : '';
     const coverLetter = coverLetterMatch ? coverLetterMatch[1].trim() : '';
+
+    // Save to resume history
+    const { error: historyError } = await supabaseAdmin
+      .from('resume_history')
+      .insert([{
+        user_id: userId,
+        job_title: jobTitle,
+        job_description: jobDescription,
+        score: score,
+        missing_keywords: JSON.stringify(missing),
+        optimized_resume: optimizedResume,
+        cover_letter: coverLetter
+      }]);
+
+    if (historyError) {
+      console.error('Error saving history:', historyError);
+    }
 
     // Increment scan count
     const { error: updateError } = await supabaseAdmin
