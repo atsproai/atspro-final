@@ -2,27 +2,10 @@ import Anthropic from '@anthropic-ai/sdk';
 import { NextResponse } from 'next/server';
 import { getAuth } from '@clerk/nextjs/server';
 import { supabaseAdmin } from '../../../lib/supabase';
-import * as pdfjsLib from 'pdfjs-dist';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
-
-// Helper function to extract text from PDF
-async function extractTextFromPDF(buffer) {
-  const data = new Uint8Array(buffer);
-  const pdf = await pdfjsLib.getDocument({ data }).promise;
-  let fullText = '';
-
-  for (let i = 1; i <= pdf.numPages; i++) {
-    const page = await pdf.getPage(i);
-    const textContent = await page.getTextContent();
-    const pageText = textContent.items.map(item => item.str).join(' ');
-    fullText += pageText + '\n';
-  }
-
-  return fullText;
-}
 
 export async function POST(req) {
   try {
@@ -71,22 +54,35 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Missing resume or job description' }, { status: 400 });
     }
 
-    // Parse PDF to extract text
+    // Convert PDF to base64 for Claude
     const resumeBuffer = await resume.arrayBuffer();
-    const resumeText = await extractTextFromPDF(resumeBuffer);
+    const resumeBase64 = Buffer.from(resumeBuffer).toString('base64');
 
-    const prompt = `You are an ATS (Applicant Tracking System) expert. Analyze this resume against the job description and create an optimized version plus a cover letter.
+    const message = await anthropic.messages.create({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 4000,
+      messages: [{
+        role: 'user',
+        content: [
+          {
+            type: 'document',
+            source: {
+              type: 'base64',
+              media_type: 'application/pdf',
+              data: resumeBase64
+            }
+          },
+          {
+            type: 'text',
+            text: `You are an ATS (Applicant Tracking System) expert. Analyze the resume in the PDF against this job description and create an optimized version plus a cover letter.
 
 Job Description:
 ${jobDescription}
 
-Current Resume:
-${resumeText}
-
 Your task:
 1. Calculate an ATS compatibility score (0-100) based on keyword matching
 2. Identify missing keywords from the job description
-3. Create an optimized resume using the ACTUAL person's information from their current resume (same name, contact info, experience, etc.) - just improve it by naturally incorporating missing keywords
+3. Create an optimized resume using the ACTUAL person's information from their resume (same name, contact info, experience, etc.) - just improve it by naturally incorporating missing keywords
 4. Write a professional cover letter tailored to this job
 
 CRITICAL FORMATTING RULES:
@@ -103,12 +99,10 @@ OPTIMIZED_RESUME:
 [Full optimized resume in plain text format. Use the actual person's name and info. Include sections like CONTACT, SUMMARY, EXPERIENCE, SKILLS, EDUCATION. No special characters or formatting symbols.]
 
 COVER_LETTER:
-[Professional cover letter in plain text addressing this specific job. Use the person's real name and relevant experience from their resume. No special formatting symbols.]`;
-
-    const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 4000,
-      messages: [{ role: 'user', content: prompt }],
+[Professional cover letter in plain text addressing this specific job. Use the person's real name and relevant experience from their resume. No special formatting symbols.]`
+          }
+        ]
+      }]
     });
 
     const responseText = message.content[0].text;
@@ -119,7 +113,7 @@ COVER_LETTER:
 
     const score = scoreMatch ? parseInt(scoreMatch[1]) : 0;
     const missing = missingMatch ? missingMatch[1].trim().split(',').map(k => k.trim()) : [];
-    const optimizedResume = optimizedMatch ? optimizedMatch[1].trim() : resumeText;
+    const optimizedResume = optimizedMatch ? optimizedMatch[1].trim() : '';
     const coverLetter = coverLetterMatch ? coverLetterMatch[1].trim() : '';
 
     // Increment scan count
