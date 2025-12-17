@@ -38,6 +38,22 @@ export default function App() {
     setLoading(false);
   };
 
+  const handleCheckout = async (priceId) => {
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ priceId }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (err) {
+      alert('Error starting checkout!');
+    }
+  };
+
   const downloadResume = () => {
     const blob = new Blob([result.optimizedResume], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -99,7 +115,7 @@ export default function App() {
               <h4 className="text-2xl font-bold text-white mb-4">Monthly</h4>
               <div className="text-4xl font-bold text-white mb-2">$14<span className="text-lg">/mo</span></div>
               <div className="text-purple-200 mb-6">Unlimited scans + downloads</div>
-              <button className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
+              <button onClick={() => handleCheckout('price_1SfAByAwfYeu0c4AnsFKY7GY')} className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
                 Start Trial
               </button>
             </div>
@@ -108,7 +124,7 @@ export default function App() {
               <h4 className="text-2xl font-bold text-black mb-4">Annual</h4>
               <div className="text-4xl font-bold text-black mb-2">$120<span className="text-lg">/yr</span></div>
               <div className="text-black mb-6">Save $48/year!</div>
-              <button className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800">
+              <button onClick={() => handleCheckout('price_1SfADgAwfYeu0c4A43jvWHzs')} className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800">
                 Start Trial
               </button>
             </div>
