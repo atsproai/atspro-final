@@ -73,6 +73,7 @@ export default function DashboardPage() {
         </div>
       </div>
     );
+  }
 
   const sections = [
     {
@@ -372,7 +373,6 @@ export default function DashboardPage() {
 
                   {selectedHistoryScan?.id === scan.id && (
                     <div className="mt-6 space-y-6 border-t border-white/10 pt-6">
-                      {/* Missing Keywords */}
                       <div>
                         <h4 className="text-lg font-semibold text-white mb-3">Missing Keywords</h4>
                         <div className="flex flex-wrap gap-2">
@@ -384,7 +384,6 @@ export default function DashboardPage() {
                         </div>
                       </div>
 
-                      {/* Optimized Resume */}
                       <div>
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-3">
                           <h4 className="text-lg font-semibold text-white">Optimized Resume</h4>
@@ -408,7 +407,6 @@ export default function DashboardPage() {
                         </pre>
                       </div>
 
-                      {/* Cover Letter */}
                       {scan.cover_letter && (
                         <div>
                           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-3">
@@ -453,7 +451,6 @@ export default function DashboardPage() {
           </div>
           <p className="text-purple-200 mb-8">Generate professional emails for your job search instantly</p>
 
-          {/* Email Type Selection */}
           <div className="mb-6">
             <label className="block text-white mb-3 font-semibold">Email Type</label>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -496,7 +493,6 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Input Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
             <div>
               <label className="block text-white mb-2 font-semibold">Job Title</label>
@@ -539,7 +535,6 @@ export default function DashboardPage() {
             {emailLoading ? 'Generating...' : '✨ Generate Email'}
           </button>
 
-          {/* Generated Email */}
           {generatedEmail && (
             <div className="mt-8 bg-white/5 rounded-lg p-4 md:p-6 border border-white/20">
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
@@ -615,7 +610,6 @@ export default function DashboardPage() {
 
           {linkedinResult && (
             <>
-              {/* Headline */}
               <div className="mt-8 bg-white/10 backdrop-blur-lg rounded-xl p-4 md:p-8 border border-white/20 mb-6">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
                   <div className="flex items-center gap-2">
@@ -635,7 +629,6 @@ export default function DashboardPage() {
                 <p className="text-purple-300 text-sm mt-2">💡 Max 220 characters - Perfect for LinkedIn!</p>
               </div>
 
-              {/* About Section */}
               <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 md:p-8 border border-white/20 mb-6">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
                   <div className="flex items-center gap-2">
@@ -654,7 +647,6 @@ export default function DashboardPage() {
                 </div>
               </div>
 
-              {/* Experience Sections */}
               {linkedinResult.experiences && linkedinResult.experiences.map((exp, index) => (
                 <div key={index} className="bg-white/10 backdrop-blur-lg rounded-xl p-4 md:p-8 border border-white/20 mb-6">
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 mb-4">
@@ -767,7 +759,6 @@ export default function DashboardPage() {
 
                     {expandedQuestion === index && (
                       <div className="border-t border-white/20 p-4 md:p-6 bg-black/20">
-                        {/* Answer */}
                         <div className="mb-6">
                           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 mb-3">
                             <div className="flex items-center gap-2">
@@ -786,7 +777,6 @@ export default function DashboardPage() {
                           </div>
                         </div>
 
-                        {/* Tip */}
                         <div className="bg-yellow-500/20 border border-yellow-500/50 rounded-lg p-4">
                           <div className="flex items-start gap-2">
                             <Lightbulb className="text-yellow-400 flex-shrink-0 mt-1" size={20} />
@@ -831,7 +821,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900">
-      {/* Mobile Header */}
       <div className="lg:hidden bg-white/10 backdrop-blur-lg border-b border-white/20 p-4 flex justify-between items-center sticky top-0 z-40">
         <h1 className="text-xl md:text-2xl font-bold text-white">Dashboard</h1>
         <button
@@ -843,7 +832,6 @@ export default function DashboardPage() {
       </div>
 
       <div className="flex">
-        {/* Desktop Sidebar */}
         <div className="hidden lg:block w-64 bg-white/5 backdrop-blur-lg border-r border-white/20 min-h-screen p-6 sticky top-0 h-screen overflow-y-auto">
           <button
             onClick={() => router.push('/')}
@@ -895,7 +883,6 @@ export default function DashboardPage() {
           </nav>
         </div>
 
-        {/* Mobile Sidebar (Drawer) */}
         {mobileMenuOpen && (
           <div className="lg:hidden fixed inset-0 z-50 bg-black/50" onClick={() => setMobileMenuOpen(false)}>
             <div 
@@ -960,7 +947,6 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Main Content */}
         <div className="flex-1 p-4 md:p-6 lg:p-8 overflow-x-hidden">
           <div className="max-w-6xl mx-auto">
             {renderContent()}
