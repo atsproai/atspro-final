@@ -162,6 +162,7 @@ export default function App() {
             <button onClick={() => window.location.href = '/history'} className="text-white hover:text-purple-200">History</button>
             <button onClick={() => window.location.href = '/email-templates'} className="text-white hover:text-purple-200">Email Templates</button>
             <button onClick={() => window.location.href = '/linkedin-optimizer'} className="text-white hover:text-purple-200">LinkedIn</button>
+            <button onClick={() => window.location.href = '/interview-prep'} className="text-white hover:text-purple-200">Interview Prep</button>
             {isSignedIn ? (
               <UserButton afterSignOutUrl="/" />
             ) : (
@@ -198,7 +199,7 @@ export default function App() {
           </div>
 
           <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 mb-16 max-w-4xl mx-auto">
-            <h3 className="text-3xl font-bold text-white mb-6">What You Get</h3>
+            <h3 className="text-3xl font-bold text-white mb-6">Complete Job Search Assistant</h3>
             <div className="grid md:grid-cols-2 gap-6 text-left">
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={24} />
@@ -217,6 +218,13 @@ export default function App() {
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={24} />
                 <div>
+                  <h4 className="text-white font-semibold text-lg mb-1">Interview Prep Assistant</h4>
+                  <p className="text-purple-200">Get personalized interview questions and answers based on your actual experience</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={24} />
+                <div>
                   <h4 className="text-white font-semibold text-lg mb-1">LinkedIn Profile Optimizer</h4>
                   <p className="text-purple-200">Transform your resume into a compelling LinkedIn profile with optimized sections</p>
                 </div>
@@ -228,6 +236,13 @@ export default function App() {
                   <p className="text-purple-200">Generate follow-up, thank you, and networking emails instantly</p>
                 </div>
               </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={24} />
+                <div>
+                  <h4 className="text-white font-semibold text-lg mb-1">Resume History</h4>
+                  <p className="text-purple-200">Save and access all your past resume optimizations anytime</p>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -236,11 +251,12 @@ export default function App() {
             <div className="bg-white/10 backdrop-blur-lg p-8 rounded-xl">
               <h4 className="text-2xl font-bold text-white mb-4">Free</h4>
               <div className="text-4xl font-bold text-white mb-2">$0</div>
-              <div className="text-purple-200 mb-6">1 resume + cover letter</div>
+              <div className="text-purple-200 mb-6">Try all features</div>
               <ul className="text-left text-purple-200 text-sm mb-6 space-y-2">
-                <li>✓ ATS-optimized resume</li>
-                <li>✓ Custom cover letter</li>
+                <li>✓ 1 ATS-optimized resume</li>
+                <li>✓ 1 Custom cover letter</li>
                 <li>✓ ATS compatibility check</li>
+                <li>✓ Interview prep</li>
                 <li>✓ Email templates</li>
                 <li>✓ LinkedIn optimizer</li>
               </ul>
@@ -251,12 +267,13 @@ export default function App() {
             <div className="bg-white/10 backdrop-blur-lg p-8 rounded-xl">
               <h4 className="text-2xl font-bold text-white mb-4">Monthly</h4>
               <div className="text-4xl font-bold text-white mb-2">$14<span className="text-lg">/mo</span></div>
-              <div className="text-purple-200 mb-6">Unlimited scans</div>
+              <div className="text-purple-200 mb-6">Unlimited everything</div>
               <ul className="text-left text-purple-200 text-sm mb-6 space-y-2">
                 <li>✓ Everything in Free</li>
                 <li>✓ Unlimited resumes</li>
                 <li>✓ Unlimited cover letters</li>
                 <li>✓ Unlimited ATS checks</li>
+                <li>✓ Unlimited interview prep</li>
                 <li>✓ Priority support</li>
               </ul>
               <button onClick={() => handleCheckout('price_1SfCtLAwfYeu0c4ApXwqfyUR')} className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
@@ -295,6 +312,7 @@ export default function App() {
           <button onClick={() => window.location.href = '/history'} className="text-white hover:text-purple-200">History</button>
           <button onClick={() => window.location.href = '/email-templates'} className="text-white hover:text-purple-200">Email Templates</button>
           <button onClick={() => window.location.href = '/linkedin-optimizer'} className="text-white hover:text-purple-200">LinkedIn</button>
+          <button onClick={() => window.location.href = '/interview-prep'} className="text-white hover:text-purple-200">Interview Prep</button>
           {isSignedIn ? (
             <UserButton afterSignOutUrl="/" />
           ) : (
