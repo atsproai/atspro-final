@@ -187,7 +187,7 @@ export default function App() {
                     <Copy size={18} /> Copy
                   </button>
                   <button onClick={downloadPDF} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-                    <Download size={18} /> Download
+                    <Download size={18} /> Download PDF
                   </button>
                 </div>
               </div>
