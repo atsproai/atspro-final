@@ -1,7 +1,13 @@
+Good call! Let's revert back to the working version.
+
+**Go to GitHub → `app` folder → `page.js` → Edit**
+
+Replace with this (the working .txt download version):
+
+```javascript
 'use client';
 import React, { useState } from 'react';
 import { Upload, CheckCircle, Users, ArrowRight, Copy, Download } from 'lucide-react';
-import jsPDF from 'jspdf';
 
 export default function App() {
   const [page, setPage] = useState('home');
@@ -39,45 +45,13 @@ export default function App() {
     setLoading(false);
   };
 
-  const downloadPDF = () => {
-    const doc = new jsPDF();
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const margin = 20;
-    const maxWidth = pageWidth - 2 * margin;
-    let yPosition = 20;
-
-    const addText = (text, fontSize = 10, isBold = false) => {
-      doc.setFontSize(fontSize);
-      if (isBold) {
-        doc.setFont(undefined, 'bold');
-      } else {
-        doc.setFont(undefined, 'normal');
-      }
-      
-      const lines = doc.splitTextToSize(text, maxWidth);
-      lines.forEach(line => {
-        if (yPosition > 280) {
-          doc.addPage();
-          yPosition = 20;
-        }
-        doc.text(line, margin, yPosition);
-        yPosition += fontSize * 0.5;
-      });
-      yPosition += 5;
-    };
-
-    addText('AI-Optimized Resume', 16, true);
-    yPosition += 5;
-
-    const sections = result.optimizedResume.split('\n\n');
-    sections.forEach(section => {
-      if (section.trim()) {
-        addText(section.trim());
-        yPosition += 3;
-      }
-    });
-
-    doc.save('optimized-resume.pdf');
+  const downloadResume = () => {
+    const blob = new Blob([result.optimizedResume], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'optimized-resume.txt';
+    a.click();
   };
 
   const copyText = () => {
@@ -170,8 +144,8 @@ export default function App() {
                   <button onClick={copyText} className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
                     <Copy size={18} /> Copy
                   </button>
-                  <button onClick={downloadPDF} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-                    <Download size={18} /> Download PDF
+                  <button onClick={downloadResume} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                    <Download size={18} /> Download
                   </button>
                 </div>
               </div>
@@ -183,3 +157,6 @@ export default function App() {
     </div>
   );
 }
+```
+
+This removes the jsPDF code and goes back to the simple .txt download that was working! Commit it.
