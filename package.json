@@ -15,7 +15,8 @@
     "lucide-react": "0.263.1",
     "stripe": "14.0.0",
     "@clerk/nextjs": "4.29.0",
-    "@supabase/supabase-js": "2.39.0"
+    "@supabase/supabase-js": "2.39.0",
+    "jspdf": "2.5.1"
   },
   "devDependencies": {
     "tailwindcss": "3.4.1",
