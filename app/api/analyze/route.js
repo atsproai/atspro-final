@@ -56,7 +56,7 @@ export async function POST(req) {
 
     const resumeText = await resume.text();
 
-    const prompt = `You are an ATS (Applicant Tracking System) expert. Analyze this resume against the job description.
+    const prompt = `You are an ATS (Applicant Tracking System) expert. Analyze this resume against the job description and provide an optimized version.
 
 Job Description:
 ${jobDescription}
@@ -64,16 +64,17 @@ ${jobDescription}
 Resume:
 ${resumeText}
 
-Provide:
-1. An ATS compatibility score (0-100)
-2. List of missing keywords from the job description
-3. An optimized version of the resume that includes the missing keywords naturally
+Your task:
+1. Calculate an ATS compatibility score (0-100) based on keyword matching
+2. Identify missing keywords from the job description
+3. Create an optimized resume that naturally incorporates the missing keywords
 
-Format your response as:
-SCORE: [number]
-MISSING: [comma-separated keywords]
+CRITICAL: Format your response EXACTLY like this:
+
+SCORE: [number only, e.g., 75]
+MISSING: [comma-separated keywords, e.g., Docker, Kubernetes, GraphQL]
 OPTIMIZED_RESUME:
-[the optimized resume text]`;
+[Full optimized resume with proper formatting, sections, and the missing keywords naturally incorporated. Make it look professional and ready to use. Include all original content plus improvements.]`;
 
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
