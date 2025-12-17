@@ -161,6 +161,7 @@ export default function App() {
             <button onClick={() => setPage('analyzer')} className="text-white hover:text-purple-200">Analyzer</button>
             <button onClick={() => window.location.href = '/history'} className="text-white hover:text-purple-200">History</button>
             <button onClick={() => window.location.href = '/email-templates'} className="text-white hover:text-purple-200">Email Templates</button>
+            <button onClick={() => window.location.href = '/linkedin-optimizer'} className="text-white hover:text-purple-200">LinkedIn</button>
             {isSignedIn ? (
               <UserButton afterSignOutUrl="/" />
             ) : (
@@ -216,8 +217,8 @@ export default function App() {
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={24} />
                 <div>
-                  <h4 className="text-white font-semibold text-lg mb-1">PDF & Text Downloads</h4>
-                  <p className="text-purple-200">Download both resume and cover letter in PDF or text format</p>
+                  <h4 className="text-white font-semibold text-lg mb-1">LinkedIn Profile Optimizer</h4>
+                  <p className="text-purple-200">Transform your resume into a compelling LinkedIn profile with optimized sections</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -241,6 +242,7 @@ export default function App() {
                 <li>✓ Custom cover letter</li>
                 <li>✓ PDF & text downloads</li>
                 <li>✓ Email templates</li>
+                <li>✓ LinkedIn optimizer</li>
               </ul>
               <button onClick={() => setPage('analyzer')} className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
                 Try Free
@@ -255,6 +257,7 @@ export default function App() {
                 <li>✓ Unlimited resumes</li>
                 <li>✓ Unlimited cover letters</li>
                 <li>✓ Unlimited emails</li>
+                <li>✓ Unlimited LinkedIn profiles</li>
                 <li>✓ Priority support</li>
               </ul>
               <button onClick={() => handleCheckout('price_1SfCtLAwfYeu0c4ApXwqfyUR')} className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
@@ -292,6 +295,7 @@ export default function App() {
           <button onClick={() => setPage('analyzer')} className="text-white hover:text-purple-200">Analyzer</button>
           <button onClick={() => window.location.href = '/history'} className="text-white hover:text-purple-200">History</button>
           <button onClick={() => window.location.href = '/email-templates'} className="text-white hover:text-purple-200">Email Templates</button>
+          <button onClick={() => window.location.href = '/linkedin-optimizer'} className="text-white hover:text-purple-200">LinkedIn</button>
           {isSignedIn ? (
             <UserButton afterSignOutUrl="/" />
           ) : (
