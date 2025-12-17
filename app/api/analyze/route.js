@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { NextResponse } from 'next/server';
 import { getAuth } from '@clerk/nextjs/server';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '../../../lib/supabase';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
