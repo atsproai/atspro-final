@@ -46,7 +46,6 @@ export default function App() {
     const maxWidth = pageWidth - 2 * margin;
     let yPosition = 20;
 
-    // Helper function to add text with word wrapping
     const addText = (text, fontSize = 10, isBold = false) => {
       doc.setFontSize(fontSize);
       if (isBold) {
@@ -67,11 +66,9 @@ export default function App() {
       yPosition += 5;
     };
 
-    // Title
     addText('AI-Optimized Resume', 16, true);
     yPosition += 5;
 
-    // Parse and format the result text
     const sections = result.optimizedResume.split('\n\n');
     sections.forEach(section => {
       if (section.trim()) {
@@ -99,32 +96,19 @@ export default function App() {
           </div>
         </nav>
 
-        <div className="max-w-7xl mx-auto px-6 py-20">
-          <div className="text-center mb-16">
-            <h2 className="text-6xl font-bold text-white mb-6">Beat the ATS.<br/>Land the Interview.</h2>
-            <p className="text-xl text-purple-200 mb-8">AI-powered resume optimization that gets past automated screening</p>
-            <button onClick={() => setPage('analyzer')} className="bg-white text-purple-900 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-purple-100 transition inline-flex items-center gap-2">
-              Get Started Free <ArrowRight size={20} />
-            </button>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 mt-20">
-            <div className="bg-white/10 backdrop-blur-lg p-8 rounded-xl border border-white/20">
-              <Upload className="text-purple-300 mb-4" size={40} />
-              <h3 className="text-2xl font-bold text-white mb-3">Upload Resume</h3>
-              <p className="text-purple-200">Drop your current resume and job description</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-lg p-8 rounded-xl border border-white/20">
-              <CheckCircle className="text-purple-300 mb-4" size={40} />
-              <h3 className="text-2xl font-bold text-white mb-3">AI Analysis</h3>
-              <p className="text-purple-200">Our AI matches keywords and formats perfectly</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-lg p-8 rounded-xl border border-white/20">
-              <Users className="text-purple-300 mb-4" size={40} />
-              <h3 className="text-2xl font-bold text-white mb-3">Get Interviews</h3>
-              <p className="text-purple-200">Download your ATS-optimized resume</p>
-            </div>
-          </div>
+        <div className="max-w-6xl mx-auto px-6 py-32 text-center">
+          <h2 className="text-7xl font-bold text-white mb-6 leading-tight">
+            Beat the ATS.<br/>Land the Interview.
+          </h2>
+          <p className="text-2xl text-purple-100 mb-12 max-w-3xl mx-auto">
+            AI-powered resume optimization that gets past automated screening systems
+          </p>
+          <button 
+            onClick={() => setPage('analyzer')} 
+            className="bg-white text-purple-900 px-10 py-5 rounded-xl font-bold text-xl hover:bg-purple-50 transition shadow-2xl inline-flex items-center gap-3"
+          >
+            Get Started Free <ArrowRight size={24} />
+          </button>
         </div>
       </div>
     );
