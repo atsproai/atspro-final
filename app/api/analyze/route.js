@@ -1,90 +1,114 @@
-import { NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
+import { NextResponse } from 'next/server';
+import { getAuth } from '@clerk/nextjs/server';
+import { supabase } from '@/lib/supabase';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-export async function POST(request) {
+export async function POST(req) {
   try {
-    const form = await request.formData();
-    const file = form.get('resume');
-    const job = form.get('jobDescription');
+    // Get authenticated user
+    const { userId } = getAuth(req);
+    
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-    if (!file || !job) {
+    // Check/create user in database
+    let { data: userData, error: userError } = await supabase
+      .from('user_scans')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+
+    // If user doesn't exist, create them
+    if (userError && userError.code === 'PGRST116') {
+      const { data: newUser, error: createError } = await supabase
+        .from('user_scans')
+        .insert([{ user_id: userId, scan_count: 0, subscription_status: 'free' }])
+        .select()
+        .single();
+      
+      if (createError) {
+        console.error('Error creating user:', createError);
+        return NextResponse.json({ error: 'Database error' }, { status: 500 });
+      }
+      userData = newUser;
+    }
+
+    // Check if user has reached their limit
+    if (userData.subscription_status === 'free' && userData.scan_count >= 1) {
+      return NextResponse.json({ 
+        error: 'Free plan limit reached. Please upgrade to continue.',
+        limitReached: true 
+      }, { status: 403 });
+    }
+
+    const formData = await req.formData();
+    const resume = formData.get('resume');
+    const jobDescription = formData.get('jobDescription');
+
+    if (!resume || !jobDescription) {
       return NextResponse.json({ error: 'Missing resume or job description' }, { status: 400 });
     }
 
-    const resumeText = `Sample resume text from ${file.name}`;
+    const resumeText = await resume.text();
+
+    const prompt = `You are an ATS (Applicant Tracking System) expert. Analyze this resume against the job description.
+
+Job Description:
+${jobDescription}
+
+Resume:
+${resumeText}
+
+Provide:
+1. An ATS compatibility score (0-100)
+2. List of missing keywords from the job description
+3. An optimized version of the resume that includes the missing keywords naturally
+
+Format your response as:
+SCORE: [number]
+MISSING: [comma-separated keywords]
+OPTIMIZED_RESUME:
+[the optimized resume text]`;
 
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 3000,
-      messages: [{
-        role: 'user',
-        content: `You are an expert ATS resume optimizer. Analyze this resume against the job description.
-
-RESUME:
-${resumeText}
-
-JOB DESCRIPTION:
-${job}
-
-Return a JSON object with:
-1. score: ATS compatibility score (0-100)
-2. missingKeywords: array of important keywords missing from resume
-3. optimizedResume: complete rewritten resume with missing keywords naturally integrated
-4. coverLetter: personalized cover letter for this job
-
-Format as valid JSON only, no markdown.`
-      }]
+      max_tokens: 4000,
+      messages: [{ role: 'user', content: prompt }],
     });
 
     const responseText = message.content[0].text;
-    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-    
-    if (!jsonMatch) {
-      throw new Error('Invalid AI response');
+    const scoreMatch = responseText.match(/SCORE:\s*(\d+)/);
+    const missingMatch = responseText.match(/MISSING:\s*(.+?)(?=OPTIMIZED_RESUME:|$)/s);
+    const optimizedMatch = responseText.match(/OPTIMIZED_RESUME:\s*(.+)/s);
+
+    const score = scoreMatch ? parseInt(scoreMatch[1]) : 0;
+    const missing = missingMatch ? missingMatch[1].trim().split(',').map(k => k.trim()) : [];
+    const optimizedResume = optimizedMatch ? optimizedMatch[1].trim() : resumeText;
+
+    // Increment scan count
+    const { error: updateError } = await supabase
+      .from('user_scans')
+      .update({ scan_count: userData.scan_count + 1 })
+      .eq('user_id', userId);
+
+    if (updateError) {
+      console.error('Error updating scan count:', updateError);
     }
 
-    const analysis = JSON.parse(jsonMatch[0]);
-    
-    return NextResponse.json(analysis);
+    return NextResponse.json({
+      score,
+      missing,
+      optimizedResume,
+      scansRemaining: userData.subscription_status === 'free' ? 0 : 'unlimited'
+    });
+
   } catch (error) {
     console.error('Analysis error:', error);
-    
-    return NextResponse.json({
-      score: 78,
-      missingKeywords: ['Python', 'AWS', 'Docker', 'Leadership', 'Agile', 'CI/CD'],
-      optimizedResume: `OPTIMIZED RESUME
-
-[Your Name]
-[Contact Information]
-
-PROFESSIONAL SUMMARY
-Results-driven software engineer with expertise in Python, AWS, and Docker. Proven leadership in Agile environments with strong CI/CD implementation experience.
-
-SKILLS
-- Programming: Python, JavaScript, React
-- Cloud & DevOps: AWS, Docker, Kubernetes, CI/CD
-- Methodologies: Agile, Scrum, Leadership
-
-EXPERIENCE
-[Your experience here, optimized with ATS keywords]
-
-This is a demo response. Upload a real resume for AI-powered optimization.`,
-      coverLetter: `Dear Hiring Manager,
-
-I am writing to express my strong interest in this position. With my extensive experience in Python, AWS, Docker, and leadership in Agile environments, I am confident I can make an immediate impact on your team.
-
-My background in implementing CI/CD pipelines and leading cross-functional teams aligns perfectly with your requirements.
-
-I would welcome the opportunity to discuss how my skills and experience can contribute to your team's success.
-
-Best regards,
-[Your Name]
-
-This is a demo response. Upload a real resume for AI-powered optimization.`
-    });
+    return NextResponse.json({ error: 'Failed to analyze resume' }, { status: 500 });
   }
 }
