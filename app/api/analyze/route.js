@@ -56,25 +56,35 @@ export async function POST(req) {
 
     const resumeText = await resume.text();
 
-    const prompt = `You are an ATS (Applicant Tracking System) expert. Analyze this resume against the job description and provide an optimized version.
+    const prompt = `You are an ATS (Applicant Tracking System) expert. Analyze this resume against the job description and create an optimized version plus a cover letter.
 
 Job Description:
 ${jobDescription}
 
-Resume:
+Current Resume:
 ${resumeText}
 
 Your task:
 1. Calculate an ATS compatibility score (0-100) based on keyword matching
 2. Identify missing keywords from the job description
-3. Create an optimized resume that naturally incorporates the missing keywords
+3. Create an optimized resume using the ACTUAL person's information from their current resume (same name, contact info, experience, etc.) - just improve it by naturally incorporating missing keywords
+4. Write a professional cover letter tailored to this job
 
-CRITICAL: Format your response EXACTLY like this:
+CRITICAL FORMATTING RULES:
+- Use the person's REAL name, contact info, and experience from their resume
+- NO markdown symbols (no *, #, -, bullets, etc.)
+- Use simple plain text with line breaks for sections
+- Make it clean and ready to copy/paste
+
+Format your response EXACTLY like this:
 
 SCORE: [number only, e.g., 75]
 MISSING: [comma-separated keywords, e.g., Docker, Kubernetes, GraphQL]
 OPTIMIZED_RESUME:
-[Full optimized resume with proper formatting, sections, and the missing keywords naturally incorporated. Make it look professional and ready to use. Include all original content plus improvements.]`;
+[Full optimized resume in plain text format. Use the actual person's name and info. Include sections like CONTACT, SUMMARY, EXPERIENCE, SKILLS, EDUCATION. No special characters or formatting symbols.]
+
+COVER_LETTER:
+[Professional cover letter in plain text addressing this specific job. Use the person's real name and relevant experience from their resume. No special formatting symbols.]`;
 
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
@@ -85,11 +95,13 @@ OPTIMIZED_RESUME:
     const responseText = message.content[0].text;
     const scoreMatch = responseText.match(/SCORE:\s*(\d+)/);
     const missingMatch = responseText.match(/MISSING:\s*(.+?)(?=OPTIMIZED_RESUME:|$)/s);
-    const optimizedMatch = responseText.match(/OPTIMIZED_RESUME:\s*(.+)/s);
+    const optimizedMatch = responseText.match(/OPTIMIZED_RESUME:\s*(.+?)(?=COVER_LETTER:|$)/s);
+    const coverLetterMatch = responseText.match(/COVER_LETTER:\s*(.+)/s);
 
     const score = scoreMatch ? parseInt(scoreMatch[1]) : 0;
     const missing = missingMatch ? missingMatch[1].trim().split(',').map(k => k.trim()) : [];
     const optimizedResume = optimizedMatch ? optimizedMatch[1].trim() : resumeText;
+    const coverLetter = coverLetterMatch ? coverLetterMatch[1].trim() : '';
 
     // Increment scan count
     const { error: updateError } = await supabaseAdmin
@@ -105,6 +117,7 @@ OPTIMIZED_RESUME:
       score,
       missing,
       optimizedResume,
+      coverLetter,
       scansRemaining: userData.subscription_status === 'free' ? 0 : 'unlimited'
     });
 
