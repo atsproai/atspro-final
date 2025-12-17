@@ -159,6 +159,7 @@ export default function App() {
           <div className="flex items-center space-x-6">
             <button onClick={() => setPage('home')} className="text-white hover:text-purple-200">Home</button>
             <button onClick={() => setPage('analyzer')} className="text-white hover:text-purple-200">Analyzer</button>
+            <button onClick={() => window.location.href = '/history'} className="text-white hover:text-purple-200">History</button>
             {isSignedIn ? (
               <UserButton afterSignOutUrl="/" />
             ) : (
@@ -286,6 +287,7 @@ export default function App() {
         <div className="flex items-center space-x-6">
           <button onClick={() => setPage('home')} className="text-white hover:text-purple-200">Home</button>
           <button onClick={() => setPage('analyzer')} className="text-white hover:text-purple-200">Analyzer</button>
+          <button onClick={() => window.location.href = '/history'} className="text-white hover:text-purple-200">History</button>
           {isSignedIn ? (
             <UserButton afterSignOutUrl="/" />
           ) : (
