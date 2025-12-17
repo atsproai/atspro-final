@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Upload, CheckCircle, Users, ArrowRight, Copy, Download } from 'lucide-react';
 import { SignInButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs';
+import { jsPDF } from 'jspdf';
 
 export default function App() {
   const { isSignedIn, user } = useUser();
@@ -86,21 +87,47 @@ export default function App() {
   };
 
   const downloadResume = () => {
-    const blob = new Blob([result.optimizedResume], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'optimized-resume.txt';
-    a.click();
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 15;
+    const maxLineWidth = pageWidth - (margin * 2);
+    
+    // Split text into lines that fit the page width
+    const lines = doc.splitTextToSize(result.optimizedResume, maxLineWidth);
+    
+    let y = 20;
+    lines.forEach(line => {
+      if (y > 280) { // Start new page if needed
+        doc.addPage();
+        y = 20;
+      }
+      doc.text(line, margin, y);
+      y += 7;
+    });
+    
+    doc.save('optimized-resume.pdf');
   };
 
   const downloadCoverLetter = () => {
-    const blob = new Blob([result.coverLetter], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'cover-letter.txt';
-    a.click();
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 15;
+    const maxLineWidth = pageWidth - (margin * 2);
+    
+    // Split text into lines that fit the page width
+    const lines = doc.splitTextToSize(result.coverLetter, maxLineWidth);
+    
+    let y = 20;
+    lines.forEach(line => {
+      if (y > 280) { // Start new page if needed
+        doc.addPage();
+        y = 20;
+      }
+      doc.text(line, margin, y);
+      y += 7;
+    });
+    
+    doc.save('cover-letter.pdf');
   };
 
   const copyText = (text) => {
@@ -273,7 +300,7 @@ export default function App() {
                     <Copy size={18} /> Copy
                   </button>
                   <button onClick={downloadResume} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-                    <Download size={18} /> Download
+                    <Download size={18} /> Download PDF
                   </button>
                 </div>
               </div>
@@ -289,7 +316,7 @@ export default function App() {
                       <Copy size={18} /> Copy
                     </button>
                     <button onClick={downloadCoverLetter} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-                      <Download size={18} /> Download
+                      <Download size={18} /> Download PDF
                     </button>
                   </div>
                 </div>
