@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
-import { ArrowLeft, Copy, Mail, Send, Sparkles } from 'lucide-react';
+import { ArrowLeft, Copy, Mail, Send, Sparkles, Download } from 'lucide-react';
+import { jsPDF } from 'jspdf';
 
 export default function EmailTemplatesPage() {
   const router = useRouter();
@@ -43,6 +44,28 @@ export default function EmailTemplatesPage() {
   const copyEmail = () => {
     navigator.clipboard.writeText(generatedEmail);
     alert('Email copied to clipboard!');
+  };
+
+  const downloadEmailPDF = () => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 15;
+    const maxLineWidth = pageWidth - (margin * 2);
+    
+    const lines = doc.splitTextToSize(generatedEmail, maxLineWidth);
+    
+    let y = 20;
+    lines.forEach(line => {
+      if (y > 280) {
+        doc.addPage();
+        y = 20;
+      }
+      doc.text(line, margin, y);
+      y += 7;
+    });
+    
+    const filename = `${emailType}-email-${companyName.replace(/[^a-z0-9]/gi, '-')}.pdf`;
+    doc.save(filename);
   };
 
   if (!isSignedIn) {
@@ -169,12 +192,20 @@ export default function EmailTemplatesPage() {
             <div className="mt-8 bg-white/5 rounded-lg p-6 border border-white/20">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-2xl font-bold text-white">Your Email</h3>
-                <button
-                  onClick={copyEmail}
-                  className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
-                >
-                  <Copy size={18} /> Copy
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={copyEmail}
+                    className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
+                  >
+                    <Copy size={18} /> Copy
+                  </button>
+                  <button
+                    onClick={downloadEmailPDF}
+                    className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+                  >
+                    <Download size={18} /> PDF
+                  </button>
+                </div>
               </div>
               <div className="bg-black/30 p-6 rounded-lg">
                 <pre className="text-white whitespace-pre-wrap font-sans text-base leading-relaxed">
