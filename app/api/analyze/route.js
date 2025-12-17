@@ -2,6 +2,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { NextResponse } from 'next/server';
 import { getAuth } from '@clerk/nextjs/server';
 import { supabaseAdmin } from '../../../lib/supabase';
+import pdf from 'pdf-parse';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -54,7 +55,10 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Missing resume or job description' }, { status: 400 });
     }
 
-    const resumeText = await resume.text();
+    // Parse PDF to extract text
+    const resumeBuffer = Buffer.from(await resume.arrayBuffer());
+    const pdfData = await pdf(resumeBuffer);
+    const resumeText = pdfData.text;
 
     const prompt = `You are an ATS (Applicant Tracking System) expert. Analyze this resume against the job description and create an optimized version plus a cover letter.
 
