@@ -86,18 +86,17 @@ export default function App() {
     }
   };
 
-  const downloadResume = () => {
+  const downloadResumePDF = () => {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
     const margin = 15;
     const maxLineWidth = pageWidth - (margin * 2);
     
-    // Split text into lines that fit the page width
     const lines = doc.splitTextToSize(result.optimizedResume, maxLineWidth);
     
     let y = 20;
     lines.forEach(line => {
-      if (y > 280) { // Start new page if needed
+      if (y > 280) {
         doc.addPage();
         y = 20;
       }
@@ -108,18 +107,26 @@ export default function App() {
     doc.save('optimized-resume.pdf');
   };
 
-  const downloadCoverLetter = () => {
+  const downloadResumeText = () => {
+    const blob = new Blob([result.optimizedResume], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'optimized-resume.txt';
+    a.click();
+  };
+
+  const downloadCoverLetterPDF = () => {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
     const margin = 15;
     const maxLineWidth = pageWidth - (margin * 2);
     
-    // Split text into lines that fit the page width
     const lines = doc.splitTextToSize(result.coverLetter, maxLineWidth);
     
     let y = 20;
     lines.forEach(line => {
-      if (y > 280) { // Start new page if needed
+      if (y > 280) {
         doc.addPage();
         y = 20;
       }
@@ -128,6 +135,15 @@ export default function App() {
     });
     
     doc.save('cover-letter.pdf');
+  };
+
+  const downloadCoverLetterText = () => {
+    const blob = new Blob([result.coverLetter], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'cover-letter.txt';
+    a.click();
   };
 
   const copyText = (text) => {
@@ -157,7 +173,8 @@ export default function App() {
 
         <div className="max-w-7xl mx-auto px-6 py-20 text-center">
           <h2 className="text-6xl font-bold text-white mb-6">Beat the ATS</h2>
-          <p className="text-2xl text-purple-100 mb-4">AI fixes your resume in seconds</p>
+          <p className="text-2xl text-purple-100 mb-2">AI optimizes your resume + generates a cover letter</p>
+          <p className="text-xl text-purple-200 mb-8">Download as PDF or Text • Ready in seconds</p>
           <button onClick={() => setPage('analyzer')} className="bg-pink-500 text-white px-8 py-3 rounded-full font-semibold text-lg hover:bg-pink-600 transition inline-flex items-center gap-2 mb-16">
             Try Free Now <ArrowRight size={20} />
           </button>
@@ -172,8 +189,42 @@ export default function App() {
               <div className="text-purple-200">Resumes Fixed</div>
             </div>
             <div className="bg-white/10 backdrop-blur-lg p-6 rounded-xl">
-              <div className="text-5xl font-bold text-white mb-2">$120/yr</div>
-              <div className="text-purple-200">Best Deal</div>
+              <div className="text-5xl font-bold text-white mb-2">2X</div>
+              <div className="text-purple-200">Interview Rate</div>
+            </div>
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 mb-16 max-w-4xl mx-auto">
+            <h3 className="text-3xl font-bold text-white mb-6">What You Get</h3>
+            <div className="grid md:grid-cols-2 gap-6 text-left">
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={24} />
+                <div>
+                  <h4 className="text-white font-semibold text-lg mb-1">ATS-Optimized Resume</h4>
+                  <p className="text-purple-200">AI rewrites your resume with job-specific keywords to pass applicant tracking systems</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={24} />
+                <div>
+                  <h4 className="text-white font-semibold text-lg mb-1">Custom Cover Letter</h4>
+                  <p className="text-purple-200">Personalized cover letter tailored to the job using your actual experience</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={24} />
+                <div>
+                  <h4 className="text-white font-semibold text-lg mb-1">PDF & Text Downloads</h4>
+                  <p className="text-purple-200">Download both resume and cover letter in PDF or text format</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={24} />
+                <div>
+                  <h4 className="text-white font-semibold text-lg mb-1">Instant Results</h4>
+                  <p className="text-purple-200">Get your optimized resume and cover letter in under 30 seconds</p>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -182,7 +233,12 @@ export default function App() {
             <div className="bg-white/10 backdrop-blur-lg p-8 rounded-xl">
               <h4 className="text-2xl font-bold text-white mb-4">Free</h4>
               <div className="text-4xl font-bold text-white mb-2">$0</div>
-              <div className="text-purple-200 mb-6">1 resume scan</div>
+              <div className="text-purple-200 mb-6">1 resume + cover letter</div>
+              <ul className="text-left text-purple-200 text-sm mb-6 space-y-2">
+                <li>✓ ATS-optimized resume</li>
+                <li>✓ Custom cover letter</li>
+                <li>✓ PDF & text downloads</li>
+              </ul>
               <button onClick={() => setPage('analyzer')} className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
                 Try Free
               </button>
@@ -190,7 +246,13 @@ export default function App() {
             <div className="bg-white/10 backdrop-blur-lg p-8 rounded-xl">
               <h4 className="text-2xl font-bold text-white mb-4">Monthly</h4>
               <div className="text-4xl font-bold text-white mb-2">$14<span className="text-lg">/mo</span></div>
-              <div className="text-purple-200 mb-6">Unlimited scans + downloads</div>
+              <div className="text-purple-200 mb-6">Unlimited scans</div>
+              <ul className="text-left text-purple-200 text-sm mb-6 space-y-2">
+                <li>✓ Everything in Free</li>
+                <li>✓ Unlimited resumes</li>
+                <li>✓ Unlimited cover letters</li>
+                <li>✓ Priority support</li>
+              </ul>
               <button onClick={() => handleCheckout('price_1SfCtLAwfYeu0c4ApXwqfyUR')} className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
                 Start Trial
               </button>
@@ -200,6 +262,12 @@ export default function App() {
               <h4 className="text-2xl font-bold text-black mb-4">Annual</h4>
               <div className="text-4xl font-bold text-black mb-2">$120<span className="text-lg">/yr</span></div>
               <div className="text-black mb-6">Save $48/year!</div>
+              <ul className="text-left text-black text-sm mb-6 space-y-2">
+                <li>✓ Everything in Monthly</li>
+                <li>✓ 2 months free</li>
+                <li>✓ Lifetime updates</li>
+                <li>✓ VIP support</li>
+              </ul>
               <button onClick={() => handleCheckout('price_1SfCtuAwfYeu0c4AhdFPWnyj')} className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800">
                 Start Trial
               </button>
@@ -245,7 +313,7 @@ export default function App() {
           {limitReached && (
             <div className="bg-red-500/20 border border-red-500 rounded-lg p-6 mb-6 text-center">
               <h3 className="text-2xl font-bold text-white mb-2">Free Scan Used!</h3>
-              <p className="text-red-100 mb-4">Upgrade to get unlimited resume scans</p>
+              <p className="text-red-100 mb-4">Upgrade to get unlimited resume scans + cover letters</p>
               <div className="flex gap-4 justify-center">
                 <button onClick={() => handleCheckout('price_1SfCtLAwfYeu0c4ApXwqfyUR')} className="bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700">
                   $14/month
@@ -299,8 +367,11 @@ export default function App() {
                   <button onClick={() => copyText(result.optimizedResume)} className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
                     <Copy size={18} /> Copy
                   </button>
-                  <button onClick={downloadResume} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-                    <Download size={18} /> Download PDF
+                  <button onClick={downloadResumePDF} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                    <Download size={18} /> PDF
+                  </button>
+                  <button onClick={downloadResumeText} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                    <Download size={18} /> Text
                   </button>
                 </div>
               </div>
@@ -315,8 +386,11 @@ export default function App() {
                     <button onClick={() => copyText(result.coverLetter)} className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
                       <Copy size={18} /> Copy
                     </button>
-                    <button onClick={downloadCoverLetter} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-                      <Download size={18} /> Download PDF
+                    <button onClick={downloadCoverLetterPDF} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                      <Download size={18} /> PDF
+                    </button>
+                    <button onClick={downloadCoverLetterText} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                      <Download size={18} /> Text
                     </button>
                   </div>
                 </div>
