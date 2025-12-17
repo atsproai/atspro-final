@@ -159,10 +159,7 @@ export default function App() {
           <div className="flex items-center space-x-6">
             <button onClick={() => setPage('home')} className="text-white hover:text-purple-200">Home</button>
             <button onClick={() => setPage('analyzer')} className="text-white hover:text-purple-200">Analyzer</button>
-            <button onClick={() => window.location.href = '/history'} className="text-white hover:text-purple-200">History</button>
-            <button onClick={() => window.location.href = '/email-templates'} className="text-white hover:text-purple-200">Email Templates</button>
-            <button onClick={() => window.location.href = '/linkedin-optimizer'} className="text-white hover:text-purple-200">LinkedIn</button>
-            <button onClick={() => window.location.href = '/interview-prep'} className="text-white hover:text-purple-200">Interview Prep</button>
+            <button onClick={() => window.location.href = '/dashboard'} className="text-white hover:text-purple-200">Dashboard</button>
             {isSignedIn ? (
               <UserButton afterSignOutUrl="/" />
             ) : (
@@ -177,8 +174,8 @@ export default function App() {
 
         <div className="max-w-7xl mx-auto px-6 py-20 text-center">
           <h2 className="text-6xl font-bold text-white mb-6">Beat the ATS</h2>
-          <p className="text-2xl text-purple-100 mb-2">AI optimizes your resume + generates a cover letter</p>
-          <p className="text-xl text-purple-200 mb-8">Download as PDF or Text • Ready in seconds</p>
+          <p className="text-2xl text-purple-100 mb-2">Complete AI-Powered Job Search Assistant</p>
+          <p className="text-xl text-purple-200 mb-8">Resume Optimization • Interview Prep • Job Tracking • Career Tools</p>
           <button onClick={() => setPage('analyzer')} className="bg-pink-500 text-white px-8 py-3 rounded-full font-semibold text-lg hover:bg-pink-600 transition inline-flex items-center gap-2 mb-16">
             Try Free Now <ArrowRight size={20} />
           </button>
@@ -193,54 +190,54 @@ export default function App() {
               <div className="text-purple-200">Resumes Fixed</div>
             </div>
             <div className="bg-white/10 backdrop-blur-lg p-6 rounded-xl">
-              <div className="text-5xl font-bold text-white mb-2">2X</div>
-              <div className="text-purple-200">Interview Rate</div>
+              <div className="text-5xl font-bold text-white mb-2">15+</div>
+              <div className="text-purple-200">Career Tools</div>
             </div>
           </div>
 
           <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 mb-16 max-w-4xl mx-auto">
-            <h3 className="text-3xl font-bold text-white mb-6">Complete Job Search Assistant</h3>
+            <h3 className="text-3xl font-bold text-white mb-6">Everything You Need to Land Your Dream Job</h3>
             <div className="grid md:grid-cols-2 gap-6 text-left">
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={24} />
                 <div>
-                  <h4 className="text-white font-semibold text-lg mb-1">ATS-Optimized Resume</h4>
-                  <p className="text-purple-200">AI rewrites your resume with job-specific keywords to pass applicant tracking systems</p>
+                  <h4 className="text-white font-semibold text-lg mb-1">ATS-Optimized Resumes</h4>
+                  <p className="text-purple-200">AI rewrites your resume with job-specific keywords to pass ATS systems</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={24} />
                 <div>
-                  <h4 className="text-white font-semibold text-lg mb-1">ATS System Compatibility</h4>
-                  <p className="text-purple-200">Check compatibility with Workday, Greenhouse, Lever, and Taleo ATS systems</p>
+                  <h4 className="text-white font-semibold text-lg mb-1">Interview Preparation</h4>
+                  <p className="text-purple-200">Get personalized interview questions and answers based on your experience</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={24} />
                 <div>
-                  <h4 className="text-white font-semibold text-lg mb-1">Interview Prep Assistant</h4>
-                  <p className="text-purple-200">Get personalized interview questions and answers based on your actual experience</p>
+                  <h4 className="text-white font-semibold text-lg mb-1">Job Application Tracker</h4>
+                  <p className="text-purple-200">Track all your applications and manage your job search pipeline</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={24} />
                 <div>
-                  <h4 className="text-white font-semibold text-lg mb-1">LinkedIn Profile Optimizer</h4>
-                  <p className="text-purple-200">Transform your resume into a compelling LinkedIn profile with optimized sections</p>
+                  <h4 className="text-white font-semibold text-lg mb-1">LinkedIn & Email Tools</h4>
+                  <p className="text-purple-200">Optimize your LinkedIn profile and generate professional emails</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={24} />
                 <div>
-                  <h4 className="text-white font-semibold text-lg mb-1">Professional Email Templates</h4>
-                  <p className="text-purple-200">Generate follow-up, thank you, and networking emails instantly</p>
+                  <h4 className="text-white font-semibold text-lg mb-1">Skills Gap Analysis</h4>
+                  <p className="text-purple-200">Identify missing skills and get recommendations for upskilling</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={24} />
                 <div>
-                  <h4 className="text-white font-semibold text-lg mb-1">Resume History</h4>
-                  <p className="text-purple-200">Save and access all your past resume optimizations anytime</p>
+                  <h4 className="text-white font-semibold text-lg mb-1">Salary Negotiation</h4>
+                  <p className="text-purple-200">Get market data and negotiation scripts to maximize your offer</p>
                 </div>
               </div>
             </div>
@@ -253,12 +250,11 @@ export default function App() {
               <div className="text-4xl font-bold text-white mb-2">$0</div>
               <div className="text-purple-200 mb-6">Try all features</div>
               <ul className="text-left text-purple-200 text-sm mb-6 space-y-2">
-                <li>✓ 1 ATS-optimized resume</li>
-                <li>✓ 1 Custom cover letter</li>
-                <li>✓ ATS compatibility check</li>
+                <li>✓ 1 Resume optimization</li>
+                <li>✓ 1 Cover letter</li>
                 <li>✓ Interview prep</li>
-                <li>✓ Email templates</li>
-                <li>✓ LinkedIn optimizer</li>
+                <li>✓ All career tools</li>
+                <li>✓ Job tracker access</li>
               </ul>
               <button onClick={() => setPage('analyzer')} className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
                 Try Free
@@ -269,11 +265,10 @@ export default function App() {
               <div className="text-4xl font-bold text-white mb-2">$14<span className="text-lg">/mo</span></div>
               <div className="text-purple-200 mb-6">Unlimited everything</div>
               <ul className="text-left text-purple-200 text-sm mb-6 space-y-2">
-                <li>✓ Everything in Free</li>
                 <li>✓ Unlimited resumes</li>
                 <li>✓ Unlimited cover letters</li>
-                <li>✓ Unlimited ATS checks</li>
                 <li>✓ Unlimited interview prep</li>
+                <li>✓ All features unlocked</li>
                 <li>✓ Priority support</li>
               </ul>
               <button onClick={() => handleCheckout('price_1SfCtLAwfYeu0c4ApXwqfyUR')} className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
@@ -309,10 +304,7 @@ export default function App() {
         <div className="flex items-center space-x-6">
           <button onClick={() => setPage('home')} className="text-white hover:text-purple-200">Home</button>
           <button onClick={() => setPage('analyzer')} className="text-white hover:text-purple-200">Analyzer</button>
-          <button onClick={() => window.location.href = '/history'} className="text-white hover:text-purple-200">History</button>
-          <button onClick={() => window.location.href = '/email-templates'} className="text-white hover:text-purple-200">Email Templates</button>
-          <button onClick={() => window.location.href = '/linkedin-optimizer'} className="text-white hover:text-purple-200">LinkedIn</button>
-          <button onClick={() => window.location.href = '/interview-prep'} className="text-white hover:text-purple-200">Interview Prep</button>
+          <button onClick={() => window.location.href = '/dashboard'} className="text-white hover:text-purple-200">Dashboard</button>
           {isSignedIn ? (
             <UserButton afterSignOutUrl="/" />
           ) : (
@@ -340,7 +332,7 @@ export default function App() {
           {limitReached && (
             <div className="bg-red-500/20 border border-red-500 rounded-lg p-6 mb-6 text-center">
               <h3 className="text-2xl font-bold text-white mb-2">Free Scan Used!</h3>
-              <p className="text-red-100 mb-4">Upgrade to get unlimited resume scans + cover letters</p>
+              <p className="text-red-100 mb-4">Upgrade to get unlimited resume scans + all features</p>
               <div className="flex gap-4 justify-center">
                 <button onClick={() => handleCheckout('price_1SfCtLAwfYeu0c4ApXwqfyUR')} className="bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700">
                   $14/month
