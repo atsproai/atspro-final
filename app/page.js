@@ -210,8 +210,8 @@ export default function App() {
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={24} />
                 <div>
-                  <h4 className="text-white font-semibold text-lg mb-1">Custom Cover Letter</h4>
-                  <p className="text-purple-200">Personalized cover letter tailored to the job using your actual experience</p>
+                  <h4 className="text-white font-semibold text-lg mb-1">ATS System Compatibility</h4>
+                  <p className="text-purple-200">Check compatibility with Workday, Greenhouse, Lever, and Taleo ATS systems</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -240,7 +240,7 @@ export default function App() {
               <ul className="text-left text-purple-200 text-sm mb-6 space-y-2">
                 <li>✓ ATS-optimized resume</li>
                 <li>✓ Custom cover letter</li>
-                <li>✓ PDF & text downloads</li>
+                <li>✓ ATS compatibility check</li>
                 <li>✓ Email templates</li>
                 <li>✓ LinkedIn optimizer</li>
               </ul>
@@ -256,8 +256,7 @@ export default function App() {
                 <li>✓ Everything in Free</li>
                 <li>✓ Unlimited resumes</li>
                 <li>✓ Unlimited cover letters</li>
-                <li>✓ Unlimited emails</li>
-                <li>✓ Unlimited LinkedIn profiles</li>
+                <li>✓ Unlimited ATS checks</li>
                 <li>✓ Priority support</li>
               </ul>
               <button onClick={() => handleCheckout('price_1SfCtLAwfYeu0c4ApXwqfyUR')} className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
@@ -360,6 +359,129 @@ export default function App() {
                 </div>
               </div>
             </div>
+
+            {/* ATS Compatibility */}
+            {result.atsCompatibility && (
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 border border-white/20 mb-6">
+                <h3 className="text-2xl font-bold text-white mb-4">🎯 ATS System Compatibility</h3>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {result.atsCompatibility.workday && (
+                    <div className={`p-4 rounded-lg border-2 ${
+                      result.atsCompatibility.workday.startsWith('PASS') 
+                        ? 'bg-green-500/20 border-green-500' 
+                        : result.atsCompatibility.workday.startsWith('WARNING')
+                        ? 'bg-yellow-500/20 border-yellow-500'
+                        : 'bg-red-500/20 border-red-500'
+                    }`}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="font-bold text-white">Workday</span>
+                        <span className={`text-sm px-2 py-1 rounded ${
+                          result.atsCompatibility.workday.startsWith('PASS') 
+                            ? 'bg-green-500 text-white' 
+                            : result.atsCompatibility.workday.startsWith('WARNING')
+                            ? 'bg-yellow-500 text-black'
+                            : 'bg-red-500 text-white'
+                        }`}>
+                          {result.atsCompatibility.workday.split(' - ')[0]}
+                        </span>
+                      </div>
+                      <p className="text-sm text-white opacity-90">
+                        {result.atsCompatibility.workday.split(' - ')[1]}
+                      </p>
+                    </div>
+                  )}
+                  
+                  {result.atsCompatibility.greenhouse && (
+                    <div className={`p-4 rounded-lg border-2 ${
+                      result.atsCompatibility.greenhouse.startsWith('PASS') 
+                        ? 'bg-green-500/20 border-green-500' 
+                        : result.atsCompatibility.greenhouse.startsWith('WARNING')
+                        ? 'bg-yellow-500/20 border-yellow-500'
+                        : 'bg-red-500/20 border-red-500'
+                    }`}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="font-bold text-white">Greenhouse</span>
+                        <span className={`text-sm px-2 py-1 rounded ${
+                          result.atsCompatibility.greenhouse.startsWith('PASS') 
+                            ? 'bg-green-500 text-white' 
+                            : result.atsCompatibility.greenhouse.startsWith('WARNING')
+                            ? 'bg-yellow-500 text-black'
+                            : 'bg-red-500 text-white'
+                        }`}>
+                          {result.atsCompatibility.greenhouse.split(' - ')[0]}
+                        </span>
+                      </div>
+                      <p className="text-sm text-white opacity-90">
+                        {result.atsCompatibility.greenhouse.split(' - ')[1]}
+                      </p>
+                    </div>
+                  )}
+                  
+                  {result.atsCompatibility.lever && (
+                    <div className={`p-4 rounded-lg border-2 ${
+                      result.atsCompatibility.lever.startsWith('PASS') 
+                        ? 'bg-green-500/20 border-green-500' 
+                        : result.atsCompatibility.lever.startsWith('WARNING')
+                        ? 'bg-yellow-500/20 border-yellow-500'
+                        : 'bg-red-500/20 border-red-500'
+                    }`}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="font-bold text-white">Lever</span>
+                        <span className={`text-sm px-2 py-1 rounded ${
+                          result.atsCompatibility.lever.startsWith('PASS') 
+                            ? 'bg-green-500 text-white' 
+                            : result.atsCompatibility.lever.startsWith('WARNING')
+                            ? 'bg-yellow-500 text-black'
+                            : 'bg-red-500 text-white'
+                        }`}>
+                          {result.atsCompatibility.lever.split(' - ')[0]}
+                        </span>
+                      </div>
+                      <p className="text-sm text-white opacity-90">
+                        {result.atsCompatibility.lever.split(' - ')[1]}
+                      </p>
+                    </div>
+                  )}
+                  
+                  {result.atsCompatibility.taleo && (
+                    <div className={`p-4 rounded-lg border-2 ${
+                      result.atsCompatibility.taleo.startsWith('PASS') 
+                        ? 'bg-green-500/20 border-green-500' 
+                        : result.atsCompatibility.taleo.startsWith('WARNING')
+                        ? 'bg-yellow-500/20 border-yellow-500'
+                        : 'bg-red-500/20 border-red-500'
+                    }`}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="font-bold text-white">Taleo</span>
+                        <span className={`text-sm px-2 py-1 rounded ${
+                          result.atsCompatibility.taleo.startsWith('PASS') 
+                            ? 'bg-green-500 text-white' 
+                            : result.atsCompatibility.taleo.startsWith('WARNING')
+                            ? 'bg-yellow-500 text-black'
+                            : 'bg-red-500 text-white'
+                        }`}>
+                          {result.atsCompatibility.taleo.split(' - ')[0]}
+                        </span>
+                      </div>
+                      <p className="text-sm text-white opacity-90">
+                        {result.atsCompatibility.taleo.split(' - ')[1]}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Formatting Issues */}
+            {result.formattingIssues && result.formattingIssues !== 'None detected' && (
+              <div className="bg-orange-500/20 border border-orange-500 rounded-xl p-6 mb-6">
+                <h3 className="text-2xl font-bold text-white mb-3">⚠️ Formatting Issues Detected</h3>
+                <p className="text-white">{result.formattingIssues}</p>
+                <p className="text-orange-200 text-sm mt-3">
+                  💡 Tip: Fix these issues in your optimized resume for better ATS parsing
+                </p>
+              </div>
+            )}
 
             <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 border border-white/20 mb-6">
               <h3 className="text-2xl font-bold text-white mb-4">Missing Keywords</h3>
