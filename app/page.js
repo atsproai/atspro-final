@@ -63,19 +63,57 @@ export default function App() {
           </div>
         </nav>
 
-        <div className="max-w-6xl mx-auto px-6 py-32 text-center">
-          <h2 className="text-7xl font-bold text-white mb-6 leading-tight">
-            Beat the ATS.<br/>Land the Interview.
-          </h2>
-          <p className="text-2xl text-purple-100 mb-12 max-w-3xl mx-auto">
-            AI-powered resume optimization that gets past automated screening systems
-          </p>
-          <button 
-            onClick={() => setPage('analyzer')} 
-            className="bg-white text-purple-900 px-10 py-5 rounded-xl font-bold text-xl hover:bg-purple-50 transition shadow-2xl inline-flex items-center gap-3"
-          >
-            Get Started Free <ArrowRight size={24} />
+        <div className="max-w-7xl mx-auto px-6 py-20 text-center">
+          <h2 className="text-6xl font-bold text-white mb-6">Beat the ATS</h2>
+          <p className="text-2xl text-purple-100 mb-4">AI fixes your resume in seconds</p>
+          <button onClick={() => setPage('analyzer')} className="bg-pink-500 text-white px-8 py-3 rounded-full font-semibold text-lg hover:bg-pink-600 transition inline-flex items-center gap-2 mb-16">
+            Try Free Now <ArrowRight size={20} />
           </button>
+
+          <div className="grid md:grid-cols-3 gap-6 mb-16">
+            <div className="bg-white/10 backdrop-blur-lg p-6 rounded-xl">
+              <div className="text-5xl font-bold text-white mb-2">94%</div>
+              <div className="text-purple-200">Success Rate</div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-lg p-6 rounded-xl">
+              <div className="text-5xl font-bold text-white mb-2">50K+</div>
+              <div className="text-purple-200">Resumes Fixed</div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-lg p-6 rounded-xl">
+              <div className="text-5xl font-bold text-white mb-2">$120/yr</div>
+              <div className="text-purple-200">Best Deal</div>
+            </div>
+          </div>
+
+          <h3 className="text-4xl font-bold text-white mb-8">Simple Pricing</h3>
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <div className="bg-white/10 backdrop-blur-lg p-8 rounded-xl">
+              <h4 className="text-2xl font-bold text-white mb-4">Free</h4>
+              <div className="text-4xl font-bold text-white mb-2">$0</div>
+              <div className="text-purple-200 mb-6">1 resume scan</div>
+              <button onClick={() => setPage('analyzer')} className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
+                Try Free
+              </button>
+            </div>
+            <div className="bg-white/10 backdrop-blur-lg p-8 rounded-xl">
+              <h4 className="text-2xl font-bold text-white mb-4">Monthly</h4>
+              <div className="text-4xl font-bold text-white mb-2">$14<span className="text-lg">/mo</span></div>
+              <div className="text-purple-200 mb-6">Unlimited scans + downloads</div>
+              <button className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
+                Start Trial
+              </button>
+            </div>
+            <div className="bg-gradient-to-br from-yellow-400 to-orange-500 p-8 rounded-xl relative">
+              <div className="absolute top-4 right-4 bg-white text-orange-600 px-3 py-1 rounded-full text-sm font-bold">BEST VALUE</div>
+              <h4 className="text-2xl font-bold text-black mb-4">Annual</h4>
+              <div className="text-4xl font-bold text-black mb-2">$120<span className="text-lg">/yr</span></div>
+              <div className="text-black mb-6">Save $48/year!</div>
+              <button className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800">
+                Start Trial
+              </button>
+            </div>
+          </div>
+          <p className="text-purple-200 mt-6">⭐ 7-day free trial • Cancel anytime • No commitments</p>
         </div>
       </div>
     );
