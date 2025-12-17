@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { NextResponse } from 'next/server';
 import { getAuth } from '@clerk/nextjs/server';
-import { supabase } from '../../../lib/supabase';
+import { supabaseAdmin } from '../../../lib/supabase';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -17,7 +17,7 @@ export async function POST(req) {
     }
 
     // Check/create user in database
-    let { data: userData, error: userError } = await supabase
+    let { data: userData, error: userError } = await supabaseAdmin
       .from('user_scans')
       .select('*')
       .eq('user_id', userId)
@@ -25,7 +25,7 @@ export async function POST(req) {
 
     // If user doesn't exist, create them
     if (userError && userError.code === 'PGRST116') {
-      const { data: newUser, error: createError } = await supabase
+      const { data: newUser, error: createError } = await supabaseAdmin
         .from('user_scans')
         .insert([{ user_id: userId, scan_count: 0, subscription_status: 'free' }])
         .select()
@@ -91,7 +91,7 @@ OPTIMIZED_RESUME:
     const optimizedResume = optimizedMatch ? optimizedMatch[1].trim() : resumeText;
 
     // Increment scan count
-    const { error: updateError } = await supabase
+    const { error: updateError } = await supabaseAdmin
       .from('user_scans')
       .update({ scan_count: userData.scan_count + 1 })
       .eq('user_id', userId);
