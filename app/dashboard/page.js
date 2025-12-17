@@ -65,27 +65,14 @@ export default function DashboardPage() {
   const [expandedQuestion, setExpandedQuestion] = useState(null);
   const [interviewLoading, setInterviewLoading] = useState(false);
 
-  useEffect(() => {
-    if (!isSignedIn) {
-      router.push('/');
-    }
-  }, [isSignedIn]);
-
   if (!isSignedIn) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-white text-2xl mb-4">Please sign in to access Dashboard</div>
-          <button 
-            onClick={() => router.push('/')}
-            className="bg-pink-500 text-white px-8 py-3 rounded-full font-semibold hover:bg-pink-600"
-          >
-            Go to Home
-          </button>
+          <div className="text-white text-2xl mb-4">Loading Dashboard...</div>
         </div>
       </div>
     );
-  }
 
   const sections = [
     {
