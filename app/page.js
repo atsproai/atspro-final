@@ -560,22 +560,25 @@ export default function App() {
                     <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg">
                       <div className="text-center bg-gradient-to-br from-purple-600 to-pink-600 p-8 rounded-xl max-w-md">
                         <Lock className="w-16 h-16 text-white mx-auto mb-4" />
-                        <h3 className="text-2xl font-bold text-white mb-2">Unlock Full Resume</h3>
-                        <p className="text-white mb-6">See the complete optimized resume + cover letter</p>
+                        <h3 className="text-2xl font-bold text-white mb-2">🔒 Unlock Full Resume</h3>
+                        <p className="text-white mb-6">✨ See your complete optimized resume + cover letter</p>
                         <div className="flex flex-col gap-3">
                           <button 
                             onClick={() => handleCheckout('price_1SfCtLAwfYeu0c4ApXwqfyUR')} 
-                            className="bg-white text-purple-900 px-6 py-3 rounded-lg font-semibold hover:bg-purple-100 transition"
+                            className="bg-white text-purple-900 px-6 py-4 rounded-lg font-bold hover:bg-purple-100 transition text-lg"
                           >
-                            Upgrade - $14/month
+                            🎁 Start 7-Day FREE Trial - $14/mo
                           </button>
+                          <p className="text-white text-xs -mt-2 mb-2">Cancel anytime • Unlock instantly</p>
                           <button 
                             onClick={() => handleCheckout('price_1SfCtuAwfYeu0c4AhdFPWnyj')} 
-                            className="bg-yellow-500 text-black px-6 py-3 rounded-lg font-semibold hover:bg-yellow-600 transition"
+                            className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-6 py-4 rounded-lg font-bold hover:from-yellow-500 hover:to-orange-600 transition text-lg"
                           >
-                            Best Value - $120/year
+                            💎 Best Value - $120/year (Save $48!)
                           </button>
+                          <p className="text-white text-xs -mt-2">Includes 7-Day FREE Trial</p>
                         </div>
+                        <p className="text-white text-xs mt-4 opacity-75">✓ Download PDF/Text • ✓ Access all features</p>
                       </div>
                     </div>
                   </div>
