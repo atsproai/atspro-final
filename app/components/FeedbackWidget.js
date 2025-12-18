@@ -2,9 +2,11 @@
 import React, { useState } from 'react';
 import { MessageSquare, X, Send } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
+import { useToast } from './Toast';
 
-export default function FeedbackWidget({ showToast }) {
+export default function FeedbackWidget() {
   const { user } = useUser();
+  const { showToast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [type, setType] = useState('bug');
   const [message, setMessage] = useState('');
