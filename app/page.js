@@ -171,6 +171,13 @@ export default function App() {
   if (page === 'home') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900">
+        {/* Early Adopter Banner */}
+        <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-center py-2 px-4">
+          <p className="text-sm md:text-base font-semibold">
+            🔥 Early Adopter Pricing: Lock in $14/month FOREVER (Regular price $24.99) - Limited Time!
+          </p>
+        </div>
+
         <nav className="flex justify-between items-center p-6 max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold text-white">ATSpro.ai</h1>
           <div className="flex items-center space-x-6">
@@ -256,6 +263,28 @@ export default function App() {
                   <h4 className="text-white font-semibold text-lg mb-1">Salary Negotiation</h4>
                   <p className="text-purple-200">Get market data and negotiation scripts to maximize your offer</p>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Urgency Box */}
+          <div className="max-w-4xl mx-auto mb-12 bg-gradient-to-r from-red-500/20 to-orange-500/20 border-2 border-yellow-500 rounded-2xl p-6 md:p-8 backdrop-blur-lg">
+            <div className="text-center">
+              <div className="text-5xl mb-4">⚡</div>
+              <h3 className="text-3xl md:text-4xl font-bold text-white mb-3">
+                Early Adopter Pricing
+              </h3>
+              <p className="text-xl text-yellow-200 mb-4">
+                Lock in $14/month FOREVER and save $131/year
+              </p>
+              <p className="text-purple-200 max-w-2xl mx-auto">
+                We're raising prices to $24.99/month soon. Sign up now and you'll never pay more than $14/month, even when prices increase. This is a one-time opportunity!
+              </p>
+              <div className="mt-4 inline-block bg-white/10 px-6 py-2 rounded-full">
+                <p className="text-sm text-white">
+                  <span className="font-bold text-yellow-300">Regular Price:</span> <span className="line-through">$24.99/mo</span> → 
+                  <span className="font-bold text-green-300"> Early Adopter: $14/mo</span>
+                </p>
               </div>
             </div>
           </div>
