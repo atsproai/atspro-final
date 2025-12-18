@@ -1,17 +1,60 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { NextResponse } from 'next/server';
-import { getAuth } from '@clerk/nextjs/server';
+import { auth } from '@clerk/nextjs/server';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
+const RATE_LIMIT_WINDOW = 60 * 1000;
+const MAX_REQUESTS_PER_WINDOW = 3;
+const requestTracker = new Map();
+
+function getRateLimitKey(userId, ip) {
+  return `linkedin-${userId}-${ip}`;
+}
+
+function checkRateLimit(key) {
+  const now = Date.now();
+  const userRequests = requestTracker.get(key) || [];
+  const recentRequests = userRequests.filter(time => now - time < RATE_LIMIT_WINDOW);
+  
+  if (recentRequests.length >= MAX_REQUESTS_PER_WINDOW) {
+    return false;
+  }
+  
+  recentRequests.push(now);
+  requestTracker.set(key, recentRequests);
+  
+  setTimeout(() => {
+    const current = requestTracker.get(key) || [];
+    const filtered = current.filter(time => Date.now() - time < RATE_LIMIT_WINDOW);
+    if (filtered.length === 0) {
+      requestTracker.delete(key);
+    } else {
+      requestTracker.set(key, filtered);
+    }
+  }, RATE_LIMIT_WINDOW);
+  
+  return true;
+}
+
 export async function POST(req) {
   try {
-    const { userId } = getAuth(req);
+    const { userId } = await auth();
     
     if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized - Please sign in' }, { status: 401 });
+    }
+
+    const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
+    const rateLimitKey = getRateLimitKey(userId, ip);
+    
+    if (!checkRateLimit(rateLimitKey)) {
+      return NextResponse.json({ 
+        error: 'Rate limit exceeded. Please wait a moment before optimizing another profile.',
+        rateLimited: true 
+      }, { status: 429 });
     }
 
     const formData = await req.formData();
@@ -22,7 +65,14 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Missing resume' }, { status: 400 });
     }
 
-    // Convert PDF to base64 for Claude
+    if (resume.size > 10 * 1024 * 1024) {
+      return NextResponse.json({ error: 'Resume file too large. Maximum 10MB.' }, { status: 400 });
+    }
+
+    if (targetRole.length > 200) {
+      return NextResponse.json({ error: 'Target role too long. Maximum 200 characters.' }, { status: 400 });
+    }
+
     const resumeBuffer = await resume.arrayBuffer();
     const resumeBase64 = Buffer.from(resumeBuffer).toString('base64');
 
@@ -92,7 +142,6 @@ DESCRIPTION:
 
     const responseText = message.content[0].text;
     
-    // Parse the response
     const headlineMatch = responseText.match(/HEADLINE:\s*(.+?)(?=ABOUT:|$)/s);
     const aboutMatch = responseText.match(/ABOUT:\s*(.+?)(?=EXPERIENCE_1:|$)/s);
     
@@ -134,6 +183,14 @@ DESCRIPTION:
 
   } catch (error) {
     console.error('LinkedIn optimization error:', error);
+    
+    if (error.message?.includes('rate_limit')) {
+      return NextResponse.json({ 
+        error: 'API rate limit reached. Please try again in a moment.',
+        rateLimited: true 
+      }, { status: 429 });
+    }
+    
     return NextResponse.json({ error: 'Failed to optimize LinkedIn profile' }, { status: 500 });
   }
 }
