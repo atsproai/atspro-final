@@ -451,10 +451,16 @@ export default function DashboardPage() {
         <div className="p-6 border-b border-white/10">
           <button
             onClick={() => setActiveSection('home')}
-            className="flex items-center gap-2 text-white hover:text-pink-400 transition"
+            className="flex items-center gap-2 text-white hover:text-pink-400 transition mb-3"
           >
             <Home size={24} />
             <span className="font-bold text-xl">Dashboard</span>
+          </button>
+          <button
+            onClick={() => router.push('/')}
+            className="flex items-center gap-2 text-purple-300 hover:text-white transition text-sm"
+          >
+            ← Back to Main Site
           </button>
         </div>
 
@@ -498,13 +504,21 @@ export default function DashboardPage() {
         <div className="md:hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
           <div className="w-64 h-full bg-gradient-to-br from-purple-900 to-indigo-900 border-r border-white/20">
             <div className="p-6 border-b border-white/10 flex justify-between items-center">
-              <button
-                onClick={() => setActiveSection('home')}
-                className="flex items-center gap-2 text-white"
-              >
-                <Home size={24} />
-                <span className="font-bold text-xl">Dashboard</span>
-              </button>
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={() => setActiveSection('home')}
+                  className="flex items-center gap-2 text-white"
+                >
+                  <Home size={24} />
+                  <span className="font-bold text-xl">Dashboard</span>
+                </button>
+                <button
+                  onClick={() => router.push('/')}
+                  className="flex items-center gap-2 text-purple-300 hover:text-white transition text-sm"
+                >
+                  ← Back to Main Site
+                </button>
+              </div>
               <button onClick={() => setMobileMenuOpen(false)}>
                 <X className="text-white" size={24} />
               </button>
