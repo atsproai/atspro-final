@@ -2,11 +2,9 @@
 import React, { useState } from 'react';
 import { MessageSquare, X, Send } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
-import { useToast } from './Toast';
 
 export default function FeedbackWidget() {
   const { user } = useUser();
-  const { showToast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [type, setType] = useState('bug');
   const [message, setMessage] = useState('');
@@ -14,7 +12,7 @@ export default function FeedbackWidget() {
 
   const submitFeedback = async () => {
     if (!message.trim()) {
-      showToast('Please enter a message', 'error');
+      alert('Please enter a message');
       return;
     }
 
@@ -31,21 +29,20 @@ export default function FeedbackWidget() {
       });
 
       if (res.ok) {
-        showToast('Feedback submitted! Thank you!', 'success');
+        alert('Feedback submitted! Thank you!');
         setMessage('');
         setIsOpen(false);
       } else {
-        showToast('Failed to submit feedback', 'error');
+        alert('Failed to submit feedback');
       }
     } catch (err) {
-      showToast('Error submitting feedback', 'error');
+      alert('Error submitting feedback');
     }
     setLoading(false);
   };
 
   return (
     <>
-      {/* Floating Button */}
       <button
         onClick={() => setIsOpen(true)}
         className="fixed bottom-6 right-6 bg-gradient-to-r from-pink-500 to-purple-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-110 z-40"
@@ -54,14 +51,12 @@ export default function FeedbackWidget() {
         <MessageSquare size={24} />
       </button>
 
-      {/* Modal */}
       {isOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end md:items-center justify-center p-4">
           <div 
             className="bg-gradient-to-br from-purple-900 to-indigo-900 rounded-t-3xl md:rounded-2xl w-full md:max-w-md border-2 border-white/20 shadow-2xl max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
             <div className="flex justify-between items-center p-6 border-b border-white/10">
               <div>
                 <h3 className="text-2xl font-bold text-white">Send Feedback</h3>
@@ -75,9 +70,7 @@ export default function FeedbackWidget() {
               </button>
             </div>
 
-            {/* Content */}
             <div className="p-6 space-y-4">
-              {/* Type Selection */}
               <div>
                 <label className="block text-white mb-2 font-semibold">Feedback Type</label>
                 <div className="grid grid-cols-3 gap-2">
@@ -114,7 +107,6 @@ export default function FeedbackWidget() {
                 </div>
               </div>
 
-              {/* Message */}
               <div>
                 <label className="block text-white mb-2 font-semibold">Your Message</label>
                 <textarea
@@ -128,7 +120,6 @@ export default function FeedbackWidget() {
                 <p className="text-purple-300 text-xs mt-1">{message.length}/2000 characters</p>
               </div>
 
-              {/* Submit */}
               <button
                 onClick={submitFeedback}
                 disabled={loading || !message.trim()}
