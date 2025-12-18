@@ -29,7 +29,11 @@ import {
   Sparkles,
   Lightbulb,
   CheckCircle,
-  Send
+  Send,
+  Plus,
+  Trash2,
+  ExternalLink,
+  Clock
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -61,6 +65,17 @@ export default function DashboardPage() {
   const [expandedQuestion, setExpandedQuestion] = useState(null);
   const [interviewLoading, setInterviewLoading] = useState(false);
 
+  const [applications, setApplications] = useState([]);
+  const [applicationsLoading, setApplicationsLoading] = useState(false);
+  const [showAddApplication, setShowAddApplication] = useState(false);
+  const [newApplication, setNewApplication] = useState({
+    company_name: '',
+    job_title: '',
+    job_url: '',
+    salary_range: '',
+    notes: ''
+  });
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -68,6 +83,9 @@ export default function DashboardPage() {
   useEffect(() => {
     if (activeSection === 'history' && mounted) {
       fetchHistory();
+    }
+    if (activeSection === 'tracker' && mounted) {
+      fetchApplications();
     }
   }, [activeSection, mounted]);
 
@@ -97,6 +115,72 @@ export default function DashboardPage() {
       console.error('Error fetching history:', err);
     }
     setHistoryLoading(false);
+  };
+
+  const fetchApplications = async () => {
+    setApplicationsLoading(true);
+    try {
+      const res = await fetch('/api/job-applications');
+      const data = await res.json();
+      setApplications(data.applications || []);
+    } catch (err) {
+      console.error('Error fetching applications:', err);
+    }
+    setApplicationsLoading(false);
+  };
+
+  const addApplication = async () => {
+    if (!newApplication.company_name || !newApplication.job_title) {
+      alert('Company name and job title are required!');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/job-applications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newApplication)
+      });
+      
+      if (res.ok) {
+        setNewApplication({ company_name: '', job_title: '', job_url: '', salary_range: '', notes: '' });
+        setShowAddApplication(false);
+        fetchApplications();
+        alert('Application added!');
+      }
+    } catch (err) {
+      alert('Error adding application!');
+    }
+  };
+
+  const updateApplicationStatus = async (id, newStatus) => {
+    try {
+      const res = await fetch('/api/job-applications', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: newStatus })
+      });
+      
+      if (res.ok) {
+        fetchApplications();
+      }
+    } catch (err) {
+      alert('Error updating status!');
+    }
+  };
+
+  const deleteApplication = async (id) => {
+    if (!confirm('Delete this application?')) return;
+    
+    try {
+      const res = await fetch(`/api/job-applications?id=${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        fetchApplications();
+        alert('Application deleted!');
+      }
+    } catch (err) {
+      alert('Error deleting application!');
+    }
   };
 
   const downloadHistoryResumePDF = (optimizedResume, jobTitle) => {
@@ -140,6 +224,14 @@ export default function DashboardPage() {
       month: 'short', day: 'numeric', year: 'numeric',
       hour: '2-digit', minute: '2-digit'
     });
+  };
+
+  const getDaysAgo = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now - date);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
   };
 
   const generateEmail = async () => {
@@ -289,7 +381,7 @@ export default function DashboardPage() {
       id: 'jobs',
       name: 'Job Search',
       items: [
-        { id: 'tracker', name: 'Application Tracker', badge: 'Coming Soon' },
+        { id: 'tracker', name: 'Application Tracker' },
         { id: 'analyzer', name: 'Job Description Analyzer', badge: 'Coming Soon' }
       ]
     },
@@ -320,7 +412,221 @@ export default function DashboardPage() {
     }
   ];
 
+  const getStatusColor = (status) => {
+    switch(status) {
+      case 'applied': return 'bg-blue-500/20 text-blue-300 border-blue-500';
+      case 'phone-screen': return 'bg-yellow-500/20 text-yellow-300 border-yellow-500';
+      case 'interview': return 'bg-purple-500/20 text-purple-300 border-purple-500';
+      case 'offer': return 'bg-green-500/20 text-green-300 border-green-500';
+      case 'rejected': return 'bg-red-500/20 text-red-300 border-red-500';
+      default: return 'bg-gray-500/20 text-gray-300 border-gray-500';
+    }
+  };
+
   const renderContent = () => {
+    if (activeSection === 'tracker') {
+      const statusOptions = [
+        { value: 'applied', label: 'Applied' },
+        { value: 'phone-screen', label: 'Phone Screen' },
+        { value: 'interview', label: 'Interview' },
+        { value: 'offer', label: 'Offer' },
+        { value: 'rejected', label: 'Rejected' }
+      ];
+
+      return (
+        <div>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+            <div className="flex items-center gap-3">
+              <Target className="text-pink-500" size={32} />
+              <h2 className="text-3xl md:text-4xl font-bold text-white">Job Application Tracker</h2>
+            </div>
+            <button
+              onClick={() => setShowAddApplication(true)}
+              className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-pink-600 hover:to-purple-700"
+            >
+              <Plus size={20} /> Add Application
+            </button>
+          </div>
+
+          {showAddApplication && (
+            <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 mb-6">
+              <h3 className="text-2xl font-bold text-white mb-4">New Application</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-white mb-2 font-semibold">Company Name*</label>
+                  <input
+                    type="text"
+                    value={newApplication.company_name}
+                    onChange={(e) => setNewApplication({...newApplication, company_name: e.target.value})}
+                    placeholder="e.g., Google"
+                    className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 placeholder-purple-300"
+                  />
+                </div>
+                <div>
+                  <label className="block text-white mb-2 font-semibold">Job Title*</label>
+                  <input
+                    type="text"
+                    value={newApplication.job_title}
+                    onChange={(e) => setNewApplication({...newApplication, job_title: e.target.value})}
+                    placeholder="e.g., Senior Software Engineer"
+                    className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 placeholder-purple-300"
+                  />
+                </div>
+                <div>
+                  <label className="block text-white mb-2 font-semibold">Job URL</label>
+                  <input
+                    type="url"
+                    value={newApplication.job_url}
+                    onChange={(e) => setNewApplication({...newApplication, job_url: e.target.value})}
+                    placeholder="https://..."
+                    className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 placeholder-purple-300"
+                  />
+                </div>
+                <div>
+                  <label className="block text-white mb-2 font-semibold">Salary Range</label>
+                  <input
+                    type="text"
+                    value={newApplication.salary_range}
+                    onChange={(e) => setNewApplication({...newApplication, salary_range: e.target.value})}
+                    placeholder="e.g., $120k - $150k"
+                    className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 placeholder-purple-300"
+                  />
+                </div>
+              </div>
+              <div className="mb-4">
+                <label className="block text-white mb-2 font-semibold">Notes</label>
+                <textarea
+                  value={newApplication.notes}
+                  onChange={(e) => setNewApplication({...newApplication, notes: e.target.value})}
+                  rows={3}
+                  placeholder="Any additional notes..."
+                  className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 placeholder-purple-300"
+                />
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={addApplication}
+                  className="bg-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-green-700"
+                >
+                  Save Application
+                </button>
+                <button
+                  onClick={() => setShowAddApplication(false)}
+                  className="bg-white/10 text-white px-6 py-2 rounded-lg font-semibold hover:bg-white/20"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {applicationsLoading ? (
+            <div className="text-center py-12">
+              <div className="text-white text-xl">Loading applications...</div>
+            </div>
+          ) : applications.length === 0 ? (
+            <div className="text-center py-12 bg-white/5 rounded-xl border border-white/20">
+              <Briefcase className="w-16 h-16 text-purple-300 mx-auto mb-4" />
+              <h3 className="text-2xl font-bold text-white mb-2">No Applications Yet</h3>
+              <p className="text-purple-200 mb-6">Start tracking your job applications to stay organized!</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {applications.map((app) => (
+                <div key={app.id} className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 hover:bg-white/15 transition">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="flex-1">
+                      <h3 className="text-xl font-bold text-white mb-1">{app.company_name}</h3>
+                      <p className="text-purple-200 text-sm">{app.job_title}</p>
+                    </div>
+                    {app.job_url && (
+                      <a
+                        href={app.job_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-blue-400 hover:text-blue-300"
+                      >
+                        <ExternalLink size={18} />
+                      </a>
+                    )}
+                  </div>
+
+                  <div className={`px-3 py-1 rounded-full text-xs font-semibold mb-4 inline-block border ${getStatusColor(app.status)}`}>
+                    {app.status.replace('-', ' ').toUpperCase()}
+                  </div>
+
+                  <div className="flex items-center gap-2 text-purple-300 text-sm mb-4">
+                    <Clock size={14} />
+                    <span>{getDaysAgo(app.applied_date)} days ago</span>
+                  </div>
+
+                  {app.salary_range && (
+                    <div className="text-green-300 text-sm mb-4">
+                      💰 {app.salary_range}
+                    </div>
+                  )}
+
+                  {app.notes && (
+                    <p className="text-purple-200 text-sm mb-4 line-clamp-2">{app.notes}</p>
+                  )}
+
+                  <div className="border-t border-white/10 pt-4 space-y-2">
+                    <select
+                      value={app.status}
+                      onChange={(e) => updateApplicationStatus(app.id, e.target.value)}
+                      className="w-full p-2 rounded-lg bg-white/20 text-white border border-white/30 text-sm"
+                    >
+                      {statusOptions.map(opt => (
+                        <option key={opt.value} value={opt.value} className="bg-purple-900">
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
+
+                    <button
+                      onClick={() => deleteApplication(app.id)}
+                      className="w-full flex items-center justify-center gap-2 bg-red-600/20 text-red-300 px-4 py-2 rounded-lg text-sm hover:bg-red-600/30 border border-red-600/50"
+                    >
+                      <Trash2 size={14} /> Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {applications.length > 0 && (
+            <div className="mt-8 bg-blue-500/20 border border-blue-500 rounded-lg p-6 text-center">
+              <h3 className="text-xl font-bold text-white mb-2">📊 Your Stats</h3>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-4">
+                <div>
+                  <div className="text-3xl font-bold text-blue-300">{applications.filter(a => a.status === 'applied').length}</div>
+                  <div className="text-blue-200 text-sm">Applied</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-yellow-300">{applications.filter(a => a.status === 'phone-screen').length}</div>
+                  <div className="text-yellow-200 text-sm">Phone Screen</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-purple-300">{applications.filter(a => a.status === 'interview').length}</div>
+                  <div className="text-purple-200 text-sm">Interview</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-green-300">{applications.filter(a => a.status === 'offer').length}</div>
+                  <div className="text-green-200 text-sm">Offers</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-red-300">{applications.filter(a => a.status === 'rejected').length}</div>
+                  <div className="text-red-200 text-sm">Rejected</div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
     if (activeSection === 'home') {
       return (
         <div className="text-center py-12 px-4">
