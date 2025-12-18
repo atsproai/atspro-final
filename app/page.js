@@ -221,12 +221,44 @@ export default function App() {
 
           <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 mb-16 max-w-4xl mx-auto">
             <h3 className="text-3xl font-bold text-white mb-6">Everything You Need to Land Your Dream Job</h3>
+            
+            {/* ATS Compatibility Showcase */}
+            <div className="bg-gradient-to-br from-purple-600/30 to-pink-600/30 border-2 border-pink-500 rounded-xl p-6 mb-8">
+              <h4 className="text-2xl font-bold text-white mb-3 flex items-center gap-2">
+                🎯 ATS System Compatibility Checker
+              </h4>
+              <p className="text-purple-100 mb-4">
+                Get instant compatibility scores for the 4 most popular ATS systems used by Fortune 500 companies
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="bg-green-500/20 border-2 border-green-500 rounded-lg p-3 text-center">
+                  <div className="font-bold text-white mb-1">Workday</div>
+                  <div className="bg-green-500 text-white text-xs px-2 py-1 rounded font-bold">PASS</div>
+                </div>
+                <div className="bg-green-500/20 border-2 border-green-500 rounded-lg p-3 text-center">
+                  <div className="font-bold text-white mb-1">Greenhouse</div>
+                  <div className="bg-green-500 text-white text-xs px-2 py-1 rounded font-bold">PASS</div>
+                </div>
+                <div className="bg-yellow-500/20 border-2 border-yellow-500 rounded-lg p-3 text-center">
+                  <div className="font-bold text-white mb-1">Lever</div>
+                  <div className="bg-yellow-500 text-black text-xs px-2 py-1 rounded font-bold">WARNING</div>
+                </div>
+                <div className="bg-green-500/20 border-2 border-green-500 rounded-lg p-3 text-center">
+                  <div className="font-bold text-white mb-1">Taleo</div>
+                  <div className="bg-green-500 text-white text-xs px-2 py-1 rounded font-bold">PASS</div>
+                </div>
+              </div>
+              <p className="text-purple-200 text-sm mt-4 text-center">
+                ✨ See exactly how your resume performs on each system + get specific formatting fixes
+              </p>
+            </div>
+
             <div className="grid md:grid-cols-2 gap-6 text-left">
               <div className="flex items-start gap-3">
                 <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={24} />
                 <div>
                   <h4 className="text-white font-semibold text-lg mb-1">ATS-Optimized Resumes</h4>
-                  <p className="text-purple-200">AI rewrites your resume with job-specific keywords to pass ATS systems</p>
+                  <p className="text-purple-200">AI rewrites your resume with job-specific keywords. Test compatibility with Workday, Greenhouse, Lever & Taleo</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -248,20 +280,6 @@ export default function App() {
                 <div>
                   <h4 className="text-white font-semibold text-lg mb-1">LinkedIn & Email Tools</h4>
                   <p className="text-purple-200">Optimize your LinkedIn profile and generate professional emails</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={24} />
-                <div>
-                  <h4 className="text-white font-semibold text-lg mb-1">Skills Gap Analysis</h4>
-                  <p className="text-purple-200">Identify missing skills and get recommendations for upskilling</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <CheckCircle className="text-green-400 flex-shrink-0 mt-1" size={24} />
-                <div>
-                  <h4 className="text-white font-semibold text-lg mb-1">Salary Negotiation</h4>
-                  <p className="text-purple-200">Get market data and negotiation scripts to maximize your offer</p>
                 </div>
               </div>
             </div>
