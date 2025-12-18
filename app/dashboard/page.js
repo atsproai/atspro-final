@@ -25,7 +25,6 @@ import {
   Building,
   Copy,
   Download,
-  ArrowLeft,
   Calendar,
   Sparkles,
   Lightbulb,
@@ -38,6 +37,7 @@ export default function DashboardPage() {
   const { isSignedIn, user, isLoaded } = useUser();
   const [activeSection, setActiveSection] = useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const [history, setHistory] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(false);
@@ -61,7 +61,17 @@ export default function DashboardPage() {
   const [expandedQuestion, setExpandedQuestion] = useState(null);
   const [interviewLoading, setInterviewLoading] = useState(false);
 
-  if (!isLoaded) {
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (activeSection === 'history' && mounted) {
+      fetchHistory();
+    }
+  }, [activeSection, mounted]);
+
+  if (!isLoaded || !mounted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 flex items-center justify-center">
         <div className="text-white text-2xl">Loading Dashboard...</div>
@@ -72,62 +82,10 @@ export default function DashboardPage() {
   if (!isSignedIn) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-white text-2xl mb-4">Loading Dashboard...</div>
-        </div>
+        <div className="text-white text-2xl">Please sign in to view dashboard</div>
       </div>
     );
   }
-
-  const sections = [
-    {
-      id: 'resumes',
-      name: 'My Resumes',
-      icon: FileText,
-      items: [
-        { id: 'history', name: 'Resume History', icon: HistoryIcon },
-        { id: 'versions', name: 'Resume Versions', icon: GitBranch, badge: 'Coming Soon' },
-        { id: 'abtesting', name: 'A/B Testing', icon: BarChart3, badge: 'Coming Soon' }
-      ]
-    },
-    {
-      id: 'jobs',
-      name: 'Job Search',
-      icon: Briefcase,
-      items: [
-        { id: 'tracker', name: 'Application Tracker', icon: Target, badge: 'Coming Soon' },
-        { id: 'analyzer', name: 'Job Description Analyzer', icon: FileSearch, badge: 'Coming Soon' }
-      ]
-    },
-    {
-      id: 'interviews',
-      name: 'Interview Prep',
-      icon: MessageCircle,
-      items: [
-        { id: 'questions', name: 'Interview Questions', icon: MessageCircle },
-        { id: 'company-research', name: 'Company Research', icon: Building, badge: 'Coming Soon' }
-      ]
-    },
-    {
-      id: 'tools',
-      name: 'Career Tools',
-      icon: Wrench,
-      items: [
-        { id: 'linkedin', name: 'LinkedIn Optimizer', icon: Linkedin },
-        { id: 'emails', name: 'Email Templates', icon: Mail },
-        { id: 'networking', name: 'Networking Tracker', icon: Users, badge: 'Coming Soon' }
-      ]
-    },
-    {
-      id: 'growth',
-      name: 'Career Growth',
-      icon: TrendingUp,
-      items: [
-        { id: 'skills-gap', name: 'Skills Gap Analyzer', icon: BookOpen, badge: 'Coming Soon' },
-        { id: 'salary', name: 'Salary Negotiation', icon: DollarSign, badge: 'Coming Soon' }
-      ]
-    }
-  ];
 
   const fetchHistory = async () => {
     setHistoryLoading(true);
@@ -288,11 +246,79 @@ export default function DashboardPage() {
     setInterviewLoading(false);
   };
 
-  useEffect(() => {
-    if (activeSection === 'history') {
-      fetchHistory();
+  const renderSectionIcon = (sectionId) => {
+    switch(sectionId) {
+      case 'resumes': return <FileText size={18} />;
+      case 'jobs': return <Briefcase size={18} />;
+      case 'interviews': return <MessageCircle size={18} />;
+      case 'tools': return <Wrench size={18} />;
+      case 'growth': return <TrendingUp size={18} />;
+      default: return <FileText size={18} />;
     }
-  }, [activeSection]);
+  };
+
+  const renderItemIcon = (itemId) => {
+    switch(itemId) {
+      case 'history': return <HistoryIcon size={16} />;
+      case 'versions': return <GitBranch size={16} />;
+      case 'abtesting': return <BarChart3 size={16} />;
+      case 'tracker': return <Target size={16} />;
+      case 'analyzer': return <FileSearch size={16} />;
+      case 'questions': return <MessageCircle size={16} />;
+      case 'company-research': return <Building size={16} />;
+      case 'linkedin': return <Linkedin size={16} />;
+      case 'emails': return <Mail size={16} />;
+      case 'networking': return <Users size={16} />;
+      case 'skills-gap': return <BookOpen size={16} />;
+      case 'salary': return <DollarSign size={16} />;
+      default: return <FileText size={16} />;
+    }
+  };
+
+  const sections = [
+    {
+      id: 'resumes',
+      name: 'My Resumes',
+      items: [
+        { id: 'history', name: 'Resume History' },
+        { id: 'versions', name: 'Resume Versions', badge: 'Coming Soon' },
+        { id: 'abtesting', name: 'A/B Testing', badge: 'Coming Soon' }
+      ]
+    },
+    {
+      id: 'jobs',
+      name: 'Job Search',
+      items: [
+        { id: 'tracker', name: 'Application Tracker', badge: 'Coming Soon' },
+        { id: 'analyzer', name: 'Job Description Analyzer', badge: 'Coming Soon' }
+      ]
+    },
+    {
+      id: 'interviews',
+      name: 'Interview Prep',
+      items: [
+        { id: 'questions', name: 'Interview Questions' },
+        { id: 'company-research', name: 'Company Research', badge: 'Coming Soon' }
+      ]
+    },
+    {
+      id: 'tools',
+      name: 'Career Tools',
+      items: [
+        { id: 'linkedin', name: 'LinkedIn Optimizer' },
+        { id: 'emails', name: 'Email Templates' },
+        { id: 'networking', name: 'Networking Tracker', badge: 'Coming Soon' }
+      ]
+    },
+    {
+      id: 'growth',
+      name: 'Career Growth',
+      items: [
+        { id: 'skills-gap', name: 'Skills Gap Analyzer', badge: 'Coming Soon' },
+        { id: 'salary', name: 'Salary Negotiation', badge: 'Coming Soon' }
+      ]
+    }
+  ];
 
   const renderContent = () => {
     if (activeSection === 'home') {
@@ -301,25 +327,18 @@ export default function DashboardPage() {
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Welcome to Your Career Dashboard!</h2>
           <p className="text-purple-200 mb-8 text-lg">Select a tool from the menu to get started</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 max-w-4xl mx-auto">
-            {sections.map(section => {
-              const SectionIcon = section.icon;
-              return (
-                <button
-                  key={section.id}
-                  onClick={() => {
-                    if (section.items.length === 1) {
-                      setActiveSection(section.items[0].id);
-                    } else {
-                      setActiveSection(section.items[0].id);
-                    }
-                  }}
-                  className="bg-white/10 backdrop-blur-lg p-6 rounded-xl border border-white/20 hover:bg-white/20 transition"
-                >
-                  <SectionIcon className="w-12 h-12 text-purple-300 mx-auto mb-3" />
-                  <h3 className="text-white font-semibold">{section.name}</h3>
-                </button>
-              );
-            })}
+            {sections.map(section => (
+              <button
+                key={section.id}
+                onClick={() => setActiveSection(section.items[0].id)}
+                className="bg-white/10 backdrop-blur-lg p-6 rounded-xl border border-white/20 hover:bg-white/20 transition"
+              >
+                <div className="w-12 h-12 text-purple-300 mx-auto mb-3">
+                  {renderSectionIcon(section.id)}
+                </div>
+                <h3 className="text-white font-semibold">{section.name}</h3>
+              </button>
+            ))}
           </div>
         </div>
       );
@@ -560,7 +579,7 @@ export default function DashboardPage() {
                 </pre>
               </div>
               <p className="text-purple-300 text-sm mt-4">
-                💡 Tip: Add your own subject line and greeting (e.g., "Dear [Name],") before sending!
+                💡 Tip: Add your own subject line and greeting before sending!
               </p>
             </div>
           )}
@@ -846,43 +865,37 @@ export default function DashboardPage() {
           </button>
 
           <nav className="space-y-6">
-            {sections.map(section => {
-              const SectionIcon = section.icon;
-              return (
-                <div key={section.id}>
-                  <div className="flex items-center gap-2 text-purple-300 font-semibold mb-2">
-                    <SectionIcon size={18} />
-                    <span>{section.name}</span>
-                  </div>
-                  <div className="ml-6 space-y-1">
-                    {section.items.map(item => {
-                      const ItemIcon = item.icon;
-                      return (
-                        <button
-                          key={item.id}
-                          onClick={() => setActiveSection(item.id)}
-                          className={`flex items-center justify-between w-full p-2 rounded text-sm transition ${
-                            activeSection === item.id
-                              ? 'bg-purple-600 text-white'
-                              : 'text-purple-200 hover:bg-white/5'
-                          }`}
-                        >
-                          <div className="flex items-center gap-2">
-                            <ItemIcon size={16} />
-                            <span>{item.name}</span>
-                          </div>
-                          {item.badge && (
-                            <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-0.5 rounded-full">
-                              {item.badge}
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
+            {sections.map(section => (
+              <div key={section.id}>
+                <div className="flex items-center gap-2 text-purple-300 font-semibold mb-2">
+                  {renderSectionIcon(section.id)}
+                  <span>{section.name}</span>
                 </div>
-              );
-            })}
+                <div className="ml-6 space-y-1">
+                  {section.items.map(item => (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveSection(item.id)}
+                      className={`flex items-center justify-between w-full p-2 rounded text-sm transition ${
+                        activeSection === item.id
+                          ? 'bg-purple-600 text-white'
+                          : 'text-purple-200 hover:bg-white/5'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        {renderItemIcon(item.id)}
+                        <span>{item.name}</span>
+                      </div>
+                      {item.badge && (
+                        <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-0.5 rounded-full">
+                          {item.badge}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
           </nav>
         </div>
 
@@ -911,46 +924,40 @@ export default function DashboardPage() {
               </button>
 
               <nav className="space-y-6">
-                {sections.map(section => {
-                  const SectionIcon = section.icon;
-                  return (
-                    <div key={section.id}>
-                      <div className="flex items-center gap-2 text-purple-300 font-semibold mb-2">
-                        <SectionIcon size={18} />
-                        <span>{section.name}</span>
-                      </div>
-                      <div className="ml-6 space-y-1">
-                        {section.items.map(item => {
-                          const ItemIcon = item.icon;
-                          return (
-                            <button
-                              key={item.id}
-                              onClick={() => {
-                                setActiveSection(item.id);
-                                setMobileMenuOpen(false);
-                              }}
-                              className={`flex items-center justify-between w-full p-2 rounded text-sm transition ${
-                                activeSection === item.id
-                                  ? 'bg-purple-600 text-white'
-                                  : 'text-purple-200 hover:bg-white/5'
-                              }`}
-                            >
-                              <div className="flex items-center gap-2">
-                                <ItemIcon size={16} />
-                                <span>{item.name}</span>
-                              </div>
-                              {item.badge && (
-                                <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-0.5 rounded-full">
-                                  {item.badge}
-                                </span>
-                              )}
-                            </button>
-                          );
-                        })}
-                      </div>
+                {sections.map(section => (
+                  <div key={section.id}>
+                    <div className="flex items-center gap-2 text-purple-300 font-semibold mb-2">
+                      {renderSectionIcon(section.id)}
+                      <span>{section.name}</span>
                     </div>
-                  );
-                })}
+                    <div className="ml-6 space-y-1">
+                      {section.items.map(item => (
+                        <button
+                          key={item.id}
+                          onClick={() => {
+                            setActiveSection(item.id);
+                            setMobileMenuOpen(false);
+                          }}
+                          className={`flex items-center justify-between w-full p-2 rounded text-sm transition ${
+                            activeSection === item.id
+                              ? 'bg-purple-600 text-white'
+                              : 'text-purple-200 hover:bg-white/5'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2">
+                            {renderItemIcon(item.id)}
+                            <span>{item.name}</span>
+                          </div>
+                          {item.badge && (
+                            <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-0.5 rounded-full">
+                              {item.badge}
+                            </span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </nav>
             </div>
           </div>
