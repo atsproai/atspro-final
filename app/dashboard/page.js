@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
 import { jsPDF } from 'jspdf';
-import { useToast } from '../components/Toast';
-import FeedbackWidget from '../components/FeedbackWidget';
+
+
 import { 
   FileText, 
   Briefcase, 
@@ -38,11 +38,12 @@ import {
   Clock,
   Bell
 } from 'lucide-react';
+import FeedbackWidget from '../components/FeedbackWidget';
 
 export default function DashboardPage() {
   const router = useRouter();
   const { isSignedIn, user, isLoaded } = useUser();
-  const { showToast } = useToast();
+
   const [activeSection, setActiveSection] = useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -138,7 +139,7 @@ export default function DashboardPage() {
 
   const addApplication = async () => {
     if (!newApplication.company_name || !newApplication.job_title) {
-      showToast('Company name and job title are required!', 'error');
+      alert('Company name and job title are required!');
       return;
     }
 
@@ -153,10 +154,10 @@ export default function DashboardPage() {
         setNewApplication({ company_name: '', job_title: '', job_url: '', salary_range: '', notes: '' });
         setShowAddApplication(false);
         fetchApplications();
-        showToast('Application added successfully!', 'success');
+        alert('Application added!');
       }
     } catch (err) {
-      showToast('Error adding application', 'error');
+      alert('Error adding application!');
     }
   };
 
@@ -172,7 +173,7 @@ export default function DashboardPage() {
         fetchApplications();
       }
     } catch (err) {
-      showToast('Error updating status', 'error');
+      alert('Error updating status!');
     }
   };
 
@@ -183,10 +184,10 @@ export default function DashboardPage() {
       const res = await fetch(`/api/job-applications?id=${id}`, { method: 'DELETE' });
       if (res.ok) {
         fetchApplications();
-        showToast('Application deleted', 'info');
+        alert('Application deleted!');
       }
     } catch (err) {
-      showToast('Error deleting application', 'error');
+      alert('Error deleting application!');
     }
   };
 
@@ -246,7 +247,7 @@ export default function DashboardPage() {
 
   const copyText = (text) => {
     navigator.clipboard.writeText(text);
-    showToast('Copied to clipboard!', 'success');
+    alert('Copied to clipboard!');
   };
 
   const formatDate = (dateString) => {
@@ -267,7 +268,7 @@ export default function DashboardPage() {
 
   const generateEmail = async () => {
     if (!emailJobTitle || !emailCompany || !emailContext) {
-      showToast('Please fill in all fields!', 'error');
+      alert('Please fill in all fields!');
       return;
     }
     setEmailLoading(true);
@@ -283,7 +284,7 @@ export default function DashboardPage() {
       const data = await res.json();
       setGeneratedEmail(data.emailContent);
     } catch (err) {
-      showToast('Error generating email!', 'error');
+      alert('Error generating email!');
     }
     setEmailLoading(false);
   };
@@ -308,13 +309,13 @@ export default function DashboardPage() {
     if (f && f.type === 'application/pdf') {
       setLinkedinFile(f);
     } else {
-      showToast('Please upload PDF only!', 'error');
+      alert('Please upload PDF only!');
     }
   };
 
   const optimizeLinkedin = async () => {
     if (!linkedinFile) {
-      showToast('Please upload your resume!', 'error');
+      alert('Please upload your resume!');
       return;
     }
     setLinkedinLoading(true);
@@ -325,13 +326,13 @@ export default function DashboardPage() {
       const res = await fetch('/api/linkedin-optimizer', { method: 'POST', body: form });
       const data = await res.json();
       if (!res.ok) {
-        showToast('Error optimizing LinkedIn profile!', 'error');
+        alert('Error optimizing LinkedIn profile!');
         setLinkedinLoading(false);
         return;
       }
       setLinkedinResult(data);
     } catch (err) {
-      showToast('Error optimizing!', 'error');
+      alert('Error optimizing!');
     }
     setLinkedinLoading(false);
   };
@@ -341,13 +342,13 @@ export default function DashboardPage() {
     if (f && f.type === 'application/pdf') {
       setInterviewFile(f);
     } else {
-      showToast('Please upload PDF only!', 'error');
+      alert('Please upload PDF only!');
     }
   };
 
   const generateInterviewPrep = async () => {
     if (!interviewFile || !interviewJob) {
-      showToast('Please upload resume and paste job description!', 'error');
+      alert('Please upload resume and paste job description!');
       return;
     }
     setInterviewLoading(true);
@@ -358,13 +359,13 @@ export default function DashboardPage() {
       const res = await fetch('/api/interview-prep', { method: 'POST', body: form });
       const data = await res.json();
       if (!res.ok) {
-        showToast('Error generating interview prep!', 'error');
+        alert('Error generating interview prep!');
         setInterviewLoading(false);
         return;
       }
       setInterviewQuestions(data.questions || []);
     } catch (err) {
-      showToast('Error generating prep!', 'error');
+      alert('Error generating prep!');
     }
     setInterviewLoading(false);
   };
@@ -1319,8 +1320,9 @@ export default function DashboardPage() {
           </div>
         </div>
       
-        <FeedbackWidget />
       </div>
+
+      <FeedbackWidget />
     </div>
   );
 }
