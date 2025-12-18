@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { Upload, CheckCircle, Users, ArrowRight, Copy, Download } from 'lucide-react';
+import { Upload, CheckCircle, Users, ArrowRight, Copy, Download, Lock } from 'lucide-react';
 import { SignInButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs';
 import { jsPDF } from 'jspdf';
 
@@ -9,10 +9,18 @@ export default function App() {
   const [page, setPage] = useState('home');
   const [file, setFile] = useState(null);
   const [job, setJob] = useState('');
+  const [email, setEmail] = useState('');
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [scansRemaining, setScansRemaining] = useState(null);
   const [limitReached, setLimitReached] = useState(false);
+  const [subscriptionStatus, setSubscriptionStatus] = useState('free');
+
+  useEffect(() => {
+    if (isSignedIn && user?.primaryEmailAddress) {
+      setEmail(user.primaryEmailAddress.emailAddress);
+    }
+  }, [isSignedIn, user]);
 
   const handleFile = (e) => {
     const f = e.target.files[0];
@@ -28,6 +36,11 @@ export default function App() {
       alert('Please sign in to analyze resumes!');
       return;
     }
+
+    if (!email) {
+      alert('Please enter your email address!');
+      return;
+    }
     
     if (!file || !job) {
       alert('Need resume AND job description!');
@@ -40,6 +53,7 @@ export default function App() {
     const form = new FormData();
     form.append('resume', file);
     form.append('jobDescription', job);
+    form.append('email', email);
 
     try {
       const res = await fetch('/api/analyze', { method: 'POST', body: form });
@@ -59,6 +73,7 @@ export default function App() {
       
       setResult(data);
       setScansRemaining(data.scansRemaining);
+      setSubscriptionStatus(data.subscriptionStatus || 'free');
     } catch (err) {
       alert('Error analyzing!');
     }
@@ -150,6 +165,8 @@ export default function App() {
     navigator.clipboard.writeText(text);
     alert('Copied!');
   };
+
+  const isPaidUser = subscriptionStatus === 'monthly' || subscriptionStatus === 'annual';
 
   if (page === 'home') {
     return (
@@ -343,6 +360,19 @@ export default function App() {
               </div>
             </div>
           )}
+
+          <div className="mb-6">
+            <label className="block text-white mb-2 font-semibold">Email Address</label>
+            <input 
+              type="email" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              placeholder="your@email.com"
+              className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 placeholder-purple-300" 
+              disabled={!isSignedIn} 
+            />
+            <p className="text-purple-300 text-sm mt-1">We'll send your optimized resume to this email</p>
+          </div>
           
           <div className="mb-6">
             <label className="block text-white mb-2 font-semibold">Upload Resume (PDF)</label>
@@ -370,7 +400,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* ATS Compatibility */}
             {result.atsCompatibility && (
               <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 border border-white/20 mb-6">
                 <h3 className="text-2xl font-bold text-white mb-4">🎯 ATS System Compatibility</h3>
@@ -482,7 +511,6 @@ export default function App() {
               </div>
             )}
 
-            {/* Formatting Issues */}
             {result.formattingIssues && result.formattingIssues !== 'None detected' && (
               <div className="bg-orange-500/20 border border-orange-500 rounded-xl p-6 mb-6">
                 <h3 className="text-2xl font-bold text-white mb-3">⚠️ Formatting Issues Detected</h3>
@@ -505,38 +533,92 @@ export default function App() {
             <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 border border-white/20 mb-6">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-2xl font-bold text-white">AI-Optimized Resume</h3>
-                <div className="flex gap-2">
-                  <button onClick={() => copyText(result.optimizedResume)} className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
-                    <Copy size={18} /> Copy
-                  </button>
-                  <button onClick={downloadResumePDF} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-                    <Download size={18} /> PDF
-                  </button>
-                  <button onClick={downloadResumeText} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-                    <Download size={18} /> Text
-                  </button>
-                </div>
+                {isPaidUser && (
+                  <div className="flex gap-2">
+                    <button onClick={() => copyText(result.optimizedResume)} className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
+                      <Copy size={18} /> Copy
+                    </button>
+                    <button onClick={downloadResumePDF} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                      <Download size={18} /> PDF
+                    </button>
+                    <button onClick={downloadResumeText} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                      <Download size={18} /> Text
+                    </button>
+                  </div>
+                )}
               </div>
-              <pre className="bg-black/30 p-6 rounded-lg text-white whitespace-pre-wrap font-mono text-sm">{result.optimizedResume}</pre>
+
+              {!isPaidUser ? (
+                <div className="relative">
+                  <pre className="bg-black/30 p-6 rounded-lg text-white whitespace-pre-wrap font-mono text-sm mb-4">
+                    {result.optimizedResume.substring(0, 400)}...
+                  </pre>
+                  <div className="relative">
+                    <pre className="bg-black/30 p-6 rounded-lg text-white whitespace-pre-wrap font-mono text-sm blur-sm select-none">
+                      {result.optimizedResume.substring(400, 800)}
+                    </pre>
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg">
+                      <div className="text-center bg-gradient-to-br from-purple-600 to-pink-600 p-8 rounded-xl max-w-md">
+                        <Lock className="w-16 h-16 text-white mx-auto mb-4" />
+                        <h3 className="text-2xl font-bold text-white mb-2">Unlock Full Resume</h3>
+                        <p className="text-white mb-6">See the complete optimized resume + cover letter</p>
+                        <div className="flex flex-col gap-3">
+                          <button 
+                            onClick={() => handleCheckout('price_1SfCtLAwfYeu0c4ApXwqfyUR')} 
+                            className="bg-white text-purple-900 px-6 py-3 rounded-lg font-semibold hover:bg-purple-100 transition"
+                          >
+                            Upgrade - $14/month
+                          </button>
+                          <button 
+                            onClick={() => handleCheckout('price_1SfCtuAwfYeu0c4AhdFPWnyj')} 
+                            className="bg-yellow-500 text-black px-6 py-3 rounded-lg font-semibold hover:bg-yellow-600 transition"
+                          >
+                            Best Value - $120/year
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <pre className="bg-black/30 p-6 rounded-lg text-white whitespace-pre-wrap font-mono text-sm">{result.optimizedResume}</pre>
+              )}
             </div>
 
             {result.coverLetter && (
               <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 border border-white/20">
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-2xl font-bold text-white">Cover Letter</h3>
-                  <div className="flex gap-2">
-                    <button onClick={() => copyText(result.coverLetter)} className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
-                      <Copy size={18} /> Copy
-                    </button>
-                    <button onClick={downloadCoverLetterPDF} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-                      <Download size={18} /> PDF
-                    </button>
-                    <button onClick={downloadCoverLetterText} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-                      <Download size={18} /> Text
-                    </button>
-                  </div>
+                  {isPaidUser && (
+                    <div className="flex gap-2">
+                      <button onClick={() => copyText(result.coverLetter)} className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
+                        <Copy size={18} /> Copy
+                      </button>
+                      <button onClick={downloadCoverLetterPDF} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                        <Download size={18} /> PDF
+                      </button>
+                      <button onClick={downloadCoverLetterText} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                        <Download size={18} /> Text
+                      </button>
+                    </div>
+                  )}
                 </div>
-                <pre className="bg-black/30 p-6 rounded-lg text-white whitespace-pre-wrap font-mono text-sm">{result.coverLetter}</pre>
+                
+                {!isPaidUser ? (
+                  <div className="relative">
+                    <pre className="bg-black/30 p-6 rounded-lg text-white whitespace-pre-wrap font-mono text-sm blur-lg select-none">
+                      {result.coverLetter}
+                    </pre>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="flex items-center gap-2 text-white bg-purple-900/90 px-6 py-3 rounded-lg">
+                        <Lock size={20} />
+                        <span className="font-semibold">Upgrade to unlock cover letter</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <pre className="bg-black/30 p-6 rounded-lg text-white whitespace-pre-wrap font-mono text-sm">{result.coverLetter}</pre>
+                )}
               </div>
             )}
           </>
