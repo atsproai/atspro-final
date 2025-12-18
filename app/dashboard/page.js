@@ -1319,7 +1319,7 @@ function DashboardContent() {
           </div>
         </div>
       
-        <FeedbackWidget showToast={showToast} /></div>
+        <FeedbackWidget /></div>
     </div>
   );
 }
