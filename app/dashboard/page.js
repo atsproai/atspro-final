@@ -18,7 +18,8 @@ import {
   Plus,
   Trash2,
   ExternalLink,
-  Clock
+  Clock,
+  Bell
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -39,7 +40,7 @@ export default function DashboardPage() {
   useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
-    if (activeSection === 'tracker' && mounted) {
+    if ((activeSection === 'tracker' || activeSection === 'home') && mounted) {
       fetchApplications();
     }
   }, [activeSection, mounted]);
@@ -145,6 +146,28 @@ export default function DashboardPage() {
     }
   };
 
+  const getFollowUpApplications = () => {
+    const sevenDaysAgo = 7 * 24 * 60 * 60 * 1000;
+    return applications.filter(app => {
+      const daysSince = Date.now() - new Date(app.applied_date).getTime();
+      return app.status === 'applied' && daysSince > sevenDaysAgo;
+    });
+  };
+
+  const getApplicationStats = () => {
+    return {
+      total: applications.length,
+      applied: applications.filter(a => a.status === 'applied').length,
+      phoneScreen: applications.filter(a => a.status === 'phone-screen').length,
+      interview: applications.filter(a => a.status === 'interview').length,
+      offer: applications.filter(a => a.status === 'offer').length,
+      rejected: applications.filter(a => a.status === 'rejected').length,
+      responseRate: applications.length > 0 
+        ? Math.round(((applications.length - applications.filter(a => a.status === 'applied').length) / applications.length) * 100)
+        : 0
+    };
+  };
+
   const sections = [
     {
       id: 'resumes',
@@ -178,6 +201,120 @@ export default function DashboardPage() {
   ];
 
   const renderContent = () => {
+    if (activeSection === 'home') {
+      const stats = getApplicationStats();
+      const followUpApps = getFollowUpApplications();
+
+      return (
+        <div className="space-y-6">
+          {followUpApps.length > 0 && (
+            <div className="bg-red-500/20 border-2 border-red-500 rounded-xl p-4 md:p-6">
+              <div className="flex items-start gap-3">
+                <Bell className="text-red-300 flex-shrink-0 mt-1" size={24} />
+                <div className="flex-1">
+                  <h3 className="text-xl font-bold text-white mb-2">
+                    ⚠️ {followUpApps.length} Application{followUpApps.length > 1 ? 's' : ''} Need Follow-Up!
+                  </h3>
+                  <p className="text-red-100 mb-4">
+                    These applications are over 7 days old. Consider sending a follow-up email!
+                  </p>
+                  <div className="space-y-2">
+                    {followUpApps.slice(0, 3).map(app => (
+                      <div key={app.id} className="bg-white/10 rounded-lg p-3 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                        <div>
+                          <div className="font-semibold text-white">{app.company_name}</div>
+                          <div className="text-sm text-red-200">{app.job_title} • {getDaysAgo(app.applied_date)} days ago</div>
+                        </div>
+                        <button
+                          onClick={() => router.push('/email-templates')}
+                          className="bg-white text-purple-900 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-purple-100 whitespace-nowrap"
+                        >
+                          Send Follow-Up
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  {followUpApps.length > 3 && (
+                    <button
+                      onClick={() => setActiveSection('tracker')}
+                      className="text-red-200 text-sm mt-3 underline hover:text-white"
+                    >
+                      View all {followUpApps.length} applications →
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {applications.length > 0 ? (
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <TrendingUp className="text-pink-500" size={32} />
+                <h2 className="text-3xl md:text-4xl font-bold text-white">Your Progress</h2>
+              </div>
+              
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+                <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border border-white/20">
+                  <div className="text-3xl font-bold text-white mb-1">{stats.total}</div>
+                  <div className="text-purple-200 text-sm">Total</div>
+                </div>
+                <div className="bg-blue-500/20 backdrop-blur-lg rounded-xl p-4 border border-blue-500">
+                  <div className="text-3xl font-bold text-blue-300 mb-1">{stats.applied}</div>
+                  <div className="text-blue-200 text-sm">Applied</div>
+                </div>
+                <div className="bg-yellow-500/20 backdrop-blur-lg rounded-xl p-4 border border-yellow-500">
+                  <div className="text-3xl font-bold text-yellow-300 mb-1">{stats.phoneScreen}</div>
+                  <div className="text-yellow-200 text-sm">Phone</div>
+                </div>
+                <div className="bg-purple-500/20 backdrop-blur-lg rounded-xl p-4 border border-purple-500">
+                  <div className="text-3xl font-bold text-purple-300 mb-1">{stats.interview}</div>
+                  <div className="text-purple-200 text-sm">Interview</div>
+                </div>
+                <div className="bg-green-500/20 backdrop-blur-lg rounded-xl p-4 border border-green-500">
+                  <div className="text-3xl font-bold text-green-300 mb-1">{stats.offer}</div>
+                  <div className="text-green-200 text-sm">Offers</div>
+                </div>
+                <div className="bg-pink-500/20 backdrop-blur-lg rounded-xl p-4 border border-pink-500">
+                  <div className="text-3xl font-bold text-pink-300 mb-1">{stats.responseRate}%</div>
+                  <div className="text-pink-200 text-sm">Response</div>
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-pink-500 rounded-xl p-6 text-center">
+                <h3 className="text-2xl font-bold text-white mb-2">Keep Going! 🚀</h3>
+                <p className="text-purple-200">
+                  You're actively applying to jobs. Your dream role is closer than you think!
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <div className="text-6xl mb-6">🎯</div>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Welcome, {user?.firstName || 'there'}! 👋</h2>
+              <p className="text-purple-200 mb-8 text-lg max-w-2xl mx-auto">
+                Track your job applications, optimize your resume, prepare for interviews, and land your dream job!
+              </p>
+              <button
+                onClick={() => setActiveSection('tracker')}
+                className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:from-pink-600 hover:to-purple-700 transition mb-4"
+              >
+                Start Tracking Applications
+              </button>
+              <div className="mt-6">
+                <button
+                  onClick={() => router.push('/')}
+                  className="text-purple-200 underline hover:text-white"
+                >
+                  Or analyze your resume with ATS scan →
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
     if (activeSection === 'tracker') {
       const statusOptions = [
         { value: 'applied', label: 'Applied' },
@@ -349,26 +486,6 @@ export default function DashboardPage() {
               ))}
             </div>
           )}
-        </div>
-      );
-    }
-
-    if (activeSection === 'home') {
-      return (
-        <div className="text-center py-12">
-          <div className="text-6xl mb-6">🎯</div>
-          <h2 className="text-4xl font-bold text-white mb-4">
-            Welcome, {user?.firstName || 'there'}! 👋
-          </h2>
-          <p className="text-purple-200 mb-8 text-lg max-w-2xl mx-auto">
-            Your all-in-one job search toolkit. Select a tool from the sidebar to get started!
-          </p>
-          <button
-            onClick={() => router.push('/')}
-            className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:from-pink-600 hover:to-purple-700 transition"
-          >
-            Start New ATS Scan
-          </button>
         </div>
       );
     }
