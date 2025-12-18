@@ -295,9 +295,15 @@ export default function App() {
               <p className="text-xl text-yellow-200 mb-4">
                 Lock in $14/month FOREVER and save $131/year
               </p>
-              <p className="text-purple-200 max-w-2xl mx-auto">
+              <p className="text-purple-200 max-w-2xl mx-auto mb-4">
                 We're raising prices to $24.99/month soon. Sign up now and you'll never pay more than $14/month, even when prices increase. This is a one-time opportunity!
               </p>
+              <div className="bg-purple-500/30 border border-purple-400 rounded-lg p-4 mb-4 max-w-2xl mx-auto">
+                <p className="text-white font-semibold mb-2">🚀 Plus: New Features Coming Soon!</p>
+                <p className="text-purple-100 text-sm">
+                  Skills Gap Analysis • Salary Negotiation Tools • Resume Versions • Browser Extension • And more!
+                </p>
+              </div>
               <div className="mt-4 inline-block bg-white/10 px-6 py-2 rounded-full">
                 <p className="text-sm text-white">
                   <span className="font-bold text-yellow-300">Regular Price:</span> <span className="line-through">$24.99/mo</span> → 
