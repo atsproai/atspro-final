@@ -1,17 +1,60 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { NextResponse } from 'next/server';
-import { getAuth } from '@clerk/nextjs/server';
+import { auth } from '@clerk/nextjs/server';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
+const RATE_LIMIT_WINDOW = 60 * 1000;
+const MAX_REQUESTS_PER_WINDOW = 3;
+const requestTracker = new Map();
+
+function getRateLimitKey(userId, ip) {
+  return `interview-${userId}-${ip}`;
+}
+
+function checkRateLimit(key) {
+  const now = Date.now();
+  const userRequests = requestTracker.get(key) || [];
+  const recentRequests = userRequests.filter(time => now - time < RATE_LIMIT_WINDOW);
+  
+  if (recentRequests.length >= MAX_REQUESTS_PER_WINDOW) {
+    return false;
+  }
+  
+  recentRequests.push(now);
+  requestTracker.set(key, recentRequests);
+  
+  setTimeout(() => {
+    const current = requestTracker.get(key) || [];
+    const filtered = current.filter(time => Date.now() - time < RATE_LIMIT_WINDOW);
+    if (filtered.length === 0) {
+      requestTracker.delete(key);
+    } else {
+      requestTracker.set(key, filtered);
+    }
+  }, RATE_LIMIT_WINDOW);
+  
+  return true;
+}
+
 export async function POST(req) {
   try {
-    const { userId } = getAuth(req);
+    const { userId } = await auth();
     
     if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized - Please sign in' }, { status: 401 });
+    }
+
+    const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
+    const rateLimitKey = getRateLimitKey(userId, ip);
+    
+    if (!checkRateLimit(rateLimitKey)) {
+      return NextResponse.json({ 
+        error: 'Rate limit exceeded. Please wait a moment before generating more interview prep.',
+        rateLimited: true 
+      }, { status: 429 });
     }
 
     const formData = await req.formData();
@@ -22,7 +65,14 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Missing resume or job description' }, { status: 400 });
     }
 
-    // Convert PDF to base64 for Claude
+    if (resume.size > 10 * 1024 * 1024) {
+      return NextResponse.json({ error: 'Resume file too large. Maximum 10MB.' }, { status: 400 });
+    }
+
+    if (jobDescription.length > 10000) {
+      return NextResponse.json({ error: 'Job description too long. Maximum 10,000 characters.' }, { status: 400 });
+    }
+
     const resumeBuffer = await resume.arrayBuffer();
     const resumeBase64 = Buffer.from(resumeBuffer).toString('base64');
 
@@ -79,7 +129,6 @@ TIP: [Brief tip for this question type]
 
     const responseText = message.content[0].text;
     
-    // Parse questions
     const questionBlocks = responseText.split(/QUESTION_\d+:/g).filter(Boolean);
     
     const questions = questionBlocks.map(block => {
@@ -98,6 +147,14 @@ TIP: [Brief tip for this question type]
 
   } catch (error) {
     console.error('Interview prep error:', error);
+    
+    if (error.message?.includes('rate_limit')) {
+      return NextResponse.json({ 
+        error: 'API rate limit reached. Please try again in a moment.',
+        rateLimited: true 
+      }, { status: 429 });
+    }
+    
     return NextResponse.json({ error: 'Failed to generate interview prep' }, { status: 500 });
   }
 }
