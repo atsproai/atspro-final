@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
 import { jsPDF } from 'jspdf';
-import { useToast, ToastProvider } from '../components/Toast';
+import { useToast } from '../components/Toast';
 import FeedbackWidget from '../components/FeedbackWidget';
 import { 
   FileText, 
@@ -39,7 +39,7 @@ import {
   Bell
 } from 'lucide-react';
 
-function DashboardContent() {
+export default function DashboardPage() {
   const router = useRouter();
   const { isSignedIn, user, isLoaded } = useUser();
   const { showToast } = useToast();
@@ -1322,13 +1322,5 @@ function DashboardContent() {
         <FeedbackWidget />
       </div>
     </div>
-  );
-}
-
-export default function DashboardPage() {
-  return (
-    <ToastProvider>
-      <DashboardContent />
-    </ToastProvider>
   );
 }
