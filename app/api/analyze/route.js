@@ -1,29 +1,69 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { NextResponse } from 'next/server';
-import { getAuth } from '@clerk/nextjs/server';
+import { auth } from '@clerk/nextjs/server';
 import { supabaseAdmin } from '../../../lib/supabase';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
+const RATE_LIMIT_WINDOW = 60 * 1000;
+const MAX_REQUESTS_PER_WINDOW = 3;
+const requestTracker = new Map();
+
+function getRateLimitKey(userId, ip) {
+  return `${userId}-${ip}`;
+}
+
+function checkRateLimit(key) {
+  const now = Date.now();
+  const userRequests = requestTracker.get(key) || [];
+  const recentRequests = userRequests.filter(time => now - time < RATE_LIMIT_WINDOW);
+  
+  if (recentRequests.length >= MAX_REQUESTS_PER_WINDOW) {
+    return false;
+  }
+  
+  recentRequests.push(now);
+  requestTracker.set(key, recentRequests);
+  
+  setTimeout(() => {
+    const current = requestTracker.get(key) || [];
+    const filtered = current.filter(time => Date.now() - time < RATE_LIMIT_WINDOW);
+    if (filtered.length === 0) {
+      requestTracker.delete(key);
+    } else {
+      requestTracker.set(key, filtered);
+    }
+  }, RATE_LIMIT_WINDOW);
+  
+  return true;
+}
+
 export async function POST(req) {
   try {
-    // Get authenticated user
-    const { userId } = getAuth(req);
+    const { userId } = await auth();
     
     if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized - Please sign in' }, { status: 401 });
     }
 
-    // Check/create user in database
+    const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
+    const rateLimitKey = getRateLimitKey(userId, ip);
+    
+    if (!checkRateLimit(rateLimitKey)) {
+      return NextResponse.json({ 
+        error: 'Rate limit exceeded. Please wait a moment before trying again.',
+        rateLimited: true 
+      }, { status: 429 });
+    }
+
     let { data: userData, error: userError } = await supabaseAdmin
       .from('user_scans')
       .select('*')
       .eq('user_id', userId)
       .single();
 
-    // If user doesn't exist, create them
     if (userError && userError.code === 'PGRST116') {
       const { data: newUser, error: createError } = await supabaseAdmin
         .from('user_scans')
@@ -38,10 +78,9 @@ export async function POST(req) {
       userData = newUser;
     }
 
-    // Check if user has reached their limit
     if (userData.subscription_status === 'free' && userData.scan_count >= 1) {
       return NextResponse.json({ 
-        error: 'Free plan limit reached. Please upgrade to continue.',
+        error: 'Free plan limit reached. Upgrade to continue analyzing resumes.',
         limitReached: true 
       }, { status: 403 });
     }
@@ -54,10 +93,16 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Missing resume or job description' }, { status: 400 });
     }
 
-    // Extract job title from description (first line or first 50 chars)
+    if (resume.size > 10 * 1024 * 1024) {
+      return NextResponse.json({ error: 'Resume file too large. Maximum 10MB.' }, { status: 400 });
+    }
+
+    if (jobDescription.length > 10000) {
+      return NextResponse.json({ error: 'Job description too long. Maximum 10,000 characters.' }, { status: 400 });
+    }
+
     const jobTitle = jobDescription.split('\n')[0].substring(0, 100) || 'Untitled Job';
 
-    // Convert PDF to base64 for Claude
     const resumeBuffer = await resume.arrayBuffer();
     const resumeBase64 = Buffer.from(resumeBuffer).toString('base64');
 
@@ -122,11 +167,9 @@ COVER_LETTER:
 
     const responseText = message.content[0].text;
     
-    // Parse the response
     const scoreMatch = responseText.match(/SCORE:\s*(\d+)/);
     const missingMatch = responseText.match(/MISSING:\s*(.+?)(?=ATS_COMPATIBILITY:|$)/s);
     
-    // Parse ATS compatibility
     const atsSection = responseText.match(/ATS_COMPATIBILITY:\s*(.+?)(?=FORMATTING_ISSUES:|$)/s);
     const atsCompatibility = {};
     if (atsSection) {
@@ -142,7 +185,6 @@ COVER_LETTER:
       if (taleoMatch) atsCompatibility.taleo = taleoMatch[1].trim();
     }
     
-    // Parse formatting issues
     const formattingMatch = responseText.match(/FORMATTING_ISSUES:\s*(.+?)(?=OPTIMIZED_RESUME:|$)/s);
     const formattingIssues = formattingMatch ? formattingMatch[1].trim() : 'None detected';
     
@@ -154,7 +196,6 @@ COVER_LETTER:
     const optimizedResume = optimizedMatch ? optimizedMatch[1].trim() : '';
     const coverLetter = coverLetterMatch ? coverLetterMatch[1].trim() : '';
 
-    // Save to resume history
     const { error: historyError } = await supabaseAdmin
       .from('resume_history')
       .insert([{
@@ -171,7 +212,6 @@ COVER_LETTER:
       console.error('Error saving history:', historyError);
     }
 
-    // Increment scan count
     const { error: updateError } = await supabaseAdmin
       .from('user_scans')
       .update({ scan_count: userData.scan_count + 1 })
@@ -193,6 +233,14 @@ COVER_LETTER:
 
   } catch (error) {
     console.error('Analysis error:', error);
+    
+    if (error.message?.includes('rate_limit')) {
+      return NextResponse.json({ 
+        error: 'API rate limit reached. Please try again in a moment.',
+        rateLimited: true 
+      }, { status: 429 });
+    }
+    
     return NextResponse.json({ error: 'Failed to analyze resume' }, { status: 500 });
   }
 }
