@@ -1319,7 +1319,8 @@ function DashboardContent() {
           </div>
         </div>
       
-        <FeedbackWidget /></div>
+        <FeedbackWidget />
+      </div>
     </div>
   );
 }
