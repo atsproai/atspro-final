@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
 import { jsPDF } from 'jspdf';
 
-
 import { 
   FileText, 
   Briefcase, 
@@ -38,7 +37,6 @@ import {
   Clock,
   Bell
 } from 'lucide-react';
-import FeedbackWidget from '../components/FeedbackWidget';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -190,7 +188,6 @@ export default function DashboardPage() {
       alert('Error deleting application!');
     }
   };
-
 
 
   const getFollowUpApplications = () => {
@@ -1322,7 +1319,6 @@ export default function DashboardPage() {
       
       </div>
 
-      <FeedbackWidget />
     </div>
   );
 }
