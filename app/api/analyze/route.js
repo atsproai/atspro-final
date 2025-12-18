@@ -88,9 +88,14 @@ export async function POST(req) {
     const formData = await req.formData();
     const resume = formData.get('resume');
     const jobDescription = formData.get('jobDescription');
+    const email = formData.get('email');
 
     if (!resume || !jobDescription) {
       return NextResponse.json({ error: 'Missing resume or job description' }, { status: 400 });
+    }
+
+    if (!email || !email.includes('@')) {
+      return NextResponse.json({ error: 'Valid email address required' }, { status: 400 });
     }
 
     if (resume.size > 10 * 1024 * 1024) {
@@ -214,7 +219,10 @@ COVER_LETTER:
 
     const { error: updateError } = await supabaseAdmin
       .from('user_scans')
-      .update({ scan_count: userData.scan_count + 1 })
+      .update({ 
+        scan_count: userData.scan_count + 1,
+        email: email 
+      })
       .eq('user_id', userId);
 
     if (updateError) {
@@ -228,6 +236,7 @@ COVER_LETTER:
       formattingIssues,
       optimizedResume,
       coverLetter,
+      subscriptionStatus: userData.subscription_status,
       scansRemaining: userData.subscription_status === 'free' ? 0 : 'unlimited'
     });
 
