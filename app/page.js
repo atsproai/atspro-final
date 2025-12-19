@@ -341,7 +341,7 @@ export default function App() {
                 <li>✓ All features unlocked</li>
                 <li>✓ Priority support</li>
               </ul>
-              <button onClick={() => handleCheckout('price_1SfCtLAwfYeu0c4ApXwqfyUR')} className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
+              <button onClick={() => handleCheckout('price_1SfvfjAwfYeu0c4AHrF1yEQo')} className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
                 Start Trial
               </button>
             </div>
@@ -356,7 +356,7 @@ export default function App() {
                 <li>✓ Lifetime updates</li>
                 <li>✓ VIP support</li>
               </ul>
-              <button onClick={() => handleCheckout('price_1SfCtuAwfYeu0c4AhdFPWnyj')} className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800">
+              <button onClick={() => handleCheckout('price_1SfvjAAwfYeu0c4AI6M1tnjv')} className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800">
                 Start Trial
               </button>
             </div>
@@ -404,10 +404,10 @@ export default function App() {
               <h3 className="text-2xl font-bold text-white mb-2">Free Scan Used!</h3>
               <p className="text-red-100 mb-4">Upgrade to get unlimited resume scans + all features</p>
               <div className="flex gap-4 justify-center">
-                <button onClick={() => handleCheckout('price_1SfCtLAwfYeu0c4ApXwqfyUR')} className="bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700">
+                <button onClick={() => handleCheckout('price_1SfvfjAwfYeu0c4AHrF1yEQo')} className="bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700">
                   $14/month
                 </button>
-                <button onClick={() => handleCheckout('price_1SfCtuAwfYeu0c4AhdFPWnyj')} className="bg-yellow-500 text-black px-6 py-2 rounded-lg font-semibold hover:bg-yellow-600">
+                <button onClick={() => handleCheckout('price_1SfvjAAwfYeu0c4AI6M1tnjv')} className="bg-yellow-500 text-black px-6 py-2 rounded-lg font-semibold hover:bg-yellow-600">
                   $120/year (Save $48!)
                 </button>
               </div>
@@ -617,14 +617,14 @@ export default function App() {
                         <p className="text-white mb-6">✨ See your complete optimized resume + cover letter</p>
                         <div className="flex flex-col gap-3">
                           <button 
-                            onClick={() => handleCheckout('price_1SfCtLAwfYeu0c4ApXwqfyUR')} 
+                            onClick={() => handleCheckout('price_1SfvfjAwfYeu0c4AHrF1yEQo')} 
                             className="bg-white text-purple-900 px-6 py-4 rounded-lg font-bold hover:bg-purple-100 transition text-lg"
                           >
                             🎁 Start 7-Day FREE Trial - $14/mo
                           </button>
                           <p className="text-white text-xs -mt-2 mb-2">Cancel anytime • Unlock instantly</p>
                           <button 
-                            onClick={() => handleCheckout('price_1SfCtuAwfYeu0c4AhdFPWnyj')} 
+                            onClick={() => handleCheckout('price_1SfvjAAwfYeu0c4AI6M1tnjv')} 
                             className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-6 py-4 rounded-lg font-bold hover:from-yellow-500 hover:to-orange-600 transition text-lg"
                           >
                             💎 Best Value - $120/year (Save $48!)
