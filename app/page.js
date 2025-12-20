@@ -168,6 +168,84 @@ export default function App() {
 
   const isPaidUser = subscriptionStatus === 'monthly' || subscriptionStatus === 'annual';
 
+  // FAQ Component
+  const FAQ = () => {
+    const [openIndex, setOpenIndex] = React.useState(null);
+
+    const faqs = [
+      {
+        q: "How does the 7-day free trial work?",
+        a: "Start your trial with any paid plan - we won't charge you for 7 days. Use all features unlimited during the trial. Cancel anytime before day 7 ends and you'll never be charged. After 7 days, your subscription starts automatically."
+      },
+      {
+        q: "What ATS systems do you support?",
+        a: "We test your resume against the 4 most popular ATS systems: Workday, Greenhouse, Lever, and Taleo. These are used by 80%+ of Fortune 500 companies. Our AI optimizes your resume to pass all of them."
+      },
+      {
+        q: "Can I cancel anytime?",
+        a: "Absolutely! Cancel anytime with one click in your dashboard. No questions asked, no cancellation fees. Your subscription stops at the end of your current billing period."
+      },
+      {
+        q: "How is this different from other resume tools?",
+        a: "Most ATS checkers just give you a score. We actually rewrite your resume with AI, check compatibility with 4 major ATS systems, generate cover letters, optimize your LinkedIn, and include interview prep. Plus our early adopter pricing ($14/mo) is 40% cheaper than competitors."
+      },
+      {
+        q: "What's your refund policy?",
+        a: "Monthly Plan: Use the 7-day free trial risk-free. Cancel before it ends = $0 charged. After the trial, you can cancel anytime but we don't offer refunds for partial months. Annual Plan: 30-day money-back guarantee, no questions asked. If you're not satisfied within 30 days of purchase, we'll refund you in full."
+      },
+      {
+        q: "What if I'm not getting interviews after using this?",
+        a: "We're here to help! Email us at koorahthebest@gmail.com and we'll personally review your resume and application strategy. Our goal is your success - if our tool isn't working for you, we want to know so we can make it better."
+      },
+      {
+        q: "Do you store my resume data?",
+        a: "We only store your resumes in your private, secure account. You can delete them anytime. We never share your data with third parties or use it for anything other than providing you our service."
+      },
+      {
+        q: "Can I use this for multiple jobs?",
+        a: "Yes! Paid users get unlimited resume optimizations. We recommend creating a tailored resume for each job you apply to - that's when our tool works best."
+      }
+    ];
+
+    return (
+      <div className="max-w-4xl mx-auto mb-20">
+        <h3 className="text-4xl font-bold text-white mb-4 text-center">Frequently Asked Questions</h3>
+        <p className="text-purple-200 text-center mb-8">Everything you need to know about ATSpro.ai</p>
+        
+        <div className="space-y-4">
+          {faqs.map((faq, index) => (
+            <div key={index} className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/20 overflow-hidden">
+              <button
+                onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                className="w-full p-6 text-left flex justify-between items-center hover:bg-white/5 transition"
+              >
+                <span className="text-white font-semibold text-lg pr-8">{faq.q}</span>
+                <span className="text-purple-300 text-2xl flex-shrink-0">
+                  {openIndex === index ? '−' : '+'}
+                </span>
+              </button>
+              {openIndex === index && (
+                <div className="px-6 pb-6">
+                  <p className="text-purple-200 leading-relaxed">{faq.a}</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-8 text-center">
+          <p className="text-purple-200 mb-4">Still have questions?</p>
+          <a 
+            href="mailto:koorahthebest@gmail.com" 
+            className="inline-block bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-700 transition"
+          >
+            Contact Support
+          </a>
+        </div>
+      </div>
+    );
+  };
+
   // Footer Component
   const Footer = () => (
     <footer className="bg-white/5 backdrop-blur-lg border-t border-white/10 mt-20">
@@ -437,6 +515,8 @@ export default function App() {
           </div>
           <p className="text-purple-200 mt-6">⭐ 7-day free trial • Cancel anytime • No commitments</p>
         </div>
+
+        <FAQ />
 
         <Footer />
       </div>
