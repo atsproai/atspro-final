@@ -15,7 +15,7 @@ export async function POST(request) {
     const { priceId } = await request.json();
     
     // Get user's email from Clerk
-    const user = await clerkClient().users.getUser(userId);
+    const user = await clerkClient.users.getUser(userId);
     const userEmail = user.emailAddresses[0]?.emailAddress;
 
     const session = await stripe.checkout.sessions.create({
