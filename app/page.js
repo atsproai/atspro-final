@@ -168,6 +168,80 @@ export default function App() {
 
   const isPaidUser = subscriptionStatus === 'monthly' || subscriptionStatus === 'annual';
 
+  // Footer Component
+  const Footer = () => (
+    <footer className="bg-white/5 backdrop-blur-lg border-t border-white/10 mt-20">
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        <div className="grid md:grid-cols-4 gap-8">
+          {/* Company Info */}
+          <div>
+            <h3 className="text-white font-bold text-xl mb-4">ATSpro.ai</h3>
+            <p className="text-purple-200 text-sm">
+              AI-powered job search assistant helping you land your dream job.
+            </p>
+          </div>
+
+          {/* Product Links */}
+          <div>
+            <h4 className="text-white font-semibold mb-4">Product</h4>
+            <ul className="space-y-2 text-purple-200 text-sm">
+              <li><button onClick={() => setPage('analyzer')} className="hover:text-white">Resume Analyzer</button></li>
+              <li><a href="/dashboard" className="hover:text-white">Dashboard</a></li>
+              <li><a href="/history" className="hover:text-white">History</a></li>
+              <li><a href="/email-templates" className="hover:text-white">Email Templates</a></li>
+            </ul>
+          </div>
+
+          {/* Support Links */}
+          <div>
+            <h4 className="text-white font-semibold mb-4">Support</h4>
+            <ul className="space-y-2 text-purple-200 text-sm">
+              <li>
+                <a href="mailto:koorahthebest@gmail.com" className="hover:text-white">
+                  Contact Support
+                </a>
+              </li>
+              <li>
+                <a href="mailto:koorahthebest@gmail.com?subject=Bug Report" className="hover:text-white">
+                  Report a Bug
+                </a>
+              </li>
+              <li>
+                <a href="mailto:koorahthebest@gmail.com?subject=Feature Request" className="hover:text-white">
+                  Request a Feature
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h4 className="text-white font-semibold mb-4">Contact</h4>
+            <ul className="space-y-2 text-purple-200 text-sm">
+              <li>
+                <a href="mailto:koorahthebest@gmail.com" className="hover:text-white">
+                  koorahthebest@gmail.com
+                </a>
+              </li>
+              <li>
+                <a href="mailto:koorahthebest@gmail.com?subject=Business Inquiry" className="hover:text-white">
+                  Business Inquiries
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="border-t border-white/10 mt-8 pt-8 text-center">
+          <p className="text-purple-300 text-sm">
+            © 2025 ATSpro.ai. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+
   if (page === 'home') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900">
@@ -341,7 +415,7 @@ export default function App() {
                 <li>✓ All features unlocked</li>
                 <li>✓ Priority support</li>
               </ul>
-              <button onClick={() => handleCheckout('price_1SfvfjAwfYeu0c4AHrF1yEQo')} className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
+              <button onClick={() => handleCheckout('price_1SfCtLAwfYeu0c4ApXwqfyUR')} className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
                 Start Trial
               </button>
             </div>
@@ -356,13 +430,15 @@ export default function App() {
                 <li>✓ Lifetime updates</li>
                 <li>✓ VIP support</li>
               </ul>
-              <button onClick={() => handleCheckout('price_1SfvjAAwfYeu0c4AI6M1tnjv')} className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800">
+              <button onClick={() => handleCheckout('price_1SfCtuAwfYeu0c4AhdFPWnyj')} className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800">
                 Start Trial
               </button>
             </div>
           </div>
           <p className="text-purple-200 mt-6">⭐ 7-day free trial • Cancel anytime • No commitments</p>
         </div>
+
+        <Footer />
       </div>
     );
   }
@@ -404,10 +480,10 @@ export default function App() {
               <h3 className="text-2xl font-bold text-white mb-2">Free Scan Used!</h3>
               <p className="text-red-100 mb-4">Upgrade to get unlimited resume scans + all features</p>
               <div className="flex gap-4 justify-center">
-                <button onClick={() => handleCheckout('price_1SfvfjAwfYeu0c4AHrF1yEQo')} className="bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700">
+                <button onClick={() => handleCheckout('price_1SfCtLAwfYeu0c4ApXwqfyUR')} className="bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700">
                   $14/month
                 </button>
-                <button onClick={() => handleCheckout('price_1SfvjAAwfYeu0c4AI6M1tnjv')} className="bg-yellow-500 text-black px-6 py-2 rounded-lg font-semibold hover:bg-yellow-600">
+                <button onClick={() => handleCheckout('price_1SfCtuAwfYeu0c4AhdFPWnyj')} className="bg-yellow-500 text-black px-6 py-2 rounded-lg font-semibold hover:bg-yellow-600">
                   $120/year (Save $48!)
                 </button>
               </div>
@@ -680,6 +756,8 @@ export default function App() {
           </>
         )}
       </div>
+
+      <Footer />
     </div>
   );
 }
