@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { auth } from '@clerk/nextjs/server';
+import { auth, clerkClient } from '@clerk/nextjs/server';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -13,9 +13,13 @@ export async function POST(request) {
     }
 
     const { priceId } = await request.json();
+    
+    // Get user's email from Clerk
+    const user = await clerkClient().users.getUser(userId);
+    const userEmail = user.emailAddresses[0]?.emailAddress;
 
     const session = await stripe.checkout.sessions.create({
-      customer_email: userId,
+      customer_email: userEmail,
       line_items: [
         {
           price: priceId,
