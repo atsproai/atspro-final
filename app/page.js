@@ -16,22 +16,20 @@ export default function App() {
   const [limitReached, setLimitReached] = useState(false);
   const [subscriptionStatus, setSubscriptionStatus] = useState('free');
   const [showSignUpModal, setShowSignUpModal] = useState(false);
-  const [pendingPriceId, setPendingPriceId] = useState(null);
 
   useEffect(() => {
     if (isSignedIn && user?.primaryEmailAddress) {
       setEmail(user.primaryEmailAddress.emailAddress);
+      
+      // Check if user just signed up and has a pending checkout
+      const pendingPrice = localStorage.getItem('pendingPriceId');
+      if (pendingPrice) {
+        // User just signed up! Auto-redirect to checkout
+        localStorage.removeItem('pendingPriceId'); // Clear it first
+        handleCheckout(pendingPrice);
+      }
     }
   }, [isSignedIn, user]);
-
-  // Auto-trigger checkout after user signs up
-  useEffect(() => {
-    if (isSignedIn && pendingPriceId) {
-      // User just signed up! Auto-redirect to checkout
-      handleCheckout(pendingPriceId);
-      setPendingPriceId(null); // Clear pending price
-    }
-  }, [isSignedIn, pendingPriceId]);
 
   const handleFile = (e) => {
     const f = e.target.files[0];
@@ -112,16 +110,9 @@ export default function App() {
     }
   };
 
-  // Handle "Start Trial" click - save price and trigger sign-up if needed
-  const handleStartTrial = (priceId) => {
-    if (isSignedIn) {
-      // Already signed in, go straight to checkout
-      handleCheckout(priceId);
-    } else {
-      // Not signed in, save the price for after sign-up
-      setPendingPriceId(priceId);
-      // The SignUpButton will handle opening the modal
-    }
+  // Save price selection before sign-up
+  const savePrice = (priceId) => {
+    localStorage.setItem('pendingPriceId', priceId);
   };
 
   const downloadResumePDF = () => {
@@ -660,7 +651,7 @@ export default function App() {
                 </button>
               ) : (
                 <SignUpButton mode="modal">
-                  <button onClick={() => setPendingPriceId('price_1SfvfjAwfYeu0c4AHrF1yEQo')} className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
+                  <button onMouseDown={() => savePrice('price_1SfvfjAwfYeu0c4AHrF1yEQo')} onTouchStart={() => savePrice('price_1SfvfjAwfYeu0c4AHrF1yEQo')} className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
                     Start Trial
                   </button>
                 </SignUpButton>
@@ -683,7 +674,7 @@ export default function App() {
                 </button>
               ) : (
                 <SignUpButton mode="modal">
-                  <button onClick={() => setPendingPriceId('price_1SfvjAAwfYeu0c4AI6M1tnjv')} className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800">
+                  <button onMouseDown={() => savePrice('price_1SfvjAAwfYeu0c4AI6M1tnjv')} onTouchStart={() => savePrice('price_1SfvjAAwfYeu0c4AI6M1tnjv')} className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800">
                     Start Trial
                   </button>
                 </SignUpButton>
@@ -749,12 +740,12 @@ export default function App() {
                 ) : (
                   <>
                     <SignUpButton mode="modal">
-                      <button onClick={() => setPendingPriceId('price_1SfvfjAwfYeu0c4AHrF1yEQo')} className="bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700">
+                      <button onMouseDown={() => savePrice('price_1SfvfjAwfYeu0c4AHrF1yEQo')} onTouchStart={() => savePrice('price_1SfvfjAwfYeu0c4AHrF1yEQo')} className="bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700">
                         $14/month
                       </button>
                     </SignUpButton>
                     <SignUpButton mode="modal">
-                      <button onClick={() => setPendingPriceId('price_1SfvjAAwfYeu0c4AI6M1tnjv')} className="bg-yellow-500 text-black px-6 py-2 rounded-lg font-semibold hover:bg-yellow-600">
+                      <button onMouseDown={() => savePrice('price_1SfvjAAwfYeu0c4AI6M1tnjv')} onTouchStart={() => savePrice('price_1SfvjAAwfYeu0c4AI6M1tnjv')} className="bg-yellow-500 text-black px-6 py-2 rounded-lg font-semibold hover:bg-yellow-600">
                         $120/year (Save $48!)
                       </button>
                     </SignUpButton>
@@ -976,7 +967,8 @@ export default function App() {
                           ) : (
                             <SignUpButton mode="modal">
                               <button 
-                                onClick={() => setPendingPriceId('price_1SfvfjAwfYeu0c4AHrF1yEQo')}
+                                onMouseDown={() => savePrice('price_1SfvfjAwfYeu0c4AHrF1yEQo')}
+                                onTouchStart={() => savePrice('price_1SfvfjAwfYeu0c4AHrF1yEQo')}
                                 className="bg-white text-purple-900 px-6 py-4 rounded-lg font-bold hover:bg-purple-100 transition text-lg"
                               >
                                 🎁 Start 7-Day FREE Trial - $14/mo
@@ -994,7 +986,8 @@ export default function App() {
                           ) : (
                             <SignUpButton mode="modal">
                               <button 
-                                onClick={() => setPendingPriceId('price_1SfvjAAwfYeu0c4AI6M1tnjv')}
+                                onMouseDown={() => savePrice('price_1SfvjAAwfYeu0c4AI6M1tnjv')}
+                                onTouchStart={() => savePrice('price_1SfvjAAwfYeu0c4AI6M1tnjv')}
                                 className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-6 py-4 rounded-lg font-bold hover:from-yellow-500 hover:to-orange-600 transition text-lg"
                               >
                                 💎 Best Value - $120/year (Save $48!)
