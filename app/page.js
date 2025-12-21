@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { Upload, CheckCircle, Users, ArrowRight, Copy, Download, Lock } from 'lucide-react';
+import { Upload, CheckCircle, Users, ArrowRight, Copy, Download, Lock, Loader2, Check } from 'lucide-react';
 import { SignInButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs';
 import { jsPDF } from 'jspdf';
 
@@ -16,6 +16,7 @@ export default function App() {
   const [limitReached, setLimitReached] = useState(false);
   const [subscriptionStatus, setSubscriptionStatus] = useState('free');
   const [showSignUpModal, setShowSignUpModal] = useState(false);
+  const [copiedItem, setCopiedItem] = useState(null); // Track which item was just copied
 
   useEffect(() => {
     if (isSignedIn && user?.primaryEmailAddress) {
@@ -175,9 +176,10 @@ export default function App() {
     a.click();
   };
 
-  const copyText = (text) => {
+  const copyText = (text, itemId) => {
     navigator.clipboard.writeText(text);
-    alert('Copied!');
+    setCopiedItem(itemId); // Show checkmark
+    setTimeout(() => setCopiedItem(null), 2000); // Hide after 2 seconds
   };
 
   const isPaidUser = subscriptionStatus === 'monthly' || subscriptionStatus === 'annual';
@@ -778,8 +780,15 @@ export default function App() {
             <textarea value={job} onChange={(e) => setJob(e.target.value)} rows={6} placeholder="Paste the job description here..." className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 placeholder-purple-200" disabled={!isSignedIn} />
           </div>
 
-          <button onClick={analyze} disabled={loading || !isSignedIn} className="w-full bg-white text-purple-900 py-3 rounded-lg font-semibold hover:bg-purple-100 transition disabled:opacity-50">
-            {loading ? 'Analyzing...' : 'Analyze Resume'}
+          <button onClick={analyze} disabled={loading || !isSignedIn} className="w-full bg-white text-purple-900 py-3 rounded-lg font-semibold hover:bg-purple-100 transition disabled:opacity-50 flex items-center justify-center gap-2">
+            {loading ? (
+              <>
+                <Loader2 className="animate-spin" size={20} />
+                Analyzing...
+              </>
+            ) : (
+              'Analyze Resume'
+            )}
           </button>
         </div>
 
@@ -929,8 +938,16 @@ export default function App() {
                 <h3 className="text-2xl font-bold text-white">AI-Optimized Resume</h3>
                 {isPaidUser && (
                   <div className="flex gap-2">
-                    <button onClick={() => copyText(result.optimizedResume)} className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
-                      <Copy size={18} /> Copy
+                    <button onClick={() => copyText(result.optimizedResume, 'resume')} className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+                      {copiedItem === 'resume' ? (
+                        <>
+                          <Check size={18} className="text-green-300" /> Copied!
+                        </>
+                      ) : (
+                        <>
+                          <Copy size={18} /> Copy
+                        </>
+                      )}
                     </button>
                     <button onClick={downloadResumePDF} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
                       <Download size={18} /> PDF
@@ -1012,8 +1029,16 @@ export default function App() {
                   <h3 className="text-2xl font-bold text-white">Cover Letter</h3>
                   {isPaidUser && (
                     <div className="flex gap-2">
-                      <button onClick={() => copyText(result.coverLetter)} className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
-                        <Copy size={18} /> Copy
+                      <button onClick={() => copyText(result.coverLetter, 'coverletter')} className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+                        {copiedItem === 'coverletter' ? (
+                          <>
+                            <Check size={18} className="text-green-300" /> Copied!
+                          </>
+                        ) : (
+                          <>
+                            <Copy size={18} /> Copy
+                          </>
+                        )}
                       </button>
                       <button onClick={downloadCoverLetterPDF} className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
                         <Download size={18} /> PDF
