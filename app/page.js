@@ -465,6 +465,144 @@ export default function App() {
             </div>
           </div>
 
+          {/* Comparison Table */}
+          <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 mb-16 max-w-6xl mx-auto">
+            <h3 className="text-3xl font-bold text-white mb-3 text-center">Why Choose ATSpro.ai?</h3>
+            <p className="text-purple-200 text-center mb-8">See how we stack up against the competition</p>
+            
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="border-b border-white/20">
+                    <th className="p-4 text-white font-semibold">Feature</th>
+                    <th className="p-4 text-center">
+                      <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg p-3">
+                        <div className="text-white font-bold text-lg">ATSpro.ai</div>
+                        <div className="text-yellow-300 text-sm">🔥 You're Here!</div>
+                      </div>
+                    </th>
+                    <th className="p-4 text-center text-purple-200">Jobscan</th>
+                    <th className="p-4 text-center text-purple-200">Rezi</th>
+                    <th className="p-4 text-center text-purple-200">Teal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-white/10">
+                    <td className="p-4 text-purple-100 font-semibold">Price per month</td>
+                    <td className="p-4 text-center">
+                      <div className="text-green-400 font-bold text-xl">$14</div>
+                      <div className="text-xs text-green-300">Early adopter!</div>
+                    </td>
+                    <td className="p-4 text-center text-purple-200">$49.95</td>
+                    <td className="p-4 text-center text-purple-200">$29</td>
+                    <td className="p-4 text-center text-purple-200">$29</td>
+                  </tr>
+                  
+                  <tr className="border-b border-white/10 bg-pink-500/10">
+                    <td className="p-4 text-purple-100 font-semibold">
+                      ATS System Compatibility Check
+                      <div className="text-xs text-pink-300 font-normal">Workday, Greenhouse, Lever, Taleo</div>
+                    </td>
+                    <td className="p-4 text-center">
+                      <span className="text-green-400 text-2xl">✓</span>
+                      <div className="text-xs text-green-300 font-semibold">All 4 systems!</div>
+                    </td>
+                    <td className="p-4 text-center text-red-400 text-2xl">✗</td>
+                    <td className="p-4 text-center text-red-400 text-2xl">✗</td>
+                    <td className="p-4 text-center text-red-400 text-2xl">✗</td>
+                  </tr>
+                  
+                  <tr className="border-b border-white/10">
+                    <td className="p-4 text-purple-100 font-semibold">AI Resume Optimization</td>
+                    <td className="p-4 text-center text-green-400 text-2xl">✓</td>
+                    <td className="p-4 text-center text-green-400 text-2xl">✓</td>
+                    <td className="p-4 text-center text-green-400 text-2xl">✓</td>
+                    <td className="p-4 text-center text-green-400 text-2xl">✓</td>
+                  </tr>
+                  
+                  <tr className="border-b border-white/10">
+                    <td className="p-4 text-purple-100 font-semibold">Cover Letter Generation</td>
+                    <td className="p-4 text-center text-green-400 text-2xl">✓</td>
+                    <td className="p-4 text-center text-green-400 text-2xl">✓</td>
+                    <td className="p-4 text-center text-green-400 text-2xl">✓</td>
+                    <td className="p-4 text-center text-red-400 text-2xl">✗</td>
+                  </tr>
+                  
+                  <tr className="border-b border-white/10">
+                    <td className="p-4 text-purple-100 font-semibold">LinkedIn Profile Optimizer</td>
+                    <td className="p-4 text-center text-green-400 text-2xl">✓</td>
+                    <td className="p-4 text-center text-red-400 text-2xl">✗</td>
+                    <td className="p-4 text-center text-red-400 text-2xl">✗</td>
+                    <td className="p-4 text-center text-green-400 text-2xl">✓</td>
+                  </tr>
+                  
+                  <tr className="border-b border-white/10">
+                    <td className="p-4 text-purple-100 font-semibold">Professional Email Templates</td>
+                    <td className="p-4 text-center text-green-400 text-2xl">✓</td>
+                    <td className="p-4 text-center text-red-400 text-2xl">✗</td>
+                    <td className="p-4 text-center text-red-400 text-2xl">✗</td>
+                    <td className="p-4 text-center text-green-400 text-2xl">✓</td>
+                  </tr>
+                  
+                  <tr className="border-b border-white/10">
+                    <td className="p-4 text-purple-100 font-semibold">Interview Preparation</td>
+                    <td className="p-4 text-center text-green-400 text-2xl">✓</td>
+                    <td className="p-4 text-center text-red-400 text-2xl">✗</td>
+                    <td className="p-4 text-center text-red-400 text-2xl">✗</td>
+                    <td className="p-4 text-center text-green-400 text-2xl">✓</td>
+                  </tr>
+                  
+                  <tr className="border-b border-white/10">
+                    <td className="p-4 text-purple-100 font-semibold">Job Application Tracker</td>
+                    <td className="p-4 text-center text-green-400 text-2xl">✓</td>
+                    <td className="p-4 text-center text-red-400 text-2xl">✗</td>
+                    <td className="p-4 text-center text-red-400 text-2xl">✗</td>
+                    <td className="p-4 text-center text-green-400 text-2xl">✓</td>
+                  </tr>
+                  
+                  <tr className="border-b border-white/10">
+                    <td className="p-4 text-purple-100 font-semibold">Free Trial</td>
+                    <td className="p-4 text-center">
+                      <span className="text-green-400 text-2xl">✓</span>
+                      <div className="text-xs text-green-300">7 days</div>
+                    </td>
+                    <td className="p-4 text-center">
+                      <span className="text-yellow-400 text-2xl">✓</span>
+                      <div className="text-xs text-purple-200">Limited</div>
+                    </td>
+                    <td className="p-4 text-center">
+                      <span className="text-yellow-400 text-2xl">✓</span>
+                      <div className="text-xs text-purple-200">7 days</div>
+                    </td>
+                    <td className="p-4 text-center">
+                      <span className="text-yellow-400 text-2xl">✓</span>
+                      <div className="text-xs text-purple-200">Limited</div>
+                    </td>
+                  </tr>
+                  
+                  <tr>
+                    <td className="p-4"></td>
+                    <td className="p-4 text-center">
+                      <button onClick={() => setPage('analyzer')} className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg font-bold hover:from-purple-700 hover:to-pink-700 transition">
+                        Try Free Now →
+                      </button>
+                    </td>
+                    <td className="p-4 text-center text-purple-300 text-sm">Starting at $49.95/mo</td>
+                    <td className="p-4 text-center text-purple-300 text-sm">Starting at $29/mo</td>
+                    <td className="p-4 text-center text-purple-300 text-sm">Starting at $29/mo</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <div className="mt-6 text-center">
+              <p className="text-purple-200 text-sm">
+                💡 <span className="font-semibold text-white">Why we're cheaper:</span> We're new and want to help job seekers. 
+                Lock in this price before we raise it to $24.99/mo!
+              </p>
+            </div>
+          </div>
+
           <h3 className="text-4xl font-bold text-white mb-8">Simple Pricing</h3>
           <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             <div className="bg-white/10 backdrop-blur-lg p-8 rounded-xl">
