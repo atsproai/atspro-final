@@ -451,9 +451,9 @@ export default function App() {
               <div className="text-5xl font-bold text-white mb-2">50K+</div>
               <div className="text-purple-200">Resumes Fixed</div>
             </div>
-            <div className="bg-white/10 backdrop-blur-lg p-6 rounded-xl">
-              <div className="text-5xl font-bold text-white mb-2">15+</div>
-              <div className="text-purple-200">Career Tools</div>
+            <div className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-lg p-6 rounded-xl border-2 border-blue-400">
+              <div className="text-4xl font-bold text-white mb-2">🌍 50+</div>
+              <div className="text-blue-200 font-semibold">Languages Supported</div>
             </div>
           </div>
 
@@ -496,6 +496,13 @@ export default function App() {
                 <div>
                   <h4 className="text-white font-semibold text-lg mb-1">ATS-Optimized Resumes</h4>
                   <p className="text-purple-200">AI rewrites your resume with job-specific keywords. Test compatibility with Workday, Greenhouse, Lever & Taleo</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 bg-gradient-to-br from-blue-500/20 to-purple-500/20 p-4 rounded-lg border-2 border-blue-400">
+                <CheckCircle className="text-blue-300 flex-shrink-0 mt-1" size={24} />
+                <div>
+                  <h4 className="text-white font-semibold text-lg mb-1">🌍 Multilingual Support</h4>
+                  <p className="text-blue-200">Works in 50+ languages! Get ATS-safe versions for French, Spanish, German & more</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -1146,7 +1153,88 @@ export default function App() {
               </div>
             )}
 
-            {result && result.optimizedResume && hasInternationalCharacters(result.optimizedResume) && (
+            {!isPaidUser && result && result.optimizedResume && hasInternationalCharacters(result.optimizedResume) && (
+              <div className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 border-2 border-blue-400 rounded-xl p-8 mb-6">
+                <div className="text-center">
+                  <div className="text-6xl mb-4">🌍</div>
+                  <h3 className="text-3xl font-bold text-white mb-3">Multilingual Resume Detected!</h3>
+                  <p className="text-blue-200 text-lg mb-6">
+                    We noticed your resume contains special characters (é, è, à, ô, ç, etc.)
+                  </p>
+                  
+                  <div className="bg-white/10 rounded-lg p-6 mb-6 text-left max-w-2xl mx-auto">
+                    <p className="text-white font-semibold mb-4 text-center">✨ Upgrade to unlock exclusive multilingual features:</p>
+                    <ul className="space-y-3 text-blue-100">
+                      <li className="flex items-start gap-3">
+                        <CheckCircle className="text-blue-300 flex-shrink-0 mt-1" size={20} />
+                        <span><strong className="text-white">Your optimized resume</strong> - Fully optimized in your language with job-specific keywords</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <CheckCircle className="text-blue-300 flex-shrink-0 mt-1" size={20} />
+                        <span><strong className="text-white">ATS-safe version</strong> - Special characters removed for maximum compatibility with older systems</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <CheckCircle className="text-blue-300 flex-shrink-0 mt-1" size={20} />
+                        <span><strong className="text-white">Cover letter</strong> - Professionally written in your language</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <CheckCircle className="text-blue-300 flex-shrink-0 mt-1" size={20} />
+                        <span><strong className="text-white">Apply confidently</strong> - Perfect for both local and international companies</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-yellow-500/20 border border-yellow-400 rounded-lg p-4 mb-6 max-w-2xl mx-auto">
+                    <p className="text-yellow-200 text-sm">
+                      <strong className="text-white">🎯 This feature is UNIQUE to ATSpro!</strong> No other ATS tool offers dual-language optimization for international job seekers.
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-xl mx-auto">
+                    {isSignedIn ? (
+                      <>
+                        <button
+                          onClick={() => handleCheckout('price_1SfvfjAwfYeu0c4AHrF1yEQo')}
+                          className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:from-blue-600 hover:to-purple-700 transition"
+                        >
+                          🎁 Start Free Trial - $14/mo
+                        </button>
+                        <button
+                          onClick={() => handleCheckout('price_1SfvjAAwfYeu0c4AI6M1tnjv')}
+                          className="flex-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-8 py-4 rounded-lg font-bold text-lg hover:from-yellow-500 hover:to-orange-600 transition"
+                        >
+                          💎 Best Value - $120/year
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <SignUpButton mode="modal">
+                          <button
+                            onMouseDown={() => savePrice('price_1SfvfjAwfYeu0c4AHrF1yEQo')}
+                            onTouchStart={() => savePrice('price_1SfvfjAwfYeu0c4AHrF1yEQo')}
+                            className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:from-blue-600 hover:to-purple-700 transition"
+                          >
+                            🎁 Start Free Trial - $14/mo
+                          </button>
+                        </SignUpButton>
+                        <SignUpButton mode="modal">
+                          <button
+                            onMouseDown={() => savePrice('price_1SfvjAAwfYeu0c4AI6M1tnjv')}
+                            onTouchStart={() => savePrice('price_1SfvjAAwfYeu0c4AI6M1tnjv')}
+                            className="flex-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-8 py-4 rounded-lg font-bold text-lg hover:from-yellow-500 hover:to-orange-600 transition"
+                          >
+                            💎 Best Value - $120/year
+                          </button>
+                        </SignUpButton>
+                      </>
+                    )}
+                  </div>
+                  <p className="text-blue-200 text-sm mt-4">7-day free trial • Cancel anytime • Unlock instantly</p>
+                </div>
+              </div>
+            )}
+
+            {isPaidUser && result && result.optimizedResume && hasInternationalCharacters(result.optimizedResume) && (
               <div className="bg-blue-500/20 border-2 border-blue-400 rounded-xl p-6 mb-6">
                 <h3 className="text-2xl font-bold text-white mb-3">🌍 International Characters Detected</h3>
                 <p className="text-white mb-4">
@@ -1233,8 +1321,23 @@ export default function App() {
                     <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg">
                       <div className="text-center bg-gradient-to-br from-purple-600 to-pink-600 p-8 rounded-xl max-w-md">
                         <Lock className="w-16 h-16 text-white mx-auto mb-4" />
-                        <h3 className="text-2xl font-bold text-white mb-2">🔒 Unlock Full Resume</h3>
-                        <p className="text-white mb-6">✨ See your complete optimized resume + cover letter</p>
+                        {hasInternationalCharacters(result.optimizedResume) ? (
+                          <>
+                            <div className="text-4xl mb-2">🌍</div>
+                            <h3 className="text-2xl font-bold text-white mb-2">🔒 Unlock Multilingual Features</h3>
+                            <div className="text-white mb-6 text-left text-sm space-y-2">
+                              <p className="flex items-start gap-2"><CheckCircle size={16} className="mt-0.5 flex-shrink-0" /> Get your optimized resume in your language</p>
+                              <p className="flex items-start gap-2"><CheckCircle size={16} className="mt-0.5 flex-shrink-0" /> Get ATS-safe version (no accents)</p>
+                              <p className="flex items-start gap-2"><CheckCircle size={16} className="mt-0.5 flex-shrink-0" /> Cover letter in your language</p>
+                              <p className="flex items-start gap-2"><CheckCircle size={16} className="mt-0.5 flex-shrink-0" /> Apply to local AND international companies</p>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <h3 className="text-2xl font-bold text-white mb-2">🔒 Unlock Full Resume</h3>
+                            <p className="text-white mb-6">✨ See your complete optimized resume + cover letter</p>
+                          </>
+                        )}
                         <div className="flex flex-col gap-3">
                           {isSignedIn ? (
                             <button 
