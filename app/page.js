@@ -722,7 +722,10 @@ export default function App() {
               <div className="absolute top-4 right-4 bg-white text-orange-600 px-3 py-1 rounded-full text-sm font-bold">BEST VALUE</div>
               <h4 className="text-2xl font-bold text-black mb-4">Annual</h4>
               <div className="text-4xl font-bold text-black mb-2">$120<span className="text-lg">/yr</span></div>
-              <div className="text-black mb-6">Save $48/year!</div>
+              <div className="text-black mb-2">Save $48/year!</div>
+              <div className="bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-bold mb-4 inline-block">
+                ✓ 30-Day Money Back Guarantee
+              </div>
               <ul className="text-left text-black text-sm mb-6 space-y-2">
                 <li>✓ Everything in Monthly</li>
                 <li>✓ 2 months free</li>
@@ -742,7 +745,35 @@ export default function App() {
               )}
             </div>
           </div>
-          <p className="text-purple-200 mt-6">⭐ 7-day free trial • Cancel anytime • No commitments</p>
+          <p className="text-purple-200 mt-6 mb-8">⭐ 7-day free trial • Cancel anytime • No commitments</p>
+          
+          <div className="flex flex-wrap justify-center items-center gap-6 md:gap-8 max-w-4xl mx-auto">
+            <div className="flex items-center gap-2 text-purple-200">
+              <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span className="text-sm font-semibold">Secure Checkout</span>
+            </div>
+            <div className="flex items-center gap-2 text-purple-200">
+              <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+              </svg>
+              <span className="text-sm font-semibold">256-bit SSL Encrypted</span>
+            </div>
+            <div className="flex items-center gap-2 text-purple-200">
+              <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span className="text-sm font-semibold">PCI Compliant</span>
+            </div>
+            <div className="flex items-center gap-2 text-purple-200">
+              <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+                <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7a1 1 0 00-1 1v6.05A2.5 2.5 0 0115.95 16H17a1 1 0 001-1v-5a1 1 0 00-.293-.707l-2-2A1 1 0 0015 7h-1z" />
+              </svg>
+              <span className="text-sm font-semibold">Instant Access</span>
+            </div>
+          </div>
         </div>
 
         <FAQ />
