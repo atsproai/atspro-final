@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
-import { ArrowLeft, Copy, Linkedin, Sparkles, Briefcase } from 'lucide-react';
+import { ArrowLeft, Copy, Linkedin, Sparkles, Briefcase, Loader2, Check } from 'lucide-react';
 
 export default function LinkedInOptimizerPage() {
   const router = useRouter();
@@ -11,6 +11,7 @@ export default function LinkedInOptimizerPage() {
   const [targetRole, setTargetRole] = useState('');
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [copiedItem, setCopiedItem] = useState(null);
 
   const handleFile = (e) => {
     const f = e.target.files[0];
@@ -49,9 +50,10 @@ export default function LinkedInOptimizerPage() {
     setLoading(false);
   };
 
-  const copyText = (text, label) => {
+  const copyText = (text, itemId) => {
     navigator.clipboard.writeText(text);
-    alert(`${label} copied to clipboard!`);
+    setCopiedItem(itemId);
+    setTimeout(() => setCopiedItem(null), 2000);
   };
 
   if (!isSignedIn) {
@@ -112,15 +114,21 @@ export default function LinkedInOptimizerPage() {
           <button
             onClick={optimize}
             disabled={loading}
-            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition disabled:opacity-50 text-lg"
+            className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition disabled:opacity-50 text-lg flex items-center justify-center gap-2"
           >
-            {loading ? 'Optimizing...' : '✨ Optimize LinkedIn Profile'}
+            {loading ? (
+              <>
+                <Loader2 className="animate-spin" size={20} />
+                Optimizing...
+              </>
+            ) : (
+              '✨ Optimize LinkedIn Profile'
+            )}
           </button>
         </div>
 
         {result && (
           <>
-            {/* Headline */}
             <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 border border-white/20 mb-6">
               <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center gap-2">
@@ -128,10 +136,18 @@ export default function LinkedInOptimizerPage() {
                   <h3 className="text-2xl font-bold text-white">LinkedIn Headline</h3>
                 </div>
                 <button
-                  onClick={() => copyText(result.headline, 'Headline')}
+                  onClick={() => copyText(result.headline, 'headline')}
                   className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
                 >
-                  <Copy size={18} /> Copy
+                  {copiedItem === 'headline' ? (
+                    <>
+                      <Check size={18} className="text-green-300" /> Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={18} /> Copy
+                    </>
+                  )}
                 </button>
               </div>
               <div className="bg-black/30 p-6 rounded-lg">
@@ -140,7 +156,6 @@ export default function LinkedInOptimizerPage() {
               <p className="text-purple-300 text-sm mt-2">💡 Max 220 characters - Perfect for LinkedIn!</p>
             </div>
 
-            {/* About Section */}
             <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 border border-white/20 mb-6">
               <div className="flex justify-between items-center mb-4">
                 <div className="flex items-center gap-2">
@@ -148,10 +163,18 @@ export default function LinkedInOptimizerPage() {
                   <h3 className="text-2xl font-bold text-white">About Section</h3>
                 </div>
                 <button
-                  onClick={() => copyText(result.about, 'About section')}
+                  onClick={() => copyText(result.about, 'about')}
                   className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
                 >
-                  <Copy size={18} /> Copy
+                  {copiedItem === 'about' ? (
+                    <>
+                      <Check size={18} className="text-green-300" /> Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={18} /> Copy
+                    </>
+                  )}
                 </button>
               </div>
               <div className="bg-black/30 p-6 rounded-lg">
@@ -159,7 +182,6 @@ export default function LinkedInOptimizerPage() {
               </div>
             </div>
 
-            {/* Experience Sections */}
             {result.experiences && result.experiences.map((exp, index) => (
               <div key={index} className="bg-white/10 backdrop-blur-lg rounded-xl p-8 border border-white/20 mb-6">
                 <div className="flex justify-between items-center mb-4">
@@ -171,10 +193,18 @@ export default function LinkedInOptimizerPage() {
                     </div>
                   </div>
                   <button
-                    onClick={() => copyText(exp.description, `${exp.title} description`)}
+                    onClick={() => copyText(exp.description, `exp-${index}`)}
                     className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
                   >
-                    <Copy size={18} /> Copy
+                    {copiedItem === `exp-${index}` ? (
+                      <>
+                        <Check size={18} className="text-green-300" /> Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={18} /> Copy
+                      </>
+                    )}
                   </button>
                 </div>
                 <div className="bg-black/30 p-6 rounded-lg">
