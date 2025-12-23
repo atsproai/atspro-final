@@ -19,6 +19,10 @@ export async function POST(request) {
     const userEmail = user.emailAddresses[0]?.emailAddress;
 
     const session = await stripe.checkout.sessions.create({
+      business_profile: {
+        name: 'ATSpro.ai',
+        url: 'https://ats-pro.io',
+      },
       customer_email: userEmail,
       line_items: [
         {
