@@ -211,7 +211,7 @@ export default function App() {
       },
       {
         q: "What if I'm not getting interviews after using this?",
-        a: "We're here to help! Email us at koorahthebest@gmail.com and we'll personally review your resume and application strategy. Our goal is your success - if our tool isn't working for you, we want to know so we can make it better."
+        a: "We're here to help! Email us at support@ats-pro.io and we'll personally review your resume and application strategy. Our goal is your success - if our tool isn't working for you, we want to know so we can make it better."
       },
       {
         q: "Do you store my resume data?",
@@ -252,7 +252,7 @@ export default function App() {
         <div className="mt-8 text-center">
           <p className="text-purple-200 mb-4">Still have questions?</p>
           <a 
-            href="mailto:koorahthebest@gmail.com" 
+            href="mailto:support@ats-pro.io" 
             className="inline-block bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-700 transition"
           >
             Contact Support
@@ -291,17 +291,17 @@ export default function App() {
             <h4 className="text-white font-semibold mb-4">Support</h4>
             <ul className="space-y-2 text-purple-200 text-sm">
               <li>
-                <a href="mailto:koorahthebest@gmail.com" className="hover:text-white">
+                <a href="mailto:support@ats-pro.io" className="hover:text-white">
                   Contact Support
                 </a>
               </li>
               <li>
-                <a href="mailto:koorahthebest@gmail.com?subject=Bug Report" className="hover:text-white">
+                <a href="mailto:support@ats-pro.io?subject=Bug Report" className="hover:text-white">
                   Report a Bug
                 </a>
               </li>
               <li>
-                <a href="mailto:koorahthebest@gmail.com?subject=Feature Request" className="hover:text-white">
+                <a href="mailto:support@ats-pro.io?subject=Feature Request" className="hover:text-white">
                   Request a Feature
                 </a>
               </li>
@@ -313,12 +313,12 @@ export default function App() {
             <h4 className="text-white font-semibold mb-4">Contact</h4>
             <ul className="space-y-2 text-purple-200 text-sm">
               <li>
-                <a href="mailto:koorahthebest@gmail.com" className="hover:text-white">
-                  koorahthebest@gmail.com
+                <a href="mailto:support@ats-pro.io" className="hover:text-white">
+                  support@ats-pro.io
                 </a>
               </li>
               <li>
-                <a href="mailto:koorahthebest@gmail.com?subject=Business Inquiry" className="hover:text-white">
+                <a href="mailto:hello@ats-pro.io?subject=Business Inquiry" className="hover:text-white">
                   Business Inquiries
                 </a>
               </li>
