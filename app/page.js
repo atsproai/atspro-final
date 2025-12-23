@@ -16,17 +16,15 @@ export default function App() {
   const [limitReached, setLimitReached] = useState(false);
   const [subscriptionStatus, setSubscriptionStatus] = useState('free');
   const [showSignUpModal, setShowSignUpModal] = useState(false);
-  const [copiedItem, setCopiedItem] = useState(null); // Track which item was just copied
+  const [copiedItem, setCopiedItem] = useState(null);
 
   useEffect(() => {
     if (isSignedIn && user?.primaryEmailAddress) {
       setEmail(user.primaryEmailAddress.emailAddress);
       
-      // Check if user just signed up and has a pending checkout
       const pendingPrice = localStorage.getItem('pendingPriceId');
       if (pendingPrice) {
-        // User just signed up! Auto-redirect to checkout
-        localStorage.removeItem('pendingPriceId'); // Clear it first
+        localStorage.removeItem('pendingPriceId');
         handleCheckout(pendingPrice);
       }
     }
@@ -111,7 +109,6 @@ export default function App() {
     }
   };
 
-  // Save price selection before sign-up
   const savePrice = (priceId) => {
     localStorage.setItem('pendingPriceId', priceId);
   };
@@ -178,13 +175,12 @@ export default function App() {
 
   const copyText = (text, itemId) => {
     navigator.clipboard.writeText(text);
-    setCopiedItem(itemId); // Show checkmark
-    setTimeout(() => setCopiedItem(null), 2000); // Hide after 2 seconds
+    setCopiedItem(itemId);
+    setTimeout(() => setCopiedItem(null), 2000);
   };
 
   const isPaidUser = subscriptionStatus === 'monthly' || subscriptionStatus === 'annual';
 
-  // FAQ Component
   const FAQ = () => {
     const [openIndex, setOpenIndex] = React.useState(null);
 
@@ -262,12 +258,10 @@ export default function App() {
     );
   };
 
-  // Footer Component
   const Footer = () => (
     <footer className="bg-white/5 backdrop-blur-lg border-t border-white/10 mt-20">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid md:grid-cols-4 gap-8">
-          {/* Company Info */}
           <div>
             <h3 className="text-white font-bold text-xl mb-4">ATSpro.ai</h3>
             <p className="text-purple-200 text-sm">
@@ -275,7 +269,6 @@ export default function App() {
             </p>
           </div>
 
-          {/* Product Links */}
           <div>
             <h4 className="text-white font-semibold mb-4">Product</h4>
             <ul className="space-y-2 text-purple-200 text-sm">
@@ -286,7 +279,6 @@ export default function App() {
             </ul>
           </div>
 
-          {/* Support Links */}
           <div>
             <h4 className="text-white font-semibold mb-4">Support</h4>
             <ul className="space-y-2 text-purple-200 text-sm">
@@ -308,7 +300,6 @@ export default function App() {
             </ul>
           </div>
 
-          {/* Contact */}
           <div>
             <h4 className="text-white font-semibold mb-4">Contact</h4>
             <ul className="space-y-2 text-purple-200 text-sm">
@@ -318,7 +309,7 @@ export default function App() {
                 </a>
               </li>
               <li>
-                <a href="mailto:hello@ats-pro.io?subject=Business Inquiry" className="hover:text-white">
+                <a href="mailto:support@ats-pro.io?subject=Business Inquiry" className="hover:text-white">
                   Business Inquiries
                 </a>
               </li>
@@ -326,7 +317,6 @@ export default function App() {
           </div>
         </div>
 
-        {/* Bottom Bar */}
         <div className="border-t border-white/10 mt-8 pt-8 text-center">
           <p className="text-purple-300 text-sm">
             © 2025 ATSpro.ai. All rights reserved.
@@ -339,7 +329,6 @@ export default function App() {
   if (page === 'home') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900">
-        {/* Early Adopter Banner */}
         <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-center py-2 px-4">
           <p className="text-sm md:text-base font-semibold">
             🔥 Early Adopter Pricing: Lock in $14/month FOREVER (Regular price $24.99) - Limited Time!
@@ -390,7 +379,6 @@ export default function App() {
           <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 mb-16 max-w-4xl mx-auto">
             <h3 className="text-3xl font-bold text-white mb-6">Everything You Need to Land Your Dream Job</h3>
             
-            {/* ATS Compatibility Showcase */}
             <div className="bg-gradient-to-br from-purple-600/30 to-pink-600/30 border-2 border-pink-500 rounded-xl p-6 mb-8">
               <h4 className="text-2xl font-bold text-white mb-3 flex items-center gap-2">
                 🎯 ATS System Compatibility Checker
@@ -453,7 +441,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* Urgency Box */}
           <div className="max-w-4xl mx-auto mb-12 bg-gradient-to-r from-red-500/20 to-orange-500/20 border-2 border-yellow-500 rounded-2xl p-6 md:p-8 backdrop-blur-lg">
             <div className="text-center">
               <div className="text-5xl mb-4">⚡</div>
@@ -481,7 +468,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* Comparison Table */}
           <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 mb-16 max-w-6xl mx-auto">
             <h3 className="text-3xl font-bold text-white mb-3 text-center">Why Choose ATSpro.ai?</h3>
             <p className="text-purple-200 text-center mb-8">See how we stack up against the competition</p>
