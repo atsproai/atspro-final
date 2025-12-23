@@ -605,6 +605,79 @@ export default function App() {
             </div>
           </div>
 
+          <div className="max-w-6xl mx-auto mb-16">
+            <h3 className="text-4xl font-bold text-white mb-3 text-center">What Job Seekers Are Saying</h3>
+            <p className="text-purple-200 text-center mb-12">Join thousands who landed their dream jobs with ATSpro.ai</p>
+            
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+                <div className="flex gap-1 mb-4">
+                  {[1,2,3,4,5].map((star) => (
+                    <span key={star} className="text-yellow-400 text-xl">★</span>
+                  ))}
+                </div>
+                <p className="text-white mb-4 leading-relaxed">
+                  "ATSpro helped me land 3 interviews in just 2 weeks! The ATS compatibility checker showed me exactly what was wrong with my resume. Best $14 I've ever spent!"
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                    <span className="text-white font-bold text-lg">SM</span>
+                  </div>
+                  <div>
+                    <div className="text-white font-semibold">Sarah M.</div>
+                    <div className="text-purple-300 text-sm">Software Engineer</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+                <div className="flex gap-1 mb-4">
+                  {[1,2,3,4,5].map((star) => (
+                    <span key={star} className="text-yellow-400 text-xl">★</span>
+                  ))}
+                </div>
+                <p className="text-white mb-4 leading-relaxed">
+                  "The LinkedIn optimizer is a game-changer. My profile views went up 300% in one week. Finally got messages from recruiters at companies I've been dreaming about!"
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
+                    <span className="text-white font-bold text-lg">MT</span>
+                  </div>
+                  <div>
+                    <div className="text-white font-semibold">Michael T.</div>
+                    <div className="text-purple-300 text-sm">Product Manager</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+                <div className="flex gap-1 mb-4">
+                  {[1,2,3,4,5].map((star) => (
+                    <span key={star} className="text-yellow-400 text-xl">★</span>
+                  ))}
+                </div>
+                <p className="text-white mb-4 leading-relaxed">
+                  "I was stuck in my job search for months. ATSpro's AI optimization got my resume past the ATS filters. Accepted an offer at my dream company last week!"
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
+                    <span className="text-white font-bold text-lg">DK</span>
+                  </div>
+                  <div>
+                    <div className="text-white font-semibold">David K.</div>
+                    <div className="text-purple-300 text-sm">Marketing Manager</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 text-center">
+              <p className="text-purple-200 text-lg">
+                ⭐ <span className="font-semibold text-white">4.9/5</span> average rating from 2,847+ job seekers
+              </p>
+            </div>
+          </div>
+
           <h3 className="text-4xl font-bold text-white mb-8">Simple Pricing</h3>
           <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             <div className="bg-white/10 backdrop-blur-lg p-8 rounded-xl">
