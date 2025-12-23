@@ -21,6 +21,8 @@ export default function App() {
   const [exitEmail, setExitEmail] = useState('');
   const [exitSubmitted, setExitSubmitted] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 6, hours: 14, minutes: 23, seconds: 45 });
+  const [atsSafeResume, setAtsSafeResume] = useState(null);
+  const [showAtsSafe, setShowAtsSafe] = useState(false);
 
   useEffect(() => {
     if (isSignedIn && user?.primaryEmailAddress) {
@@ -221,6 +223,40 @@ export default function App() {
     if (exitEmail) {
       setExitSubmitted(true);
       setTimeout(() => setShowExitPopup(false), 2000);
+    }
+  };
+
+  const hasInternationalCharacters = (text) => {
+    const internationalChars = /[àáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝŸ]/;
+    return internationalChars.test(text);
+  };
+
+  const removeInternationalCharacters = (text) => {
+    const charMap = {
+      'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a', 'æ': 'ae',
+      'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A', 'Å': 'A', 'Æ': 'AE',
+      'ç': 'c', 'Ç': 'C',
+      'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e',
+      'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E',
+      'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i',
+      'Ì': 'I', 'Í': 'I', 'Î': 'I', 'Ï': 'I',
+      'ñ': 'n', 'Ñ': 'N',
+      'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'o', 'ø': 'o',
+      'Ò': 'O', 'Ó': 'O', 'Ô': 'O', 'Õ': 'O', 'Ö': 'O', 'Ø': 'O',
+      'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u',
+      'Ù': 'U', 'Ú': 'U', 'Û': 'U', 'Ü': 'U',
+      'ý': 'y', 'ÿ': 'y', 'Ý': 'Y', 'Ÿ': 'Y'
+    };
+    
+    return text.replace(/[àáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝŸ]/g, 
+      match => charMap[match] || match);
+  };
+
+  const generateAtsSafeVersion = () => {
+    if (result && result.optimizedResume) {
+      const safeResume = removeInternationalCharacters(result.optimizedResume);
+      setAtsSafeResume(safeResume);
+      setShowAtsSafe(true);
     }
   };
 
@@ -1110,6 +1146,46 @@ export default function App() {
               </div>
             )}
 
+            {result && result.optimizedResume && hasInternationalCharacters(result.optimizedResume) && (
+              <div className="bg-blue-500/20 border-2 border-blue-400 rounded-xl p-6 mb-6">
+                <h3 className="text-2xl font-bold text-white mb-3">🌍 International Characters Detected</h3>
+                <p className="text-white mb-4">
+                  Your resume contains special characters (é, è, à, ô, ç, etc.) which may cause issues with older ATS systems, particularly Taleo.
+                </p>
+                
+                <div className="bg-white/10 rounded-lg p-4 mb-4">
+                  <p className="text-white font-semibold mb-2">What this means:</p>
+                  <ul className="text-purple-200 space-y-1 text-sm ml-4">
+                    <li>• Your resume might not parse correctly in some systems</li>
+                    <li>• Keywords with accents could be missed or misread</li>
+                    <li>• Mainly affects older ATS platforms like Taleo</li>
+                  </ul>
+                </div>
+
+                <div className="bg-white/10 rounded-lg p-4 mb-4">
+                  <p className="text-white font-semibold mb-2">Your options:</p>
+                  <div className="text-purple-200 space-y-2 text-sm">
+                    <p><span className="font-semibold text-white">Option 1:</span> Keep your resume as-is (recommended for French/local companies that expect special characters)</p>
+                    <p><span className="font-semibold text-white">Option 2:</span> Generate an ATS-safe version that removes accents (é→e, à→a) while keeping the same language and content</p>
+                  </div>
+                </div>
+
+                {!showAtsSafe ? (
+                  <button
+                    onClick={generateAtsSafeVersion}
+                    className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-3 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition flex items-center justify-center gap-2"
+                  >
+                    <CheckCircle size={20} />
+                    Generate ATS-Safe Version (Remove Accents)
+                  </button>
+                ) : (
+                  <div className="bg-green-500/20 border border-green-500 rounded-lg p-4 text-center">
+                    <p className="text-green-300 font-semibold">✓ ATS-Safe version generated! Scroll down to see it below your optimized resume.</p>
+                  </div>
+                )}
+              </div>
+            )}
+
             <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 border border-white/20 mb-6">
               <h3 className="text-2xl font-bold text-white mb-4">Missing Keywords</h3>
               <div className="flex flex-wrap gap-2">
@@ -1251,6 +1327,36 @@ export default function App() {
                 ) : (
                   <pre className="bg-black/30 p-6 rounded-lg text-white whitespace-pre-wrap font-mono text-sm">{result.coverLetter}</pre>
                 )}
+              </div>
+            )}
+
+            {showAtsSafe && atsSafeResume && isPaidUser && (
+              <div className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-lg rounded-xl p-8 border-2 border-blue-400 mt-6">
+                <div className="flex justify-between items-center mb-4">
+                  <div>
+                    <h3 className="text-2xl font-bold text-white mb-2">🌐 ATS-Safe Resume (Accents Removed)</h3>
+                    <p className="text-blue-200 text-sm">Special characters removed for maximum ATS compatibility</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => copyText(atsSafeResume, 'ats-safe')} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                      {copiedItem === 'ats-safe' ? (
+                        <>
+                          <Check size={18} className="text-green-300" /> Copied!
+                        </>
+                      ) : (
+                        <>
+                          <Copy size={18} /> Copy
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+                <pre className="bg-black/30 p-6 rounded-lg text-white whitespace-pre-wrap font-mono text-sm">{atsSafeResume}</pre>
+                <div className="mt-4 bg-blue-500/30 border border-blue-400 rounded-lg p-4">
+                  <p className="text-white text-sm">
+                    <span className="font-semibold">💡 When to use this version:</span> Use the ATS-safe version when applying to international companies or positions where you suspect older ATS systems (especially Taleo). Use your original version when applying to local companies that expect special characters.
+                  </p>
+                </div>
               </div>
             )}
           </>
