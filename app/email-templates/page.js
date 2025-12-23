@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
-import { ArrowLeft, Copy, Mail, Send, Sparkles, Download } from 'lucide-react';
+import { ArrowLeft, Copy, Mail, Send, Sparkles, Download, Loader2, Check } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 
 export default function EmailTemplatesPage() {
@@ -14,6 +14,7 @@ export default function EmailTemplatesPage() {
   const [resumeContext, setResumeContext] = useState('');
   const [generatedEmail, setGeneratedEmail] = useState('');
   const [loading, setLoading] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(false);
 
   const generateEmail = async () => {
     if (!jobTitle || !companyName || !resumeContext) {
@@ -43,7 +44,8 @@ export default function EmailTemplatesPage() {
 
   const copyEmail = () => {
     navigator.clipboard.writeText(generatedEmail);
-    alert('Email copied to clipboard!');
+    setCopiedEmail(true);
+    setTimeout(() => setCopiedEmail(false), 2000);
   };
 
   const downloadEmailPDF = () => {
@@ -182,9 +184,16 @@ export default function EmailTemplatesPage() {
           <button
             onClick={generateEmail}
             disabled={loading}
-            className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white py-4 rounded-lg font-semibold hover:from-pink-600 hover:to-purple-700 transition disabled:opacity-50 text-lg"
+            className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white py-4 rounded-lg font-semibold hover:from-pink-600 hover:to-purple-700 transition disabled:opacity-50 text-lg flex items-center justify-center gap-2"
           >
-            {loading ? 'Generating...' : '✨ Generate Email'}
+            {loading ? (
+              <>
+                <Loader2 className="animate-spin" size={20} />
+                Generating...
+              </>
+            ) : (
+              '✨ Generate Email'
+            )}
           </button>
 
           {/* Generated Email */}
@@ -197,7 +206,15 @@ export default function EmailTemplatesPage() {
                     onClick={copyEmail}
                     className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
                   >
-                    <Copy size={18} /> Copy
+                    {copiedEmail ? (
+                      <>
+                        <Check size={18} className="text-green-300" /> Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={18} /> Copy
+                      </>
+                    )}
                   </button>
                   <button
                     onClick={downloadEmailPDF}
