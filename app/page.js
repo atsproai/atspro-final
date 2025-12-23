@@ -17,6 +17,10 @@ export default function App() {
   const [subscriptionStatus, setSubscriptionStatus] = useState('free');
   const [showSignUpModal, setShowSignUpModal] = useState(false);
   const [copiedItem, setCopiedItem] = useState(null);
+  const [showExitPopup, setShowExitPopup] = useState(false);
+  const [exitEmail, setExitEmail] = useState('');
+  const [exitSubmitted, setExitSubmitted] = useState(false);
+  const [timeLeft, setTimeLeft] = useState({ days: 6, hours: 14, minutes: 23, seconds: 45 });
 
   useEffect(() => {
     if (isSignedIn && user?.primaryEmailAddress) {
@@ -29,6 +33,39 @@ export default function App() {
       }
     }
   }, [isSignedIn, user]);
+
+  useEffect(() => {
+    const handleMouseLeave = (e) => {
+      if (e.clientY <= 0 && !exitSubmitted && page === 'home') {
+        setShowExitPopup(true);
+      }
+    };
+    document.addEventListener('mouseleave', handleMouseLeave);
+    return () => document.removeEventListener('mouseleave', handleMouseLeave);
+  }, [exitSubmitted, page]);
+
+  useEffect(() => {
+    const targetDate = new Date();
+    targetDate.setDate(targetDate.getDate() + 6);
+    targetDate.setHours(targetDate.getHours() + 14);
+    
+    const timer = setInterval(() => {
+      const now = new Date().getTime();
+      const target = targetDate.getTime();
+      const difference = target - now;
+      
+      if (difference > 0) {
+        setTimeLeft({
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
+          seconds: Math.floor((difference % (1000 * 60)) / 1000)
+        });
+      }
+    }, 1000);
+    
+    return () => clearInterval(timer);
+  }, []);
 
   const handleFile = (e) => {
     const f = e.target.files[0];
@@ -177,6 +214,14 @@ export default function App() {
     navigator.clipboard.writeText(text);
     setCopiedItem(itemId);
     setTimeout(() => setCopiedItem(null), 2000);
+  };
+
+  const handleExitEmailSubmit = (e) => {
+    e.preventDefault();
+    if (exitEmail) {
+      setExitSubmitted(true);
+      setTimeout(() => setShowExitPopup(false), 2000);
+    }
   };
 
   const isPaidUser = subscriptionStatus === 'monthly' || subscriptionStatus === 'annual';
@@ -331,7 +376,7 @@ export default function App() {
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900">
         <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-center py-2 px-4">
           <p className="text-sm md:text-base font-semibold">
-            🔥 Early Adopter Pricing: Lock in $14/month FOREVER (Regular price $24.99) - Limited Time!
+            🔥 Early Adopter Pricing Ends In: {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s - Lock in $14/month FOREVER!
           </p>
         </div>
 
@@ -779,6 +824,57 @@ export default function App() {
         <FAQ />
 
         <Footer />
+
+        {showExitPopup && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-gradient-to-br from-purple-900 to-indigo-900 rounded-2xl p-8 max-w-md w-full border-2 border-pink-500 shadow-2xl relative">
+              {!exitSubmitted ? (
+                <>
+                  <button 
+                    onClick={() => setShowExitPopup(false)}
+                    className="absolute top-4 right-4 text-white/60 hover:text-white text-2xl"
+                  >
+                    ×
+                  </button>
+                  <div className="text-center mb-6">
+                    <div className="text-6xl mb-4">✋</div>
+                    <h3 className="text-3xl font-bold text-white mb-3">Wait! Don't Leave Yet</h3>
+                    <p className="text-purple-200 text-lg">
+                      Get <span className="text-yellow-300 font-bold">5 FREE Resume Tips</span> that helped 2,847+ job seekers land interviews!
+                    </p>
+                  </div>
+                  <form onSubmit={handleExitEmailSubmit} className="space-y-4">
+                    <input
+                      type="email"
+                      value={exitEmail}
+                      onChange={(e) => setExitEmail(e.target.value)}
+                      placeholder="Enter your email..."
+                      required
+                      className="w-full p-4 rounded-lg bg-white/20 text-white border-2 border-white/30 placeholder-purple-300 text-lg focus:border-pink-500 focus:outline-none"
+                    />
+                    <button
+                      type="submit"
+                      className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white py-4 rounded-lg font-bold text-lg hover:from-pink-600 hover:to-purple-700 transition"
+                    >
+                      Send Me The Tips! 🚀
+                    </button>
+                  </form>
+                  <p className="text-purple-300 text-sm text-center mt-4">
+                    No spam. Unsubscribe anytime. We respect your privacy.
+                  </p>
+                </>
+              ) : (
+                <div className="text-center py-8">
+                  <div className="text-6xl mb-4">✅</div>
+                  <h3 className="text-3xl font-bold text-white mb-3">Check Your Email!</h3>
+                  <p className="text-purple-200 text-lg">
+                    We just sent you 5 game-changing resume tips. See you in your inbox! 📧
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     );
   }
