@@ -40,6 +40,34 @@ function checkRateLimit(key) {
   return true;
 }
 
+// Function to check if text has international characters
+function hasInternationalCharacters(text) {
+  const internationalChars = /[àáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝŸ]/;
+  return internationalChars.test(text);
+}
+
+// Function to remove international characters
+function removeInternationalCharacters(text) {
+  const charMap = {
+    'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a', 'æ': 'ae',
+    'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A', 'Å': 'A', 'Æ': 'AE',
+    'ç': 'c', 'Ç': 'C',
+    'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e',
+    'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E',
+    'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i',
+    'Ì': 'I', 'Í': 'I', 'Î': 'I', 'Ï': 'I',
+    'ñ': 'n', 'Ñ': 'N',
+    'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'o', 'ø': 'o',
+    'Ò': 'O', 'Ó': 'O', 'Ô': 'O', 'Õ': 'O', 'Ö': 'O', 'Ø': 'O',
+    'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u',
+    'Ù': 'U', 'Ú': 'U', 'Û': 'U', 'Ü': 'U',
+    'ý': 'y', 'ÿ': 'y', 'Ý': 'Y', 'Ÿ': 'Y'
+  };
+  
+  return text.replace(/[àáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝŸ]/g, 
+    match => charMap[match] || match);
+}
+
 export async function POST(req) {
   try {
     const { userId } = await auth();
@@ -201,6 +229,13 @@ COVER_LETTER:
     const optimizedResume = optimizedMatch ? optimizedMatch[1].trim() : '';
     const coverLetter = coverLetterMatch ? coverLetterMatch[1].trim() : '';
 
+    // Generate ATS-safe version if resume has international characters
+    let atsSafeResume = null;
+    if (optimizedResume && hasInternationalCharacters(optimizedResume)) {
+      atsSafeResume = removeInternationalCharacters(optimizedResume);
+    }
+
+    // Save to history with ATS-safe version
     const { error: historyError } = await supabaseAdmin
       .from('resume_history')
       .insert([{
@@ -210,7 +245,8 @@ COVER_LETTER:
         score: score,
         missing_keywords: JSON.stringify(missing),
         optimized_resume: optimizedResume,
-        cover_letter: coverLetter
+        cover_letter: coverLetter,
+        ats_safe_resume: atsSafeResume
       }]);
 
     if (historyError) {
