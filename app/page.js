@@ -23,6 +23,12 @@ export default function App() {
   const [timeLeft, setTimeLeft] = useState({ days: 6, hours: 14, minutes: 23, seconds: 45 });
   const [atsSafeResume, setAtsSafeResume] = useState(null);
   const [showAtsSafe, setShowAtsSafe] = useState(false);
+  useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('openAnalyzer') === 'true') {
+    setPage('analyzer');
+  }
+}, []);
 
   useEffect(() => {
     if (isSignedIn && user?.primaryEmailAddress) {
