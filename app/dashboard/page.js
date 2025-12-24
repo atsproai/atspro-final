@@ -294,7 +294,7 @@ export default function DashboardPage() {
                       <p className="text-purple-200 text-sm">{app.job_title}</p>
                     </div>
                     {app.job_url && (
-                      
+                      <a
                         href={app.job_url}
                         target="_blank"
                         rel="noopener noreferrer"
