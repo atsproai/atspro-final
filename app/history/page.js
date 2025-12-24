@@ -53,6 +53,28 @@ export default function HistoryPage() {
     doc.save(filename);
   };
 
+  const downloadAtsSafePDF = (atsSafeResume, jobTitle) => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 15;
+    const maxLineWidth = pageWidth - (margin * 2);
+    
+    const lines = doc.splitTextToSize(atsSafeResume, maxLineWidth);
+    
+    let y = 20;
+    lines.forEach(line => {
+      if (y > 280) {
+        doc.addPage();
+        y = 20;
+      }
+      doc.text(line, margin, y);
+      y += 7;
+    });
+    
+    const filename = `resume-ats-safe-${jobTitle.substring(0, 30).replace(/[^a-z0-9]/gi, '-')}.pdf`;
+    doc.save(filename);
+  };
+
   const downloadCoverLetterPDF = (coverLetter, jobTitle) => {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
@@ -204,6 +226,40 @@ export default function HistoryPage() {
                           {scan.optimized_resume}
                         </pre>
                       </div>
+
+                      {/* ATS-Safe Resume (if exists) */}
+                      {scan.ats_safe_resume && (
+                        <div className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 border-2 border-blue-400 rounded-xl p-6">
+                          <div className="flex justify-between items-center mb-3">
+                            <div>
+                              <h4 className="text-lg font-semibold text-white mb-1">🌐 ATS-Safe Resume (Accents Removed)</h4>
+                              <p className="text-blue-200 text-sm">Special characters removed for maximum ATS compatibility</p>
+                            </div>
+                            <div className="flex gap-2">
+                              <button 
+                                onClick={(e) => { e.stopPropagation(); copyText(scan.ats_safe_resume); }}
+                                className="flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-blue-700"
+                              >
+                                <Copy size={16} /> Copy
+                              </button>
+                              <button 
+                                onClick={(e) => { e.stopPropagation(); downloadAtsSafePDF(scan.ats_safe_resume, scan.job_title); }}
+                                className="flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-blue-700"
+                              >
+                                <Download size={16} /> PDF
+                              </button>
+                            </div>
+                          </div>
+                          <pre className="bg-black/30 p-4 rounded-lg text-white text-sm whitespace-pre-wrap font-mono max-h-60 overflow-y-auto">
+                            {scan.ats_safe_resume}
+                          </pre>
+                          <div className="mt-3 bg-blue-500/30 border border-blue-400 rounded-lg p-3">
+                            <p className="text-white text-sm">
+                              <span className="font-semibold">💡 When to use:</span> Use the ATS-safe version when applying to international companies or positions with older ATS systems (especially Taleo). Use your original version for local companies.
+                            </p>
+                          </div>
+                        </div>
+                      )}
 
                       {/* Cover Letter */}
                       {scan.cover_letter && (
