@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
-import { ArrowLeft, Download, Copy, Calendar, BarChart } from 'lucide-react';
+import { ArrowLeft, Download, Copy, Calendar, BarChart, Check } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 
 export default function HistoryPage() {
@@ -11,6 +11,7 @@ export default function HistoryPage() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedScan, setSelectedScan] = useState(null);
+  const [copiedItem, setCopiedItem] = useState(null);
 
   useEffect(() => {
     if (isSignedIn) {
@@ -97,9 +98,10 @@ export default function HistoryPage() {
     doc.save(filename);
   };
 
-  const copyText = (text) => {
+  const copyText = (text, itemId) => {
     navigator.clipboard.writeText(text);
-    alert('Copied!');
+    setCopiedItem(itemId);
+    setTimeout(() => setCopiedItem(null), 2000);
   };
 
   const formatDate = (dateString) => {
@@ -209,10 +211,18 @@ export default function HistoryPage() {
                           <h4 className="text-lg font-semibold text-white">Optimized Resume</h4>
                           <div className="flex gap-2">
                             <button 
-                              onClick={(e) => { e.stopPropagation(); copyText(scan.optimized_resume); }}
+                              onClick={(e) => { e.stopPropagation(); copyText(scan.optimized_resume, `resume-${scan.id}`); }}
                               className="flex items-center gap-2 bg-purple-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-purple-700"
                             >
-                              <Copy size={16} /> Copy
+                              {copiedItem === `resume-${scan.id}` ? (
+                                <>
+                                  <Check size={16} className="text-green-300" /> Copied!
+                                </>
+                              ) : (
+                                <>
+                                  <Copy size={16} /> Copy
+                                </>
+                              )}
                             </button>
                             <button 
                               onClick={(e) => { e.stopPropagation(); downloadResumePDF(scan.optimized_resume, scan.job_title); }}
@@ -237,10 +247,18 @@ export default function HistoryPage() {
                             </div>
                             <div className="flex gap-2">
                               <button 
-                                onClick={(e) => { e.stopPropagation(); copyText(scan.ats_safe_resume); }}
+                                onClick={(e) => { e.stopPropagation(); copyText(scan.ats_safe_resume, `ats-safe-${scan.id}`); }}
                                 className="flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-blue-700"
                               >
-                                <Copy size={16} /> Copy
+                                {copiedItem === `ats-safe-${scan.id}` ? (
+                                  <>
+                                    <Check size={16} className="text-green-300" /> Copied!
+                                  </>
+                                ) : (
+                                  <>
+                                    <Copy size={16} /> Copy
+                                  </>
+                                )}
                               </button>
                               <button 
                                 onClick={(e) => { e.stopPropagation(); downloadAtsSafePDF(scan.ats_safe_resume, scan.job_title); }}
@@ -268,10 +286,18 @@ export default function HistoryPage() {
                             <h4 className="text-lg font-semibold text-white">Cover Letter</h4>
                             <div className="flex gap-2">
                               <button 
-                                onClick={(e) => { e.stopPropagation(); copyText(scan.cover_letter); }}
+                                onClick={(e) => { e.stopPropagation(); copyText(scan.cover_letter, `coverletter-${scan.id}`); }}
                                 className="flex items-center gap-2 bg-purple-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-purple-700"
                               >
-                                <Copy size={16} /> Copy
+                                {copiedItem === `coverletter-${scan.id}` ? (
+                                  <>
+                                    <Check size={16} className="text-green-300" /> Copied!
+                                  </>
+                                ) : (
+                                  <>
+                                    <Copy size={16} /> Copy
+                                  </>
+                                )}
                               </button>
                               <button 
                                 onClick={(e) => { e.stopPropagation(); downloadCoverLetterPDF(scan.cover_letter, scan.job_title); }}
