@@ -218,6 +218,30 @@ export default function App() {
     a.click();
   };
 
+  const downloadAtsSafePDF = () => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 15;
+    const maxLineWidth = pageWidth - (margin * 2);
+    const lines = doc.splitTextToSize(atsSafeResume, maxLineWidth);
+    let y = 20;
+    lines.forEach(line => {
+      if (y > 280) { doc.addPage(); y = 20; }
+      doc.text(line, margin, y);
+      y += 7;
+    });
+    doc.save('resume-ats-safe.pdf');
+  };
+
+  const downloadAtsSafeText = () => {
+    const blob = new Blob([atsSafeResume], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'resume-ats-safe.txt';
+    a.click();
+  };
+
   const copyText = (text, itemId) => {
     navigator.clipboard.writeText(text);
     setCopiedItem(itemId);
@@ -1457,6 +1481,12 @@ export default function App() {
                           <Copy size={18} /> Copy
                         </>
                       )}
+                    </button>
+                    <button onClick={downloadAtsSafePDF} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                      <Download size={18} /> PDF
+                    </button>
+                    <button onClick={downloadAtsSafeText} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                      <Download size={18} /> Text
                     </button>
                   </div>
                 </div>
