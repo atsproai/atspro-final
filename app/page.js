@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { Upload, CheckCircle, Users, ArrowRight, Copy, Download, Lock, Loader2, Check } from 'lucide-react';
-import { SignInButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs';
+import { UserButton, useUser } from '@clerk/nextjs';
 import { jsPDF } from 'jspdf';
 
 export default function App() {
@@ -455,11 +455,12 @@ export default function App() {
             {isSignedIn ? (
               <UserButton afterSignOutUrl="/" />
             ) : (
-              <SignInButton mode="modal">
-                <button className="bg-white text-purple-900 px-4 md:px-6 py-2 rounded-lg font-semibold hover:bg-purple-100 text-sm md:text-base">
-                  Sign In
-                </button>
-              </SignInButton>
+              <button 
+                onClick={() => window.location.href = '/sign-in'}
+                className="bg-white text-purple-900 px-4 md:px-6 py-2 rounded-lg font-semibold hover:bg-purple-100 text-sm md:text-base"
+              >
+                Sign In
+              </button>
             )}
           </div>
         </nav>
