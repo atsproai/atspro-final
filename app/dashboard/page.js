@@ -164,7 +164,8 @@ export default function DashboardPage() {
       id: 'interviews',
       name: 'Interview Prep',
       items: [
-        { id: 'questions', name: 'Interview Questions', icon: <MessageCircle size={16} /> }
+        { id: 'questions', name: 'Interview Questions', icon: <MessageCircle size={16} /> },
+        { id: 'interview-history', name: 'Interview History', icon: <Clock size={16} /> }
       ]
     },
     {
@@ -400,6 +401,22 @@ export default function DashboardPage() {
             className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-pink-600 hover:to-purple-700 transition"
           >
             Go to Interview Prep
+          </button>
+        </div>
+      );
+    }
+
+    if (activeSection === 'interview-history') {
+      return (
+        <div className="text-center py-12">
+          <div className="text-6xl mb-6">🕒</div>
+          <h2 className="text-3xl font-bold text-white mb-4">Interview History</h2>
+          <p className="text-purple-200 mb-6">View your past interview prep sessions</p>
+          <button
+            onClick={() => router.push('/interview-prep/history')}
+            className="bg-gradient-to-r from-green-500 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-green-600 hover:to-blue-700 transition"
+          >
+            Go to Interview History
           </button>
         </div>
       );
