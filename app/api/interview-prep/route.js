@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
+import { supabaseAdmin } from '../../../lib/supabase';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -37,6 +38,24 @@ function checkRateLimit(key) {
   }, RATE_LIMIT_WINDOW);
   
   return true;
+}
+
+function extractJobTitle(jobDescription) {
+  // Try to extract job title from common patterns
+  const patterns = [
+    /(?:position|role|title):\s*(.+?)(?:\n|$)/i,
+    /(?:job title):\s*(.+?)(?:\n|$)/i,
+    /^(.+?)(?:\n|$)/i, // First line as fallback
+  ];
+  
+  for (const pattern of patterns) {
+    const match = jobDescription.match(pattern);
+    if (match && match[1]) {
+      return match[1].trim().substring(0, 100); // Limit to 100 chars
+    }
+  }
+  
+  return 'Interview Prep Session';
 }
 
 export async function POST(req) {
@@ -142,6 +161,23 @@ TIP: [Brief tip for this question type]
         tip: tipMatch ? tipMatch[1].trim() : ''
       };
     }).filter(q => q.question && q.answer);
+
+    // Save to database
+    const jobTitle = extractJobTitle(jobDescription);
+    
+    const { error: dbError } = await supabaseAdmin
+      .from('interview_prep_history')
+      .insert({
+        user_id: userId,
+        job_title: jobTitle,
+        job_description: jobDescription,
+        questions: questions
+      });
+
+    if (dbError) {
+      console.error('Error saving interview prep to database:', dbError);
+      // Don't fail the request if DB save fails, just log it
+    }
 
     return NextResponse.json({ questions });
 
