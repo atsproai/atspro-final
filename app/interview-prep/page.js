@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
-import { ArrowLeft, Copy, MessageCircle, Lightbulb, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Copy, MessageCircle, Lightbulb, CheckCircle, Download } from 'lucide-react';
+import { jsPDF } from 'jspdf';
 
 export default function InterviewPrepPage() {
   const router = useRouter();
@@ -53,6 +54,106 @@ export default function InterviewPrepPage() {
   const copyAnswer = (answer) => {
     navigator.clipboard.writeText(answer);
     alert('Answer copied to clipboard!');
+  };
+
+  const downloadInterviewPDF = () => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 15;
+    const maxLineWidth = pageWidth - (margin * 2);
+    let y = 20;
+
+    // Title
+    doc.setFontSize(20);
+    doc.setFont(undefined, 'bold');
+    doc.text('Interview Prep Questions & Answers', margin, y);
+    y += 10;
+
+    // Date
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'normal');
+    const date = new Date().toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    doc.text(`Generated: ${date}`, margin, y);
+    y += 15;
+
+    // Loop through questions
+    questions.forEach((q, index) => {
+      // Check if we need a new page
+      if (y > pageHeight - 60) {
+        doc.addPage();
+        y = 20;
+      }
+
+      // Question number and text
+      doc.setFontSize(12);
+      doc.setFont(undefined, 'bold');
+      const questionHeader = `Question ${index + 1}:`;
+      doc.text(questionHeader, margin, y);
+      y += 7;
+
+      doc.setFont(undefined, 'normal');
+      const questionLines = doc.splitTextToSize(q.question, maxLineWidth);
+      questionLines.forEach(line => {
+        if (y > pageHeight - 40) {
+          doc.addPage();
+          y = 20;
+        }
+        doc.text(line, margin, y);
+        y += 6;
+      });
+      y += 5;
+
+      // Answer
+      doc.setFontSize(11);
+      doc.setFont(undefined, 'bold');
+      doc.text('Suggested Answer:', margin, y);
+      y += 7;
+
+      doc.setFont(undefined, 'normal');
+      const answerLines = doc.splitTextToSize(q.answer, maxLineWidth);
+      answerLines.forEach(line => {
+        if (y > pageHeight - 40) {
+          doc.addPage();
+          y = 20;
+        }
+        doc.text(line, margin, y);
+        y += 6;
+      });
+      y += 5;
+
+      // Pro Tip
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'bold');
+      doc.text('Pro Tip:', margin, y);
+      y += 6;
+
+      doc.setFont(undefined, 'italic');
+      const tipLines = doc.splitTextToSize(q.tip, maxLineWidth);
+      tipLines.forEach(line => {
+        if (y > pageHeight - 40) {
+          doc.addPage();
+          y = 20;
+        }
+        doc.text(line, margin, y);
+        y += 5;
+      });
+      y += 10;
+
+      // Separator line
+      if (index < questions.length - 1) {
+        doc.setDrawColor(200, 200, 200);
+        doc.line(margin, y, pageWidth - margin, y);
+        y += 10;
+      }
+    });
+
+    // Save the PDF
+    doc.save('interview-prep-questions.pdf');
   };
 
   if (!isSignedIn) {
@@ -120,13 +221,23 @@ export default function InterviewPrepPage() {
 
         {questions.length > 0 && (
           <>
-            <div className="bg-green-500/20 border border-green-500 rounded-xl p-6 mb-6 text-center">
-              <h3 className="text-2xl font-bold text-white mb-2">
-                ✅ {questions.length} Questions Ready!
-              </h3>
-              <p className="text-green-100">
-                Click each question to see your personalized answer and tips
-              </p>
+            <div className="bg-green-500/20 border border-green-500 rounded-xl p-6 mb-6">
+              <div className="flex items-center justify-between">
+                <div className="text-center flex-1">
+                  <h3 className="text-2xl font-bold text-white mb-2">
+                    ✅ {questions.length} Questions Ready!
+                  </h3>
+                  <p className="text-green-100">
+                    Click each question to see your personalized answer and tips
+                  </p>
+                </div>
+                <button
+                  onClick={downloadInterviewPDF}
+                  className="flex items-center gap-2 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition ml-4"
+                >
+                  <Download size={20} /> Download PDF
+                </button>
+              </div>
             </div>
 
             <div className="space-y-4">
