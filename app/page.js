@@ -455,12 +455,11 @@ export default function App() {
             {isSignedIn ? (
               <UserButton afterSignOutUrl="/" />
             ) : (
-              <button 
-                onClick={() => window.location.href = '/sign-in'}
-                className="bg-white text-purple-900 px-4 md:px-6 py-2 rounded-lg font-semibold hover:bg-purple-100 text-sm md:text-base"
-              >
-                Sign In
-              </button>
+              <!-- SignInButton removed -->
+                <button className="bg-white text-purple-900 px-4 md:px-6 py-2 rounded-lg font-semibold hover:bg-purple-100 text-sm md:text-base">
+                  Sign In
+                </button>
+              <!-- /SignInButton -->
             )}
           </div>
         </nav>
@@ -830,11 +829,11 @@ export default function App() {
                   Start Trial
                 </button>
               ) : (
-                <SignUpButton mode="modal">
+                <button onClick={() => window.location.href = "/sign-up"}>
                   <button onMouseDown={() => savePrice('price_1SfvfjAwfYeu0c4AHrF1yEQo')} onTouchStart={() => savePrice('price_1SfvfjAwfYeu0c4AHrF1yEQo')} className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700">
                     Start Trial
                   </button>
-                </SignUpButton>
+                </button>
               )}
             </div>
             <div className="bg-gradient-to-br from-yellow-400 to-orange-500 p-8 rounded-xl relative">
@@ -856,11 +855,11 @@ export default function App() {
                   Start Trial
                 </button>
               ) : (
-                <SignUpButton mode="modal">
+                <button onClick={() => window.location.href = "/sign-up"}>
                   <button onMouseDown={() => savePrice('price_1SfvjAAwfYeu0c4AI6M1tnjv')} onTouchStart={() => savePrice('price_1SfvjAAwfYeu0c4AI6M1tnjv')} className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800">
                     Start Trial
                   </button>
-                </SignUpButton>
+                </button>
               )}
             </div>
           </div>
@@ -964,11 +963,11 @@ export default function App() {
           {isSignedIn ? (
             <UserButton afterSignOutUrl="/" />
           ) : (
-            <SignInButton mode="modal">
+            <!-- SignInButton removed -->
               <button className="bg-white text-purple-900 px-4 md:px-6 py-2 rounded-lg font-semibold hover:bg-purple-100 text-sm md:text-base">
                 Sign In
               </button>
-            </SignInButton>
+            <!-- /SignInButton -->
           )}
         </div>
       </nav>
@@ -980,7 +979,7 @@ export default function App() {
           {!isSignedIn && (
             <div className="bg-yellow-500/20 border border-yellow-500 rounded-lg p-4 mb-6">
               <p className="text-yellow-100 text-center">
-                Please <SignInButton mode="modal"><button className="underline font-semibold">sign in</button></SignInButton> to analyze resumes
+                Please <button onClick={() => window.location.href = '/sign-in'} className="underline font-semibold">sign in</button> to analyze resumes
               </p>
             </div>
           )}
@@ -1001,16 +1000,16 @@ export default function App() {
                   </>
                 ) : (
                   <>
-                    <SignUpButton mode="modal">
+                    <button onClick={() => window.location.href = "/sign-up"}>
                       <button onMouseDown={() => savePrice('price_1SfvfjAwfYeu0c4AHrF1yEQo')} onTouchStart={() => savePrice('price_1SfvfjAwfYeu0c4AHrF1yEQo')} className="bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-purple-700">
                         $14/month
                       </button>
-                    </SignUpButton>
-                    <SignUpButton mode="modal">
+                    </button>
+                    <button onClick={() => window.location.href = "/sign-up"}>
                       <button onMouseDown={() => savePrice('price_1SfvjAAwfYeu0c4AI6M1tnjv')} onTouchStart={() => savePrice('price_1SfvjAAwfYeu0c4AI6M1tnjv')} className="bg-yellow-500 text-black px-6 py-2 rounded-lg font-semibold hover:bg-yellow-600">
                         $120/year (Save $48!)
                       </button>
-                    </SignUpButton>
+                    </button>
                   </>
                 )}
               </div>
@@ -1239,7 +1238,7 @@ export default function App() {
                       </>
                     ) : (
                       <>
-                        <SignUpButton mode="modal">
+                        <button onClick={() => window.location.href = "/sign-up"}>
                           <button
                             onMouseDown={() => savePrice('price_1SfvfjAwfYeu0c4AHrF1yEQo')}
                             onTouchStart={() => savePrice('price_1SfvfjAwfYeu0c4AHrF1yEQo')}
@@ -1247,8 +1246,8 @@ export default function App() {
                           >
                             🎁 Start Free Trial - $14/mo
                           </button>
-                        </SignUpButton>
-                        <SignUpButton mode="modal">
+                        </button>
+                        <button onClick={() => window.location.href = "/sign-up"}>
                           <button
                             onMouseDown={() => savePrice('price_1SfvjAAwfYeu0c4AI6M1tnjv')}
                             onTouchStart={() => savePrice('price_1SfvjAAwfYeu0c4AI6M1tnjv')}
@@ -1256,7 +1255,7 @@ export default function App() {
                           >
                             💎 Best Value - $120/year
                           </button>
-                        </SignUpButton>
+                        </button>
                       </>
                     )}
                   </div>
@@ -1378,7 +1377,7 @@ export default function App() {
                               🎁 Start 7-Day FREE Trial - $14/mo
                             </button>
                           ) : (
-                            <SignUpButton mode="modal">
+                            <button onClick={() => window.location.href = "/sign-up"}>
                               <button 
                                 onMouseDown={() => savePrice('price_1SfvfjAwfYeu0c4AHrF1yEQo')}
                                 onTouchStart={() => savePrice('price_1SfvfjAwfYeu0c4AHrF1yEQo')}
@@ -1386,7 +1385,7 @@ export default function App() {
                               >
                                 🎁 Start 7-Day FREE Trial - $14/mo
                               </button>
-                            </SignUpButton>
+                            </button>
                           )}
                           <p className="text-white text-xs -mt-2 mb-2">Cancel anytime • Unlock instantly</p>
                           {isSignedIn ? (
@@ -1397,7 +1396,7 @@ export default function App() {
                               💎 Best Value - $120/year (Save $48!)
                             </button>
                           ) : (
-                            <SignUpButton mode="modal">
+                            <button onClick={() => window.location.href = "/sign-up"}>
                               <button 
                                 onMouseDown={() => savePrice('price_1SfvjAAwfYeu0c4AI6M1tnjv')}
                                 onTouchStart={() => savePrice('price_1SfvjAAwfYeu0c4AI6M1tnjv')}
@@ -1405,7 +1404,7 @@ export default function App() {
                               >
                                 💎 Best Value - $120/year (Save $48!)
                               </button>
-                            </SignUpButton>
+                            </button>
                           )}
                           <p className="text-white text-xs -mt-2">Includes 7-Day FREE Trial</p>
                         </div>
