@@ -451,7 +451,7 @@ export default function App() {
           <div className="flex items-center space-x-3 md:space-x-6">
             <button onClick={() => setPage('home')} className="text-white hover:text-purple-200 text-sm md:text-base">Home</button>
             <button onClick={() => setPage('analyzer')} className="text-white hover:text-purple-200 text-sm md:text-base">Analyzer</button>
-            <button onClick={() => window.location.href = '/dashboard'} className="text-white hover:text-purple-200 hidden md:block">Dashboard</button>
+            <button onClick={() => window.location.href = '/dashboard'} className="text-white hover:text-purple-200 text-sm md:text-base">Dashboard</button>
             {isSignedIn ? (
               <UserButton afterSignOutUrl="/" />
             ) : (
