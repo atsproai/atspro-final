@@ -7,11 +7,13 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata = {
   title: 'ATSpro.ai - Beat the ATS & Land Your Dream Job',
   description: 'AI-powered resume optimization, ATS compatibility checking, and job search tools',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-  },
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 }
 
 export default function RootLayout({ children }) {
@@ -32,18 +34,14 @@ export default function RootLayout({ children }) {
           footerActionLink: 'text-purple-600 hover:text-purple-700',
           // Mobile-specific fixes
           modalContent: 'max-h-[90vh] overflow-y-auto',
-          modalCloseButton: 'top-4 right-4',
+          modalCloseButton: 'top-4 right-4 z-50',
         },
         variables: {
-          // Ensure proper sizing on mobile
           borderRadius: '0.5rem',
         },
       }}
     >
       <html lang="en">
-        <head>
-          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-        </head>
         <body className={inter.className}>
           {children}
           <script
