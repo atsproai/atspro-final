@@ -175,10 +175,10 @@ export default function InterviewHistoryPage() {
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900">
       <div className="max-w-7xl mx-auto p-6">
         <button 
-          onClick={() => router.push('/')}
+          onClick={() => router.push('/dashboard')}
           className="flex items-center gap-2 text-white mb-6 hover:text-purple-200"
         >
-          <ArrowLeft size={20} /> Back to Home
+          <ArrowLeft size={20} /> Back to Dashboard
         </button>
 
         <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 border border-white/20">
