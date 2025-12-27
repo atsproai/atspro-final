@@ -13,6 +13,7 @@ export default function InterviewPrepPage() {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [expandedIndex, setExpandedIndex] = useState(null);
+  const [copiedAnswer, setCopiedAnswer] = useState(null);
 
   const handleFile = (e) => {
     const f = e.target.files[0];
@@ -51,9 +52,10 @@ export default function InterviewPrepPage() {
     setLoading(false);
   };
 
-  const copyAnswer = (answer) => {
+  const copyAnswer = (answer, index) => {
     navigator.clipboard.writeText(answer);
-    alert('Answer copied to clipboard!');
+    setCopiedAnswer(index);
+    setTimeout(() => setCopiedAnswer(null), 2000);
   };
 
   const downloadInterviewPDF = () => {
@@ -276,10 +278,22 @@ export default function InterviewPrepPage() {
                             <h4 className="text-lg font-semibold text-white">Suggested Answer</h4>
                           </div>
                           <button
-                            onClick={(e) => { e.stopPropagation(); copyAnswer(q.answer); }}
-                            className="flex items-center gap-2 bg-purple-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-purple-700"
+                            onClick={(e) => { e.stopPropagation(); copyAnswer(q.answer, index); }}
+                            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition ${
+                              copiedAnswer === index 
+                                ? 'bg-green-600 text-white' 
+                                : 'bg-purple-600 text-white hover:bg-purple-700'
+                            }`}
                           >
-                            <Copy size={16} /> Copy
+                            {copiedAnswer === index ? (
+                              <>
+                                <CheckCircle size={16} /> Copied!
+                              </>
+                            ) : (
+                              <>
+                                <Copy size={16} /> Copy
+                              </>
+                            )}
                           </button>
                         </div>
                         <div className="bg-white/5 p-4 rounded-lg border border-white/10">
