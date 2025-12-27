@@ -126,7 +126,7 @@ export default function InterviewHistoryPage() {
       }
     });
 
-    const filename = `interview-prep-${jobTitle.substring(0, 30).replace(/[^a-z0-9]/gi, '-')}.pdf`;
+    const filename = `interview-prep-${jobTitle.substring(0, 50).replace(/[^a-z0-9]/gi, '-').toLowerCase()}.pdf`;
     doc.save(filename);
   };
 
