@@ -40,24 +40,6 @@ function checkRateLimit(key) {
   return true;
 }
 
-function extractJobTitle(jobDescription) {
-  // Try to extract job title from common patterns
-  const patterns = [
-    /(?:position|role|title):\s*(.+?)(?:\n|$)/i,
-    /(?:job title):\s*(.+?)(?:\n|$)/i,
-    /^(.+?)(?:\n|$)/i, // First line as fallback
-  ];
-  
-  for (const pattern of patterns) {
-    const match = jobDescription.match(pattern);
-    if (match && match[1]) {
-      return match[1].trim().substring(0, 100); // Limit to 100 chars
-    }
-  }
-  
-  return 'Interview Prep Session';
-}
-
 export async function POST(req) {
   try {
     const { userId } = await auth();
@@ -78,10 +60,12 @@ export async function POST(req) {
 
     const formData = await req.formData();
     const resume = formData.get('resume');
+    const jobTitle = formData.get('jobTitle');
+    const companyName = formData.get('companyName');
     const jobDescription = formData.get('jobDescription');
 
-    if (!resume || !jobDescription) {
-      return NextResponse.json({ error: 'Missing resume or job description' }, { status: 400 });
+    if (!resume || !jobTitle || !companyName || !jobDescription) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     if (resume.size > 10 * 1024 * 1024) {
@@ -162,14 +146,14 @@ TIP: [Brief tip for this question type]
       };
     }).filter(q => q.question && q.answer);
 
-    // Save to database
-    const jobTitle = extractJobTitle(jobDescription);
+    // Save to database with company name + job title
+    const displayTitle = `${companyName} - ${jobTitle}`;
     
     const { error: dbError } = await supabaseAdmin
       .from('interview_prep_history')
       .insert({
         user_id: userId,
-        job_title: jobTitle,
+        job_title: displayTitle,
         job_description: jobDescription,
         questions: questions
       });
