@@ -9,6 +9,8 @@ export default function InterviewPrepPage() {
   const router = useRouter();
   const { isSignedIn } = useUser();
   const [file, setFile] = useState(null);
+  const [jobTitle, setJobTitle] = useState('');
+  const [companyName, setCompanyName] = useState('');
   const [jobDescription, setJobDescription] = useState('');
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -25,14 +27,16 @@ export default function InterviewPrepPage() {
   };
 
   const generatePrep = async () => {
-    if (!file || !jobDescription) {
-      alert('Please upload resume and paste job description!');
+    if (!file || !jobTitle || !companyName || !jobDescription) {
+      alert('Please fill in all fields!');
       return;
     }
 
     setLoading(true);
     const form = new FormData();
     form.append('resume', file);
+    form.append('jobTitle', jobTitle);
+    form.append('companyName', companyName);
     form.append('jobDescription', jobDescription);
 
     try {
@@ -199,6 +203,29 @@ export default function InterviewPrepPage() {
               onChange={handleFile} 
               className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30"
             />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div>
+              <label className="block text-white mb-2 font-semibold">Job Title *</label>
+              <input
+                type="text"
+                value={jobTitle}
+                onChange={(e) => setJobTitle(e.target.value)}
+                placeholder="e.g., Senior Software Engineer"
+                className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 placeholder-purple-300"
+              />
+            </div>
+            <div>
+              <label className="block text-white mb-2 font-semibold">Company Name *</label>
+              <input
+                type="text"
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+                placeholder="e.g., Google"
+                className="w-full p-3 rounded-lg bg-white/20 text-white border border-white/30 placeholder-purple-300"
+              />
+            </div>
           </div>
 
           <div className="mb-6">
