@@ -185,7 +185,10 @@ export default function App() {
     const a = document.createElement('a');
     a.href = url;
     a.download = 'optimized-resume.txt';
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   const downloadCoverLetterPDF = () => {
@@ -215,7 +218,10 @@ export default function App() {
     const a = document.createElement('a');
     a.href = url;
     a.download = 'cover-letter.txt';
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   const downloadAtsSafePDF = () => {
@@ -239,7 +245,10 @@ export default function App() {
     const a = document.createElement('a');
     a.href = url;
     a.download = 'resume-ats-safe.txt';
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   const copyText = (text, itemId) => {
