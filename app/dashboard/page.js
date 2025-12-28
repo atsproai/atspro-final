@@ -18,7 +18,8 @@ import {
   Plus,
   Trash2,
   ExternalLink,
-  Clock
+  Clock,
+  CreditCard
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -36,7 +37,17 @@ export default function DashboardPage() {
     company_name: '', job_title: '', job_url: '', salary_range: '', notes: ''
   });
 
+  // Subscription state
+  const [subscriptionStatus, setSubscriptionStatus] = useState('free');
+  const [subscriptionLoading, setSubscriptionLoading] = useState(true);
+
   useEffect(() => { setMounted(true); }, []);
+
+  useEffect(() => {
+    if (mounted && isSignedIn) {
+      fetchSubscriptionStatus();
+    }
+  }, [mounted, isSignedIn]);
 
   useEffect(() => {
     if (activeSection === 'tracker' && mounted) {
@@ -56,6 +67,17 @@ export default function DashboardPage() {
     router.push('/');
     return null;
   }
+
+  const fetchSubscriptionStatus = async () => {
+    try {
+      const res = await fetch('/api/subscription-status');
+      const data = await res.json();
+      setSubscriptionStatus(data.subscriptionStatus || 'free');
+    } catch (err) {
+      console.error('Error fetching subscription:', err);
+    }
+    setSubscriptionLoading(false);
+  };
 
   const fetchApplications = async () => {
     setApplicationsLoading(true);
@@ -355,21 +377,114 @@ export default function DashboardPage() {
     }
 
     if (activeSection === 'home') {
+      const getSubscriptionLabel = () => {
+        if (subscriptionStatus === 'monthly') return 'Premium Monthly';
+        if (subscriptionStatus === 'annual') return 'Premium Annual';
+        return 'Free Plan';
+      };
+
+      const getSubscriptionColor = () => {
+        if (subscriptionStatus === 'monthly' || subscriptionStatus === 'annual') {
+          return 'from-green-500 to-emerald-600';
+        }
+        return 'from-gray-500 to-gray-600';
+      };
+
       return (
-        <div className="text-center py-12">
-          <div className="text-6xl mb-6">🎯</div>
-          <h2 className="text-4xl font-bold text-white mb-4">
-            Welcome, {user?.firstName || 'there'}! 👋
-          </h2>
-          <p className="text-purple-200 mb-8 text-lg max-w-2xl mx-auto">
-            Your all-in-one job search toolkit. Select a tool from the sidebar to get started!
-          </p>
-          <button
-            onClick={() => window.location.href = '/?openAnalyzer=true'}
-            className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:from-pink-600 hover:to-purple-700 transition"
-          >
-            Start New ATS Scan
-          </button>
+        <div>
+          <div className="text-center py-12 mb-8">
+            <div className="text-6xl mb-6">🎯</div>
+            <h2 className="text-4xl font-bold text-white mb-4">
+              Welcome, {user?.firstName || 'there'}! 👋
+            </h2>
+            <p className="text-purple-200 mb-8 text-lg max-w-2xl mx-auto">
+              Your all-in-one job search toolkit. Select a tool from the sidebar to get started!
+            </p>
+            <button
+              onClick={() => window.location.href = '/?openAnalyzer=true'}
+              className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:from-pink-600 hover:to-purple-700 transition"
+            >
+              Start New ATS Scan
+            </button>
+          </div>
+
+          {/* Subscription Management Section */}
+          <div className="max-w-3xl mx-auto">
+            <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 border border-white/20">
+              <div className="flex items-center gap-3 mb-6">
+                <CreditCard className="text-green-400" size={32} />
+                <h3 className="text-3xl font-bold text-white">Subscription</h3>
+              </div>
+
+              {subscriptionLoading ? (
+                <div className="text-center py-8">
+                  <div className="text-purple-200">Loading subscription status...</div>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-6">
+                    <div>
+                      <div className={`inline-block bg-gradient-to-r ${getSubscriptionColor()} text-white px-6 py-2 rounded-full font-bold text-lg mb-3`}>
+                        {getSubscriptionLabel()}
+                      </div>
+                      {subscriptionStatus === 'free' ? (
+                        <p className="text-purple-200 text-sm">
+                          Upgrade to Premium for unlimited scans and access to all features!
+                        </p>
+                      ) : (
+                        <p className="text-green-200 text-sm">
+                          ✅ Unlimited ATS scans, interview prep, and all premium features
+                        </p>
+                      )}
+                    </div>
+                    
+                    {subscriptionStatus !== 'free' && (
+                      <a
+                        href="https://billing.stripe.com/p/login/aFacN4dkm1UA2CubwAfIs00"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+                      >
+                        <ExternalLink size={20} />
+                        Manage Subscription
+                      </a>
+                    )}
+                  </div>
+
+                  {subscriptionStatus === 'free' && (
+                    <div className="bg-gradient-to-r from-pink-500/20 to-purple-600/20 border-2 border-pink-500/50 rounded-xl p-6">
+                      <h4 className="text-xl font-bold text-white mb-3">🚀 Upgrade to Premium</h4>
+                      <ul className="space-y-2 mb-6 text-purple-100">
+                        <li className="flex items-center gap-2">
+                          <span className="text-green-400">✓</span> Unlimited ATS resume scans
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="text-green-400">✓</span> Unlimited interview prep sessions
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="text-green-400">✓</span> LinkedIn profile optimization
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="text-green-400">✓</span> Professional email templates
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="text-green-400">✓</span> Job application tracker
+                        </li>
+                      </ul>
+                      <div className="flex flex-col sm:flex-row gap-4">
+                        <button
+                          onClick={() => router.push('/#pricing')}
+                          className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-3 rounded-lg font-bold hover:from-pink-600 hover:to-purple-700 transition"
+                        >
+                          View Pricing Plans
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       );
     }
