@@ -140,10 +140,11 @@ export default function App() {
     }
     
     try {
+      const referral = window.Rewardful && window.Rewardful.referral || null;
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId }),
+        body: JSON.stringify({ priceId, referral }),
       });
       const data = await res.json();
       if (data.url) {
