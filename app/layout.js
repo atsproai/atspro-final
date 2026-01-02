@@ -1,3 +1,4 @@
+import Script from 'next/script'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Inter } from 'next/font/google'
 import './globals.css'
@@ -32,7 +33,6 @@ export default function RootLayout({ children }) {
           socialButtonsBlockButton: 'border-2 hover:bg-gray-50',
           formFieldInput: 'border-2 focus:border-purple-600',
           footerActionLink: 'text-purple-600 hover:text-purple-700',
-          // Mobile-specific fixes
           modalContent: 'max-h-[90vh] overflow-y-auto',
           modalCloseButton: 'top-4 right-4 z-50',
         },
@@ -44,6 +44,10 @@ export default function RootLayout({ children }) {
       <html lang="en">
         <body className={inter.className}>
           {children}
+          <Script src="https://r.wdfl.co/rw.js" data-rewardful="d4d2a5" strategy="beforeInteractive" />
+          <Script id="rewardful-queue" strategy="beforeInteractive">
+            {`(function(w,r){w._rwq=r;w[r]=w[r]||function(){(w[r].q=w[r].q||[]).push(arguments)}})(window,'rewardful');`}
+          </Script>
           <script
             type="text/javascript"
             dangerouslySetInnerHTML={{
