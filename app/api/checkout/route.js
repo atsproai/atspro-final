@@ -12,9 +12,8 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { priceId } = await request.json();
+    const { priceId, referral } = await request.json();
     
-    // Get user's email from Clerk
     const user = await clerkClient.users.getUser(userId);
     const userEmail = user.emailAddresses[0]?.emailAddress;
 
@@ -35,6 +34,7 @@ export async function POST(request) {
       metadata: {
         userId: userId,
       },
+      client_reference_id: referral || null,
     });
 
     return NextResponse.json({ url: session.url });
