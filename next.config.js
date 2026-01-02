@@ -23,7 +23,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://clerk.ats-pro.io https://*.clerk.accounts.dev; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.stripe.com https://clerk.ats-pro.io https://*.clerk.accounts.dev https://api.anthropic.com https://*.supabase.co; frame-src https://js.stripe.com https://clerk.ats-pro.io;",
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://clerk.ats-pro.io https://*.clerk.accounts.dev https://r.wdfl.co https://client.crisp.chat; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.stripe.com https://clerk.ats-pro.io https://*.clerk.accounts.dev https://api.anthropic.com https://*.supabase.co https://api.getrewardful.com https://client.crisp.chat; frame-src https://js.stripe.com https://clerk.ats-pro.io;",
           },
         ],
       },
